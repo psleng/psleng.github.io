@@ -1,0 +1,38 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: https://psleng.github.io
+Label: https://psleng.github.io
+Codename: bookworm
+Date: Thu, 03 Oct 2024 19:48:31 UTC
+Architectures: arm64
+Components: main
+Description: Perle GiOS Router packages repository
+MD5Sum:
+ 0f10cace86756f401e7e6299cbb7c980 17276 main/binary-arm64/Packages
+ 10b817e2f11a67a13556b3874e63eaae 6852 main/binary-arm64/Packages.gz
+ 81a4b9bc0352dee8c42c3555bf4e2e1f 152 main/binary-arm64/Release
+SHA1:
+ 0e2e034775c13c8def22da9e1de2ad329835b9e8 17276 main/binary-arm64/Packages
+ 6142115a79cb2d13931dab016904c2787b303185 6852 main/binary-arm64/Packages.gz
+ ae7dc7d9f542d7ec76e9966e358f7a5e0ffc43b2 152 main/binary-arm64/Release
+SHA256:
+ 7d528779f84188f7a41b0384f51f6051c4609dca1228a80a5b245aa595ba970c 17276 main/binary-arm64/Packages
+ 4c702325a53e436bf08024b2800af6797fc5f8473f18078d8eba5596df116e8d 6852 main/binary-arm64/Packages.gz
+ c52bf2ed09a634953efdd6beefa8ab721f92f7e224d700003a1ce7afc14ee0da 152 main/binary-arm64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEx79DKYZjYwFei7mmO3kHC44j6SgFAmb+9RAACgkQO3kHC44j
+6ShVVhAAgYE9jrixz2R0sPkINbSRXbTVikQTBznL9IGSoAzmAwjniDlzzlbCdcTE
+CmqWPfmlUZjz83l0nwPrmQUWE0skQ8kVh4ZQ20p3OXVJvBv+ciDu44IRcCtSj/Rl
+UXQxXWr+OaOzhjjvjQIxWjTOI9/cYmaFaJO8U01ZjEEh9YwpsWCEmtTaOnScYxem
+1Z46pdhedLgxi3+xduVD7U/sMI+dPNjT+M1JJsLRfCfZKfTGjkKsC2KMjWKhzVH+
+GqikaYObPlJFVwPaf3Ht2PgNLSCxVm89pjMORfSvVaaU7XnL7HzW+HliV/HyTzBn
+O1B1q4R/BL2iOCBpGyj5QYcg0x2n5feLhMt/h681WmfCWBzdllh1Di3lqDDKEDZD
+7egERr1qX6ftULsRueavORsRs3zSJC26wwjZnhkP3qxr5xhcJrjlMp55cVpcIUCq
+xOvggIH09O4N332Up646zmou+Fg/2QecKTUJi0S7HwRAOjeekCyi1KreaVUKVaDJ
+fsDn/SP4nt2ZsgPyEs5G1wZi6vZKkTVnpdCOgKI3zFjtBhlmN0IySNxvMLSlm7cX
+CRP5Fo09ldAtaZ611fY3E14HzomFR+eBwxSZS/pp80eXkCVw6lN8VZiroNKPnQ5W
+7tzIKn3momBJUAS0lKWnSkFG13ACKm0+tXVgz7BTa8aB/0gIT0k=
+=VZEP
+-----END PGP SIGNATURE-----
