@@ -1,19 +1,19 @@
 Origin: https://psleng.github.io
 Label: https://psleng.github.io
 Codename: bookworm
-Date: Thu, 03 Oct 2024 19:48:31 UTC
+Date: Wed, 09 Oct 2024 19:40:21 UTC
 Architectures: arm64
 Components: main
 Description: Perle GiOS Router packages repository
 MD5Sum:
- 0f10cace86756f401e7e6299cbb7c980 17276 main/binary-arm64/Packages
- 10b817e2f11a67a13556b3874e63eaae 6852 main/binary-arm64/Packages.gz
+ d120cfa5bc9d48af87a49f24b19b4b7d 39620 main/binary-arm64/Packages
+ dfd802c71e9429cec7d6439a87350090 13593 main/binary-arm64/Packages.gz
  81a4b9bc0352dee8c42c3555bf4e2e1f 152 main/binary-arm64/Release
 SHA1:
- 0e2e034775c13c8def22da9e1de2ad329835b9e8 17276 main/binary-arm64/Packages
- 6142115a79cb2d13931dab016904c2787b303185 6852 main/binary-arm64/Packages.gz
+ 88eb72ebc1dce8ff6f1269dc6da773379145c826 39620 main/binary-arm64/Packages
+ af8b44bb37557a4fccb28b2dcf5eb7c37bdd91e0 13593 main/binary-arm64/Packages.gz
  ae7dc7d9f542d7ec76e9966e358f7a5e0ffc43b2 152 main/binary-arm64/Release
 SHA256:
- 7d528779f84188f7a41b0384f51f6051c4609dca1228a80a5b245aa595ba970c 17276 main/binary-arm64/Packages
- 4c702325a53e436bf08024b2800af6797fc5f8473f18078d8eba5596df116e8d 6852 main/binary-arm64/Packages.gz
+ 1b4fab2fc9cb7aeda3ce8d08b7fb5572b1f2c3fe0dbb79400d92d53b7abfb227 39620 main/binary-arm64/Packages
+ 2c3f5e1168e6940a9bac7b51032f4cc1e91a8a6112cb812582d24c355c060f47 13593 main/binary-arm64/Packages.gz
  c52bf2ed09a634953efdd6beefa8ab721f92f7e224d700003a1ce7afc14ee0da 152 main/binary-arm64/Release
