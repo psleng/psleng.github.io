@@ -4,10 +4,10 @@ Depends: libc6 (>= 2.34), libssl3 (>= 3.0.5), libpcre3 (>= 8.39), liblua5.3-0
 Priority: optional
 Section: devel
 Filename: pool/main/a/accel-ppp/accel-ppp_1.13.0_arm64.deb
-Size: 581384
-SHA256: 7823aa41cba7e41399b360d3eba93d4309a0c0a5a9c83d0d5bdf2d5246542f25
-SHA1: eee3a4f04cc29c211dff066b7fd5fe043399a410
-MD5sum: 0fa95fde35387fbf83ce055e694733bb
+Size: 507196
+SHA256: 252a9a963d7cd921a7790f7b0ab0aacb23f5573d4f9c607ba4b9741b6d98e497
+SHA1: f238ab5c0b9353c9c3d6e473bb4968fcaa3c76b7
+MD5sum: d528bb09a7b9878e32dbec31ca3652c2
 Description: PPtP/L2TP/PPPoE/SSTP server for Linux
  Overview
  --------
@@ -192,7 +192,66 @@ Description: PPtP/L2TP/PPPoE/SSTP server for Linux
  Jabber: dima@accel-ppp.org
 Maintainer: Dmitry Kozlov <xeb@mail.ru>
 Version: 1.13.0
-Installed-Size: 3062
+Installed-Size: 2823
+
+Package: aws-gwlbtun
+Version: 1.0-1
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 398
+Homepage: https://github.com/aws-samples/aws-gateway-load-balancer-tunnel-handler
+Priority: optional
+Section: net
+Filename: pool/main/a/aws-gwlbtun/aws-gwlbtun_1.0-1_arm64.deb
+Size: 74072
+SHA256: d99b851ec195db751b36d99fe62a3e5b553b1db3059a022f41deaf76a07f5ed8
+SHA1: 3497c65e3b1e562b3d9dc22485ebf44969285f8c
+MD5sum: 4d1437385eaf00e03451ffe613225156
+Description: AWS Gateway Load Balancer Tunnel Handler
+ This is a simple package that handles tunneling for the AWS Gateway Load Balancer.
+
+Package: charon-cmd
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 226
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), strongswan-libcharon (>= 5.9.11)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/charon-cmd_5.9.11-2+vyos0_arm64.deb
+Size: 89304
+SHA256: 8e72e1cd6cfc155244bb6a982be4b4b731fdf3a713a638411108312b60e72208
+SHA1: df44f80da81644ce5874ceb9cbbd09df8d842024
+MD5sum: 97a7796740bb3456326176ff655b4a93
+Description: standalone IPsec client
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the charon-cmd command, which can be used as a client to
+ connect to a remote IKE daemon.
+
+Package: charon-systemd
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 241
+Depends: libstrongswan (= 5.9.11-2+vyos0), strongswan-swanctl, libc6 (>= 2.34), libsystemd0, strongswan-libcharon (>= 5.9.11)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/charon-systemd_5.9.11-2+vyos0_arm64.deb
+Size: 85916
+SHA256: 0f77636fa2507802e91b5518ec99ac91a736ec0cfb4bd3563d8a8ee1036c56ae
+SHA1: c44a8c0dee597636d1c30c22467bde7c23415c47
+MD5sum: d273e8cb758ef735a7ce5acd4258e398
+Description: strongSwan IPsec client, systemd support
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the charon-systemd files.
 
 Package: firmware-ti-ipc-am64
 Source: ti-linux-firmware
@@ -266,10 +325,10 @@ Description: PRU Ethernet Switch firmware for AM64
  This package provides PRU Ethernet Switch firmware for AM64
 
 Package: frr
-Version: 9.1.2-10-gcd82888fe
+Version: 9.1.2-0
 Architecture: arm64
 Maintainer: David Lamparter <equinox-debian@diac24.net>
-Installed-Size: 23452
+Installed-Size: 23516
 Pre-Depends: adduser
 Depends: iproute2, logrotate (>= 3.2-11), lsof, libc-ares2 (>= 1.7.0), libc6 (>= 2.34), libcap2 (>= 1:2.10), libcrypt1 (>= 1:4.1.0), libjson-c5 (>= 0.15), liblua5.3-0, libpam0g (>= 0.99.7.1), libprotobuf-c1 (>= 1.0.1), libreadline8 (>= 7.0~rc1), libyang2 (>= 2.1.148-1)
 Recommends: frr-pythontools
@@ -279,11 +338,11 @@ Replaces: zebra, zebra-pj
 Homepage: https://www.frrouting.org/
 Priority: optional
 Section: net
-Filename: pool/main/f/frr/frr_9.1.2-10-gcd82888fe_arm64.deb
-Size: 4162596
-SHA256: c2bd868212ac4654e1ea7549ebbef2d94290888dbaa93cf83647d381ac5c4c8b
-SHA1: f0421a46ca28bcced2a85203b33664b6ce7bd921
-MD5sum: 1e1d7a216e556725cad988b6a6dd31fc
+Filename: pool/main/f/frr/frr_9.1.2-0_arm64.deb
+Size: 4170900
+SHA256: b49b415ffa0bb3e256d2d7bf65b80d893a84dacf4a18da0ce002a70b1722680d
+SHA1: 2aec877f2f6020a0cf8f051a7de7c3eecfc3c982
+MD5sum: 2e50f2e24e151bb09c5179e09f833cc5
 Description: FRRouting suite of internet protocols (BGP, OSPF, IS-IS, ...)
  FRRouting implements the routing protocols commonly used in the
  internet and private networks to exchange information between routers.
@@ -301,7 +360,7 @@ Description: FRRouting suite of internet protocols (BGP, OSPF, IS-IS, ...)
 
 Package: frr-doc
 Source: frr
-Version: 9.1.2-10-gcd82888fe
+Version: 9.1.2-0
 Architecture: all
 Maintainer: David Lamparter <equinox-debian@diac24.net>
 Installed-Size: 7010
@@ -312,11 +371,11 @@ Multi-Arch: foreign
 Homepage: https://www.frrouting.org/
 Priority: optional
 Section: doc
-Filename: pool/main/f/frr/frr-doc_9.1.2-10-gcd82888fe_all.deb
-Size: 1904900
-SHA256: a0f3152a62b65e6aad61676d06f260356b9dc3408577822859e0a9790f3a989c
-SHA1: 284a0822733d0cf2c698b94e0c1725cd449d6a4f
-MD5sum: b59fb0bbd614c1dc2bbd845fa4a23cd1
+Filename: pool/main/f/frr/frr-doc_9.1.2-0_all.deb
+Size: 1904716
+SHA256: f270cb4317484f0075a6a9dcd8bd49f32aa7e150e712d4c95e75e2bcd28aac42
+SHA1: f8e90ae2fbd22e57af9c7aa4443bf77f3f78bbdb
+MD5sum: 03a3af70cd4aa10ddd26f80bce614634
 Description: FRRouting suite - user manual
  This provides the FRR user manual in HTML form.  This is the official
  manual maintained as part of the package and is also available online
@@ -324,19 +383,19 @@ Description: FRRouting suite - user manual
 
 Package: frr-pythontools
 Source: frr
-Version: 9.1.2-10-gcd82888fe
+Version: 9.1.2-0
 Architecture: all
 Maintainer: David Lamparter <equinox-debian@diac24.net>
 Installed-Size: 176
-Depends: frr (<< 9.1.2-10.0-~), frr (>= 9.1.2-10-gcd82888fe~), python3:any
+Depends: frr (<< 9.1.2.0-~), frr (>= 9.1.2-0~), python3:any
 Homepage: https://www.frrouting.org/
 Priority: optional
 Section: net
-Filename: pool/main/f/frr/frr-pythontools_9.1.2-10-gcd82888fe_all.deb
-Size: 36520
-SHA256: 99f66ec0e82c8a3bd9e04fa9c0438dbcd391c8ee093d30dd90957d3171fa7928
-SHA1: 971efc102721baac02ee7e93cea8c9379cd3316e
-MD5sum: 79ae7a9fd84202c783edb8a5a13177ed
+Filename: pool/main/f/frr/frr-pythontools_9.1.2-0_all.deb
+Size: 36420
+SHA256: 1660852e96bf83386547dfa02795f6dcf1cf59b4bad3716aea8dc4904c6916b5
+SHA1: 244f997a4a2cc8d8955b1a8c33bd6d53d7e66fc0
+MD5sum: 6e7ff5c1f8404193f303b62f7666c8c6
 Description: FRRouting suite - Python tools
  The FRRouting suite uses a small Python tool to provide configuration
  reload functionality, particularly useful when the interactive configuration
@@ -347,19 +406,19 @@ Description: FRRouting suite - Python tools
 
 Package: frr-rpki-rtrlib
 Source: frr
-Version: 9.1.2-10-gcd82888fe
+Version: 9.1.2-0
 Architecture: arm64
 Maintainer: David Lamparter <equinox-debian@diac24.net>
 Installed-Size: 107
-Depends: frr (= 9.1.2-10-gcd82888fe), libc6 (>= 2.17), libjson-c5 (>= 0.15), librtr0 (>= 0.8.0~)
+Depends: frr (= 9.1.2-0), libc6 (>= 2.17), libjson-c5 (>= 0.15), librtr0
 Homepage: https://www.frrouting.org/
 Priority: optional
 Section: net
-Filename: pool/main/f/frr/frr-rpki-rtrlib_9.1.2-10-gcd82888fe_arm64.deb
-Size: 25212
-SHA256: 687a1caf43efaae3ca4dff85b85df28785741992e7e87b113bfab88e765a4d03
-SHA1: 5dd969e96483cf5e9bd7f2d67d29159023893d77
-MD5sum: c48906e970d44121bc35e3ea7877a764
+Filename: pool/main/f/frr/frr-rpki-rtrlib_9.1.2-0_arm64.deb
+Size: 25140
+SHA256: 4f519c1d9d742b26d0ae60e47c72e4463b138745346a0d58130ac6c4eb86b9b7
+SHA1: 7836fdbee6b212bc752d7dd28a12f36d923f1420
+MD5sum: a9b7c1e5a45ec101e5a9b432830c4904
 Description: FRRouting suite - BGP RPKI support (rtrlib)
  Adds RPKI support to FRR's bgpd, allowing validation of BGP routes
  against cryptographic information stored in WHOIS databases.  This is
@@ -369,43 +428,181 @@ Description: FRRouting suite - BGP RPKI support (rtrlib)
 
 Package: frr-snmp
 Source: frr
-Version: 9.1.2-10-gcd82888fe
+Version: 9.1.2-0
 Architecture: arm64
 Maintainer: David Lamparter <equinox-debian@diac24.net>
 Installed-Size: 1240
-Depends: frr (= 9.1.2-10-gcd82888fe), libc6 (>= 2.28), libsnmp40 (>= 5.9.3+dfsg)
+Depends: frr (= 9.1.2-0), libc6 (>= 2.28), libsnmp40 (>= 5.9.3+dfsg)
 Recommends: snmpd
 Homepage: https://www.frrouting.org/
 Priority: optional
 Section: net
-Filename: pool/main/f/frr/frr-snmp_9.1.2-10-gcd82888fe_arm64.deb
-Size: 64056
-SHA256: bc50ae6c4d3f654f098ae20df6e4d4a0b424c7d07853dba829029c65899d64ff
-SHA1: c3677dfdcb32cb105bcdc722f1aadecf216f9468
-MD5sum: 1d44ca9b617ffca37905d5103950778a
+Filename: pool/main/f/frr/frr-snmp_9.1.2-0_arm64.deb
+Size: 63960
+SHA256: 5de5b6914ef1e0d0d465fd143e60b231c77b535853717c870aab1f4e209d0661
+SHA1: e1cf2f45d26b57d384730a7ea17febf2e97d81f1
+MD5sum: fa9957e4a9ad941d586fe8d8d9306ee9
 Description: FRRouting suite - SNMP support
  Adds SNMP support to FRR's daemons by attaching to net-snmp's snmpd
  through the AgentX protocol.  Provides read-only access to current
  routing state through standard SNMP MIBs.
 
+Package: hvinfo
+Version: 1.2.0
+Architecture: arm64
+Maintainer: Daniil Baturin <daniil@baturin.org>
+Installed-Size: 80
+Depends: libgnat-12
+Priority: extra
+Section: contrib/utilities
+Filename: pool/main/h/hvinfo/hvinfo_1.2.0_arm64.deb
+Size: 18640
+SHA256: 5a10a486b77d5f1ea1254306d01cd3c4625f0979b605c4a8891150d137b91290
+SHA1: 5ef008d419711682cbee30bd487708f51c123ef3
+MD5sum: f2d42006e696be2a8a792224a478ae22
+Description: x86 hypervisor detection tool
+ An x86 hypervisor detection with support for detecting
+ KVM, Xen PV or HVM, VMware, and others.
+
+Package: ipaddrcheck
+Version: 1.2
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 81
+Depends: libpcre3, libcidr0, libc6 (>= 2.34)
+Priority: extra
+Section: contrib/net
+Filename: pool/main/i/ipaddrcheck/ipaddrcheck_1.2_arm64.deb
+Size: 10480
+SHA256: 748cb2e2c1e6acf47c6d64d5ae9c776afa262a754a162f24c5bc89dbd9232fa7
+SHA1: 86d1150de106c9b8ef4c19b0cc5b0cbb35e99306
+MD5sum: 949acd80b7aaa4828acb681fb0dbbf7d
+Description: IPv4 and IPv6 address validation utility
+ A validation utility for IPv4 and IPv6 addresses.
+
 Package: jool
 Version: 4.1.9+bf4c7e3669-1
 Architecture: arm64
 Maintainer: VyOS Support <support@vyos.io>
-Installed-Size: 2993
-Depends: linux-image-6.6.51-vyos, libc6 (>= 2.34), libnl-3-200 (>= 3.2.24), libnl-genl-3-200 (>= 3.2.21)
+Installed-Size: 1154
+Depends: linux-image-6.6.54-vyos, libc6 (>= 2.34), libnl-3-200 (>= 3.2.24), libnl-genl-3-200 (>= 3.2.21)
 Multi-Arch: foreign
 Homepage: <insert the upstream URL, if relevant>
 Priority: optional
 Section: unknown
 Filename: pool/main/j/jool/jool_4.1.9+bf4c7e3669-1_arm64.deb
-Size: 486696
-SHA256: 50f8414524851c4fa194931dde47b5bc12bfc373b7519fd0777d9f6513ede47f
-SHA1: 1b65731fc174d136423ec45a284f2aeb6f918d82
-MD5sum: ae4c3729e03e3b659f8a3a4c7f22aee0
+Size: 155960
+SHA256: f522bf8f306349e4c2b0584c972a83fe4c1504e9f840d04891c4096a638049a0
+SHA1: 330015957c8a75d3d6397186caa6cd4856ae96e8
+MD5sum: 701ec3c2d0487368ce9885b072a5e74c
 Description: auto-generated package by debmake
  This Debian binary package was auto-generated by the
  debmake(1) command provided by the debmake package.
+
+Package: libcharon-extauth-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 298
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.25)
+Breaks: libcharon-extra-plugins (<< 5.8.0-2~)
+Replaces: libcharon-extra-plugins (<< 5.8.0-2~)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libcharon-extauth-plugins_5.9.11-2+vyos0_arm64.deb
+Size: 89760
+SHA256: 9776061de61c9979076612ac00dc0b48919bfcab0a1b97041e8d81e8860e4a40
+SHA1: 0babfd3e0a5534f4112f6035fa34faa28171c842
+MD5sum: 26d52e73de0ed7bd5d501f3e666d31a7
+Description: strongSwan charon library (extended authentication plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides extended authentication plugins for the charon library:
+  - eap-mschapv2 (EAP-MSCHAPv2 protocol handler using passwords/NT hashes)
+    Used for client side to connect to some VPN concentrators configured for
+    Windows 7+ and modern OSX/iOS using IKEv2 (identify with public key,
+    authenticate with MSCHAPv2).
+  - xauth-generic (Generic XAuth backend that provides passwords from
+    ipsec.secrets and other credential sets)
+    Used for the client side to connect to VPN concentrators configured for
+    Android and older OSX/iOS using IKEv1 and XAUTH (identify with public key,
+    authenticate with XAUTH password).
+ .
+ These are the "not always, but still more commonly used" plugins, for further
+ needs even more plugins can be found in the package libcharon-extra-plugins.
+
+Package: libcharon-extra-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 2376
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), libip4tc2 (>= 1.8.3), libpam0g (>= 0.99.7.1)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libcharon-extra-plugins_5.9.11-2+vyos0_arm64.deb
+Size: 267892
+SHA256: a5df27cdd81f5794be970d05aa519b53fdec960d12734a730d806a48a67ca342
+SHA1: 78253e23cdf7aed57f21595dddcdf10f7003c108
+MD5sum: 79478c35ca77e9aa479ebc6fc2c92d45
+Description: strongSwan charon library (extra plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides extra plugins for the charon library:
+  - addrblock (Narrow traffic selectors to RFC 3779 address blocks in X.509
+    certificates)
+  - certexpire (Export expiration dates of used certificates)
+  - eap-aka (Generic EAP-AKA protocol handler using different backends)
+  - eap-gtc (EAP-GTC protocol handler authenticating with XAuth backends)
+  - eap-identity (EAP-Identity identity exchange algorithm, to use with other
+    EAP protocols)
+  - eap-md5 (EAP-MD5 protocol handler using passwords)
+  - eap-radius (EAP server proxy plugin forwarding EAP conversations to a
+    RADIUS server)
+  - eap-tls (EAP-TLS protocol handler, to authenticate with certificates in
+    EAP)
+  - eap-tnc (EAP-TNC protocol handler, Trusted Network Connect in a TLS tunnel)
+  - eap-ttls (EAP-TTLS protocol handler, wraps other EAP methods securely)
+  - error-notify (Notification about errors via UNIX socket)
+  - ha (High-Availability clustering)
+  - kernel-libipsec (Userspace IPsec Backend with TUN devices)
+  - led (Let Linux LED subsystem LEDs blink on IKE activity)
+  - lookip (Virtual IP lookup facility using a UNIX socket)
+  - tnc (Trusted Network Connect)
+  - unity (Cisco Unity extensions for IKEv1)
+  - xauth-eap (XAuth backend that uses EAP methods to verify passwords)
+  - xauth-pam (XAuth backend that uses PAM modules to verify passwords)
+
+Package: librtr-dbg
+Source: librtr0
+Version: 0.8.0
+Architecture: arm64
+Maintainer: Fabian Holler <mail@fholler.de>
+Installed-Size: 167
+Depends: librtr0 (= 0.8.0)
+Multi-Arch: same
+Homepage: http://rpki.realmv6.org/
+Priority: extra
+Section: debug
+Filename: pool/main/libr/librtr0/librtr-dbg_0.8.0_arm64.deb
+Size: 139748
+SHA256: f385eda737319e623fe6b308dc66006ee121c39cffd4547300e10bb8d1cc419f
+SHA1: 344a27ded8a03731fd9a65742f5ed10daa77be9d
+MD5sum: 0a570c4c9ae85ef0b5d0310ec73672d5
+Description: Small extensible RPKI-RTR-Client C library. Debug Symbols
+ RTRlib is an open-source C implementation of the  RPKI/Router Protocol
+ client. The library allows one to fetch and store validated prefix origin data
+ from a RTR-cache and performs origin verification of prefixes. It supports
+ different types of transport sessions (e.g., SSH, unprotected TCP) and is
+ easily extendable.
+ .
+ This package contains debug symbols.
+Build-Ids: 55c2a9fcac7d02b9a7dcaa454304691d0e56f23b
 
 Package: librtr-dev
 Source: librtr0
@@ -445,10 +642,10 @@ Homepage: http://rpki.realmv6.org/
 Priority: optional
 Section: doc
 Filename: pool/main/libr/librtr0/librtr-doc_0.8.0_all.deb
-Size: 90908
-SHA256: f518f0a770684c8fd923e56cc64100574e6048e40c2c8fa67f7ce3cddbc385ed
-SHA1: 4edb28d71c58669ae6b111c2e0091f9c29f6782b
-MD5sum: 60b5313bc593e15a8eed4c66734768cf
+Size: 90900
+SHA256: 0120407fafd0772e457007b65c78ecaab599452b37fa022034b0b429efb2d4e8
+SHA1: bfbe5d9f2918f76fb0b035c2523fc11c3ea87bcb
+MD5sum: 7a5f3e2532a131b405b3802c04acc811
 Description: Small extensible RPKI-RTR-Client C library. Documentation files
  RTRlib is an open-source C implementation of the  RPKI/Router Protocol
  client. The library allows one to fetch and store validated prefix origin data
@@ -479,6 +676,191 @@ Description: Small extensible RPKI-RTR-Client C library.
  from a RTR-cache and performs origin verification of prefixes. It supports
  different types of transport sessions (e.g., SSH, unprotected TCP) and is
  easily extendable.
+
+Package: libstrongswan
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 2870
+Depends: libc6 (>= 2.34), libcap2 (>= 1:2.10), libgmp10 (>= 2:6.2.1+dfsg1), libsystemd0 (>= 227)
+Recommends: libstrongswan-standard-plugins
+Suggests: libstrongswan-extra-plugins
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libstrongswan_5.9.11-2+vyos0_arm64.deb
+Size: 420248
+SHA256: 95f1b5481117a89946bc55884172fb99cbfceda817db861c7cea8e10e7503aef
+SHA1: 9f381f32bd688ae552064b1417ccb1c7a2748f46
+MD5sum: 2f685d5914c05b79585db47bd1d64f53
+Description: strongSwan utility and crypto library
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides the underlying libraries of charon and other strongSwan
+ components. It is built in a modular way and is extendable through various
+ plugins.
+ .
+ Some default (as specified by the strongSwan projet) plugins are included.
+ For libstrongswan (cryptographic backends, URI fetchers and database layers):
+  - aes (AES-128/192/256 cipher software implementation)
+  - constraints (X.509 certificate advanced constraint checking)
+  - dnskey (Parse RFC 4034 public keys)
+  - drbg (NIST SP-800-90A Deterministic Random Bit Generator)
+  - fips-prf (PRF specified by FIPS, used by EAP-SIM/AKA algorithms)
+  - gmp (RSA/DH crypto backend based on libgmp)
+  - hmac (HMAC wrapper using various hashers)
+  - md5 (MD5 hasher software implementation)
+  - mgf1 (Mask Generation Functions based on the SHA-1, SHA-256 and SHA-512)
+  - nonce (Default nonce generation plugin)
+  - pem (PEM encoding/decoding routines)
+  - pgp (PGP encoding/decoding routines)
+  - pkcs1 (PKCS#1 encoding/decoding routines)
+  - pkcs8 (PKCS#8 decoding routines)
+  - pkcs12 (PKCS#12 decoding routines)
+  - pubkey (Wrapper to handle raw public keys as trusted certificates)
+  - random (RNG reading from /dev/[u]random)
+  - rc2 (RC2 cipher software implementation)
+  - revocation (X.509 CRL/OCSP revocation checking)
+  - sha1 (SHA1 hasher software implementation)
+  - sha2 (SHA256/SHA384/SHA512 hasher software implementation)
+  - sshkey (SSH key decoding routines)
+  - x509 (Advanced X.509 plugin for parsing/generating X.509 certificates/CRLs
+    and OCSP messages)
+  - xcbc (XCBC wrapper using various ciphers)
+  - attr (Provides IKE attributes configured in strongswan.conf)
+  - kernel-netlink [linux] (IPsec/Networking kernel interface using Linux
+    Netlink)
+  - kernel-pfkey [kfreebsd] (IPsec kernel interface using PF_KEY)
+  - kernel-pfroute [kfreebsd] (Networking kernel interface using PF_ROUTE)
+  - resolve (Writes name servers received via IKE to a resolv.conf file or
+    installs them via resolvconf(8))
+
+Package: libstrongswan-extra-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 1296
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), libcurl4 (>= 7.56.1), libgcrypt20 (>= 1.10.0), libgpg-error0 (>= 1.14), libtss2-sys1 (>= 3.0.1)
+Breaks: libcharon-extra-plugins (<= 5.5.3-1)
+Replaces: libcharon-extra-plugins (<= 5.5.3-1)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libstrongswan-extra-plugins_5.9.11-2+vyos0_arm64.deb
+Size: 257576
+SHA256: b2ccb62bfd751d3089ccfd493a11a1efc056fb984dd1955b6147913811550209
+SHA1: 1563db1185d1454f7af5944d00b1bb32b3a3d660
+MD5sum: d305ec1d7d25df86192f94c90cd92fa3
+Description: strongSwan utility and crypto library (extra plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides extra plugins for the strongSwan utility and
+ cryptographic library.
+ .
+ Included plugins are:
+  - af-alg [linux] (AF_ALG Linux crypto API interface, provides
+    ciphers/hashers/hmac/xcbc)
+  - ccm (CCM cipher mode wrapper)
+  - cmac (CMAC cipher mode wrapper)
+  - ctr (CTR cipher mode wrapper)
+  - curl (libcurl based HTTP/FTP fetcher)
+  - curve25519 (support for Diffie-Hellman group 31 using Curve25519 and
+    support for the Ed25519 digital signature algorithm for IKEv2)
+  - gcrypt (Crypto backend based on libgcrypt, provides
+    RSA/DH/ciphers/hashers/rng)
+  - ldap (LDAP fetching plugin based on libldap)
+  - padlock (VIA padlock crypto backend, provides AES128/SHA1)
+  - pkcs11 (PKCS#11 smartcard backend)
+  - rdrand (High quality / high performance random source using the Intel
+    rdrand instruction found on Ivy Bridge processors)
+  - test-vectors (Set of test vectors for various algorithms)
+ .
+ Also included is the libtpmtss library adding support for TPM plugin
+ (https://wiki.strongswan.org/projects/strongswan/wiki/TpmPlugin)
+
+Package: libstrongswan-standard-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 504
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.25), libip4tc2 (>= 1.8.3), libssl3 (>= 3.0.0)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libstrongswan-standard-plugins_5.9.11-2+vyos0_arm64.deb
+Size: 124884
+SHA256: c1192dce54acb4e40055df4ac5a319fdb2ec5f2fc88c7645ae1c1e6070f74b2b
+SHA1: 89ba76eceb98c3767a8f8b38d86c8e52e6f6161d
+MD5sum: 2d8d53e7c14491e6bd900cd1c87c3258
+Description: strongSwan utility and crypto library (standard plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides some common plugins for the strongSwan utility and
+ cryptograhic library.
+ .
+ Included plugins are:
+  - agent (RSA/ECDSA private key backend connecting to SSH-Agent)
+  - gcm (GCM cipher mode wrapper)
+  - openssl (Crypto backend based on OpenSSL, provides
+    RSA/ECDSA/DH/ECDH/ciphers/hashers/HMAC/X.509/CRL/RNG)
+
+Package: libvyatta-cfg-dev
+Source: vyatta-cfg
+Version: 0.102.0+vyos2+current5
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 1304
+Depends: libvyatta-cfg1 (>= 0.102.0+vyos2+current5), libboost-filesystem1.74.0
+Priority: optional
+Section: libdevel
+Filename: pool/main/v/vyatta-cfg/libvyatta-cfg-dev_0.102.0+vyos2+current5_arm64.deb
+Size: 223100
+SHA256: 292d7e1bc899ced90d367059426ad8f5fa03e48e79207d02d919953d67d37089
+SHA1: dbee7fb89f8497892c33eef78895fe21148fabe7
+MD5sum: d79358303a3336b068f84404ecdf6a6a
+Description: libvyatta-cfg development package
+ Development header and library files for the Vyatta configuration back-end
+ library.
+
+Package: libvyatta-cfg1
+Source: vyatta-cfg
+Version: 0.102.0+vyos2+current5
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 599
+Depends: libapt-pkg6.0 (>= 0.8.0), libboost-filesystem1.74.0 (>= 1.74.0+ds1), libc6 (>= 2.33), libgcc-s1 (>= 3.0), libglib2.0-0 (>= 2.30.0), libstdc++6 (>= 11)
+Replaces: vyatta-cfg
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyatta-cfg/libvyatta-cfg1_0.102.0+vyos2+current5_arm64.deb
+Size: 175056
+SHA256: 1385db8c00eff5684234bc60f8594fc3f6ee60635623390a378275919c912c33
+SHA1: 82dd19eb0680fbec87de6a8f3d9ca4733b63865c
+MD5sum: b31b92b456e95c5448b42d6338d74b23
+Description: vyatta-cfg back-end library
+ Vyatta configuration back-end library (libvyatta-cfg).
+
+Package: libvyosconfig0
+Version: 0.0.11
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 3687
+Depends: libc6 (>= 2.35), libpcre3
+Priority: extra
+Section: contrib/net
+Filename: pool/main/libv/libvyosconfig0/libvyosconfig0_0.0.11_arm64.deb
+Size: 830192
+SHA256: 707783f90eff5533fd33e9159ad2dad28c5596b61fa526eb5f59e9c2db8f878b
+SHA1: addfbd9ed99ebfc006c432150cd2d4e2e2d02b44
+MD5sum: fa9773b67668e49f7bfe27c51146b952
+Description: VyConf config tree manipulation library
+  VyConf config tree parsing and manipulation library
 
 Package: libyang-tools
 Source: libyang2
@@ -570,69 +952,69 @@ Homepage: https://github.com/CESNET/libyang/
 Priority: optional
 Section: devel
 Filename: pool/main/liby/libyang2/libyang2-tools_2.1.148-1_arm64.deb
-Size: 80384
-SHA256: 865a0c472d1d982be05cedaee27584dafd66ecbcdc85768ec0b475eba8644a9a
-SHA1: 1e91d33c4cb178a1437bd7e1b733d3c69b7a35dc
-MD5sum: 35bcffe2ecd221bc2ab44fe8e7701e6c
+Size: 80460
+SHA256: 2edd4d3e86878bb54360e780a614a71c78064767208d65179409119784023cf3
+SHA1: f815f547b0246b268b2d5f4cb1a1d88ae91cf7d6
+MD5sum: 36f2fb25fb3f7ac3ede49cd282c04815
 Description: parser toolkit for IETF YANG data modeling - executable tools
  This package provides the "yanglint" and "yangre" tools which can be used
  during the creation of IETF YANG schemas.  The tools are not generally
  useful for normal operation where libyang primarily processes configuration
  data, not schemas.
 
-Package: linux-headers-6.6.51-vyos
+Package: linux-headers-6.6.54-vyos
 Source: linux-upstream
-Version: 6.6.51-1
+Version: 6.6.54-1
 Architecture: arm64
-Maintainer: root <root@59ed7251d479>
-Installed-Size: 52551
+Maintainer: root <root@c1fe89404a45>
+Installed-Size: 52267
 Homepage: https://www.kernel.org/
 Priority: optional
 Section: kernel
-Filename: pool/main/l/linux-upstream/linux-headers-6.6.51-vyos_6.6.51-1_arm64.deb
-Size: 8653224
-SHA256: 7ae333ccb7255dce44e37247b111bcbf448e3c5b7b075bc61d4f0f50fb0fc95a
-SHA1: 1a35a286d203fa74522192297e7d31233806a062
-MD5sum: 7406ed5b5c794c0a463df3c6cd1f0c4f
-Description: Linux kernel headers for 6.6.51-vyos on arm64
- This package provides kernel header files for 6.6.51-vyos on arm64
+Filename: pool/main/l/linux-upstream/linux-headers-6.6.54-vyos_6.6.54-1_arm64.deb
+Size: 8608348
+SHA256: b801f62911d11c73de503db36f87b30875e2204fa500ca3a60e5d1a1fa3c81a6
+SHA1: cae945f72c20ec2277a8c016b25bdb568f1eb078
+MD5sum: 539b2318dd7a2c95b9e618c147a19a83
+Description: Linux kernel headers for 6.6.54-vyos on arm64
+ This package provides kernel header files for 6.6.54-vyos on arm64
  .
  This is useful for people who need to build external modules
 
-Package: linux-image-6.6.51-vyos
+Package: linux-image-6.6.54-vyos
 Source: linux-upstream
-Version: 6.6.51-1
+Version: 6.6.54-1
 Architecture: arm64
-Maintainer: root <root@59ed7251d479>
-Installed-Size: 96904
+Maintainer: root <root@c1fe89404a45>
+Installed-Size: 138341
 Homepage: https://www.kernel.org/
 Priority: optional
 Section: kernel
-Filename: pool/main/l/linux-upstream/linux-image-6.6.51-vyos_6.6.51-1_arm64.deb
-Size: 26920564
-SHA256: ca920536670a153c84a4ee35452b5fb30285f3aaaff760312d4e8b5288cb2a95
-SHA1: 7dd87cc410c4ff1925f29cec776b64c4368a29ed
-MD5sum: aac1599e53f62a2acccc576fe11bad09
-Description: Linux kernel, version 6.6.51-vyos
+Filename: pool/main/l/linux-upstream/linux-image-6.6.54-vyos_6.6.54-1_arm64.deb
+Size: 27233916
+SHA256: 36f3580275bc6700b02fc9f2c2ef388d86335bff17bc8eee99e08729ea153e9a
+SHA1: ed0eea7b939c641097ee25ef48128c72336039d8
+MD5sum: 3dd682c9c5ea737ccaac4f1cc1ea294f
+Description: Linux kernel, version 6.6.54-vyos
  This package contains the Linux kernel, modules and corresponding other
- files, version: 6.6.51-vyos.
+ files, version: 6.6.54-vyos.
 
 Package: linux-libc-dev
 Source: linux-upstream
-Version: 6.6.51-1
+Version: 6.6.54-1
 Architecture: arm64
-Maintainer: root <root@59ed7251d479>
+Maintainer: root <root@c1fe89404a45>
 Installed-Size: 6715
 Provides: linux-kernel-headers
 Multi-Arch: same
 Homepage: https://www.kernel.org/
 Priority: optional
 Section: devel
-Filename: pool/main/l/linux-upstream/linux-libc-dev_6.6.51-1_arm64.deb
-Size: 1295568
-SHA256: a7167f20372a769e4c5d946530847c975c52b19bb9cccc7b2ab5bd654acff52f
-SHA1: b5ff4796c7fb83fe9d3bba1297ea998c7733a3ae
-MD5sum: c99e79f91661062c7b4353c66f60f371
+Filename: pool/main/l/linux-upstream/linux-libc-dev_6.6.54-1_arm64.deb
+Size: 1295548
+SHA256: 086f32403cf1c55b44fec85dd1668b0148b9512df88ad729b6e99e0b1511d511
+SHA1: 4869f5b81f21b046aee4b0ccd08437d4391442fb
+MD5sum: 3b3d5afc5939d86160f24c7e45fbbf0b
 Description: Linux support headers for userspace development
  This package provides userspaces headers from the Linux kernel.  These headers
  are used by the installed headers for GNU glibc and other system libraries.
@@ -643,17 +1025,51 @@ License: GPL2
 Vendor: none
 Architecture: arm64
 Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
-Installed-Size: 157
-Depends: linux-image-6.6.51-vyos
+Installed-Size: 46
+Depends: linux-image-6.6.54-vyos
 Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/n/nat-rtsp/nat-rtsp_5.3-2-g475af0a_arm64.deb
-Size: 50472
-SHA256: d97f6352bc9f9cbb8e5a51bde24b4ca4c0bc8d50b0b9c341b658ffce9b54de14
-SHA1: cfe351f8ed91d92e3f650c65a78b2f23fd302c7f
-MD5sum: 3b7238572f7d7885bd19df998e2d667a
+Size: 14324
+SHA256: e17c5eb4e839ae2eb0449e45fc078b908652308c4a47d2bbedef009578d2c3b4
+SHA1: 51740167f149a4fb0cf64c00290ca6f59f3cb2ad
+MD5sum: c2a24d959af8348ca8bcb67bd50984bd
 Description: Connection tracking and NAT support for RTSP
+
+Package: node-exporter
+Version: 1.8.2
+License: Apache-2.0
+Vendor: none
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 18826
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/n/node-exporter/node-exporter_1.8.2_arm64.deb
+Size: 9770536
+SHA256: a62b531f341b7b5ac2214407b8a72f4e3a4e6faaccea76910dec0f0cbab32bfa
+SHA1: 67e7790bfbd93ee90d1ef991735ec265e3aa6bb8
+MD5sum: 015a6ae4d259e1256cbad6def33eb9c8
+Description: Prometheus exporter for machine metrics
+
+Package: opennhrp
+Version: 0.14-20-g613277f
+License: MIT
+Vendor: none
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 197
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/o/opennhrp/opennhrp_0.14-20-g613277f_arm64.deb
+Size: 50278
+SHA256: cb308d05b259309f1b0caad37ef96feffd5ce81a797d2a2f6eb59c818fabbc4a
+SHA1: b8f3ef67643d88d0df5548ff92a374fb5ae7f006
+MD5sum: e5f842a14b01ed12cbfa5b23e1eb5de7
+Description: NBMA Next Hop Resolution Protocol daemon
 
 Package: openvpn-dco
 Version: 0.2.20231117
@@ -661,17 +1077,35 @@ License: GPL2
 Vendor: none
 Architecture: arm64
 Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
-Installed-Size: 724
-Depends: linux-image-6.6.51-vyos
+Installed-Size: 124
+Depends: linux-image-6.6.54-vyos
 Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/o/openvpn-dco/openvpn-dco_0.2.20231117_arm64.deb
-Size: 205598
-SHA256: f39ba8eed0074fe0ce1070b0e1e5071f71689c3e42deb52e4f9e2e4675c199dc
-SHA1: c3ad1344c15ce896c75fed04d556dbd4c5f88b18
-MD5sum: a423a9e90466e40f3bffe7762129a2af
+Size: 37714
+SHA256: bfe9ba046bc6f29ffdd3ecc1713368b8d07888814abf1ab591a3781f54d27bc0
+SHA1: 1f8e12fdd27e4acdf61e51984d4e71ca2111479a
+MD5sum: fca288e666e9245b5644392df40b833e
 Description: OpenVPN Data Channel Offload
+
+Package: openvpn-otp
+Version: 1.0-6-g9781ff1
+License: unknown
+Vendor: none
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 103
+Depends: openvpn
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/o/openvpn-otp/openvpn-otp_1.0-6-g9781ff1_arm64.deb
+Size: 26402
+SHA256: 968280a9b4541e700cc2f03a27321cf2c7f6e2cd3257c84d9cbfa3f918987a81
+SHA1: f548371bf4d67a80799cd3e1769a764157d7d3ba
+MD5sum: a088dc5790d4a8dc3a6f2321cc14abdd
+Description: OpenVPN OTP Authentication support.
 
 Package: owamp-client
 Source: owamp
@@ -722,42 +1156,38 @@ Description: OWAMP daemon
  .
  This package contains the owamp server.
 
+Package: podman
+Version: 5.2.4-6-g6f83da26a
+License: Apache-2.0
+Vendor: none
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 58099
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/p/podman/podman_5.2.4-6-g6f83da26a_arm64.deb
+Size: 29534700
+SHA256: 037734bbc588c1368bba8e8247665ac2312a849fe80b89a0cb19667faaeb232f
+SHA1: 964db60fececed920ff81c7ce35b93883266fbde
+MD5sum: 059c774aad8776a50d89977985a6ed29
+Description: podman
+
 Package: python3-vici
-Source: vici
-Version: 5.7.2-1
+Source: strongswan
+Version: 5.9.11-2+vyos0
 Architecture: all
-Maintainer: None <None>
-Installed-Size: 41
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 44
 Depends: python3:any
-Homepage: https://wiki.strongswan.org/projects/strongswan/wiki/Vici
 Priority: optional
 Section: python
-Filename: pool/main/v/vici/python3-vici_5.7.2-1_all.deb
-Size: 7228
-SHA256: df02d3004244ec3bd20f4e48c76aa95554a3a735958a561859e3be6c42b33cfc
-SHA1: 0f53e9fe3fb58eec3bc3af0f0eb2ad3af04cc57e
-MD5sum: 38822ceb3d47d6b584ee7922a69b7ee9
+Filename: pool/main/s/strongswan/python3-vici_5.9.11-2+vyos0_all.deb
+Size: 9508
+SHA256: ed82991259af45314885c8437db57e971fd0b0d4bcd66275a0b468a84b66f34f
+SHA1: 645720c846eb8ee8f9f6e25cff5a02ab23428c9a
+MD5sum: d19f5bebb1ee4dadba58d8ea6ba1d95c
 Description: Native Python interface for strongSwan's VICI protocol
- About
- -----
- .
- The strongSwan VICI protocol allows external applications to monitor, configure
- and control the IKE daemon charon. This Python package provides a native client
- side implementation of the VICI protocol, well suited to script automated tasks
- in a reliable way.
- .
- .
- Example Usage
- -------------
- .
- .. code-block:: python
- .
-     >>> import vici
-     >>> s = vici.Session()
-     >>> s.version()
-     OrderedDict([('daemon', b'charon'), ('version', b'5.4.0'),
-     ('sysname', b'Linux'), ('release', b'3.13.0-27-generic'), ('machine', b'x86_64')])
-     >>> s.load_pool({"p1": {"addrs": "10.0.0.0/24"}})
 
 Package: rtr-tools
 Source: librtr0
@@ -781,6 +1211,208 @@ Description: RPKI-RTR command line tools
  rpki-rov is a command line tool that connects to an RPKI-RTR server and
  allows one to validate given IP prefixes and origin ASes.
 
+Package: rtr-tools-dbg
+Source: librtr0
+Version: 0.8.0
+Architecture: arm64
+Maintainer: Fabian Holler <mail@fholler.de>
+Installed-Size: 113
+Depends: rtr-tools (= 0.8.0)
+Homepage: http://rpki.realmv6.org/
+Priority: extra
+Section: debug
+Filename: pool/main/libr/librtr0/rtr-tools-dbg_0.8.0_arm64.deb
+Size: 81732
+SHA256: 27b7d7e11cf96a26be71bdf58aebf736bfee06e110a08a5fafcc04eab12da582
+SHA1: b8d55a216c54f0582290b3ff09d7e414a3e47a98
+MD5sum: afd348a921a1a0a244f4b5d78e6537a0
+Description: RPKI-RTR command line tools
+ Contains rtrclient and rpki-rov.
+ rtrclient is command line that connects to an RPKI-RTR server and prints
+ protocol information and information about the fetched ROAs to the console.
+ rpki-rov is a command line tool that connects to an RPKI-RTR server and
+ allows one to validate given IP prefixes and origin ASes.
+ .
+ This package contains debug symbols.
+Build-Ids: 3d51d30ae924af284fc42d24dab68aaeea8c82c7 618a1e25fdcf8d8bd4f2bc59c252814b72468fbd
+
+Package: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: all
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 156
+Depends: strongswan-charon, strongswan-starter
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan_5.9.11-2+vyos0_all.deb
+Size: 85600
+SHA256: aae38a6cf54629237dec906fe39fc60cca57b8ff30ce5e0fddc7729c66731271
+SHA1: 5aa416bd9aeaccafcf4b0c77248c2afe5cdadb54
+MD5sum: 4897fa2174f66275bf6ebf39488933e3
+Description: IPsec VPN solution metapackage
+ The strongSwan VPN suite uses the native IPsec stack in the standard Linux
+ kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This metapackage installs the packages required to maintain IKEv1 and IKEv2
+ connections via ipsec.conf or ipsec.secrets.
+
+Package: strongswan-charon
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 265
+Pre-Depends: debconf | debconf-2.0
+Depends: iproute2 | iproute, libstrongswan (= 5.9.11-2+vyos0), strongswan-starter, libc6 (>= 2.34), strongswan-libcharon (>= 5.9.11)
+Provides: ike-server
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-charon_5.9.11-2+vyos0_arm64.deb
+Size: 90360
+SHA256: 40bbefe303a11ead699ebd01aad11acb1c58151cf7440bbe2255aeefcc0bd827
+SHA1: fe646d93fbdb9a2ba97be6a8ad6a5cfb7ea754e2
+MD5sum: 6819431516ba5b1e44f568c166fafa5c
+Description: strongSwan Internet Key Exchange daemon
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ charon is an IPsec IKEv2 daemon which can act as an initiator or a responder.
+ It is written from scratch using a fully multi-threaded design and a modular
+ architecture. Various plugins can provide additional functionality.
+
+Package: strongswan-libcharon
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 1185
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34)
+Recommends: libcharon-extauth-plugins
+Suggests: libcharon-extra-plugins
+Breaks: strongswan-starter (<= 5.6.1-2)
+Replaces: strongswan-starter (<= 5.6.1-2)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-libcharon_5.9.11-2+vyos0_arm64.deb
+Size: 291224
+SHA256: 51a2851b70ef017a938ec195304c640e50f348ddd0240f5b7c7cf205aa9bb4c4
+SHA1: 8e2db05c06b52c7a0c696b6df15bfabf97986944
+MD5sum: 81defae13802b28e4e70f675779b75f1
+Description: strongSwan charon library
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the charon library, used by IKE client like
+ strongswan-charon, strongswan-charon-cmd or strongswan-nm as well as standard
+ plugins:
+   - socket-default
+   - counters
+   - bypass-lan (disabled by default)
+ .
+ On Linux, it also contains the xfrmi binary which can be used on Linux 4.19+
+ to create XFRM interfaces (for more information, see
+ https://wiki.strongswan.org/projects/strongswan/wiki/RouteBasedVPN)
+
+Package: strongswan-nm
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 152
+Recommends: network-manager-strongswan
+Replaces: network-manager-strongswan (<= 1.4.1-1~)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-nm_5.9.11-2+vyos0_arm64.deb
+Size: 78840
+SHA256: c34f49df516df1648bedaaae1991fa33330691a8b3d0a9f559468b79bfa312a1
+SHA1: 3304289f642de64f3f09ddc3b5623406fdb9937b
+MD5sum: 19e7d3560cd921e5327a0bec76fd7366
+Description: strongSwan plugin to interact with NetworkManager
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This plugin provides an interface which allows NetworkManager to configure
+ and control the IKEv2 daemon directly through D-Bus. It is designed to work
+ in conjunction with the network-manager-strongswan package, providing
+ a simple graphical frontend to configure IPsec based VPNs.
+
+Package: strongswan-pki
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 327
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), libcharon-extra-plugins (>= 5.9.11)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-pki_5.9.11-2+vyos0_arm64.deb
+Size: 144900
+SHA256: a75168750b78875ffeafbcd995f0f0c1778f766bac90eff81c0b7db057ec17ca
+SHA1: 80cfcaae849ff1eb2074871ab4616b51a66798a7
+MD5sum: 94bc52d448bbf051bbb37198faef914c
+Description: strongSwan IPsec client, pki command
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the pki tool which allows on to run a simple public key
+ infrastructure.
+
+Package: strongswan-starter
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 707
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: adduser, libstrongswan (= 5.9.11-2+vyos0), sysvinit-utils (>= 3.05-3), debconf (>= 0.5) | debconf-2.0, libc6 (>= 2.34)
+Recommends: strongswan-charon
+Conflicts: openswan
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-starter_5.9.11-2+vyos0_arm64.deb
+Size: 210504
+SHA256: 3619e06e399cccb6aba8eb7bfd7e496df56732a4016e7b868402ead2c01b93eb
+SHA1: 476c3e44b87502ba1145d639717065478b1d344b
+MD5sum: f5417b044375260162b3b12943e47b46
+Description: strongSwan daemon starter and configuration file parser
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ The starter and the associated "ipsec" script control the charon daemon from
+ the command line. It parses ipsec.conf and loads the configurations to the
+ daemon.
+
+Package: strongswan-swanctl
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: arm64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 622
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34)
+Breaks: strongswan-starter (<< 5.8.0-1)
+Replaces: strongswan-starter (<< 5.8.0-1)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-swanctl_5.9.11-2+vyos0_arm64.deb
+Size: 180572
+SHA256: 70577f278a0f5e303eed855a8eabebbeea0e7f94b0969b02acf6e4e0d28ed525
+SHA1: e56ea16c9e9344a983fdfc783893a91f724f1b56
+MD5sum: 09d77c69bd657cfec95018a8bec70d48
+Description: strongSwan IPsec client, swanctl command
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the swanctl interface, used to configure a running
+ charon daemon
+
 Package: telegraf
 Version: 1.28.3-1
 License: MIT
@@ -792,10 +1424,10 @@ Homepage: https://github.com/influxdata/telegraf
 Priority: optional
 Section: default
 Filename: pool/main/t/telegraf/telegraf_1.28.3-1_arm64.deb
-Size: 50188850
-SHA256: 6bbaf52c231abf812e2bf3cc31ee611072f98b1db83b33f52d0470ad45129ada
-SHA1: 1e5d316d1dcff224c06a134baeb8560c2d060f20
-MD5sum: 2fc2bb880acc2db5c3d358d58801e95f
+Size: 50188464
+SHA256: 08eaad6e2a85a20e92341d78415b882ce52344143773eae62f8e717fbd08aa71
+SHA1: c34aaeb3f4fc75bc4189df31ae68cb1cfbed5797
+MD5sum: 4866d5c21195414d99c884fd0be64362
 Description: Plugin-driven server agent for reporting metrics into InfluxDB.
 
 Package: twamp-client
@@ -845,6 +1477,33 @@ Description: TWAMP daemon
  .
  This package contains the twamp server.
 
+Package: udp-broadcast-relay
+Version: 0.1+vyos4+current1
+Architecture: arm64
+Maintainer: Christian Poessinger <christian@poessinger.com>
+Installed-Size: 87
+Homepage: http://github.com/c-po/udp-broadcast-relay
+Priority: optional
+Section: net
+Filename: pool/main/u/udp-broadcast-relay/udp-broadcast-relay_0.1+vyos4+current1_arm64.deb
+Size: 6432
+SHA256: 90f5665077b3195fd7f0551d062c75777f19fdc66a8e9a000a3f8a265e1faeb6
+SHA1: ee1cdb33cad1e59a1ce7ac1f5c2f0c8ae474d5e5
+MD5sum: 5290cd9e0afcecd67f6d0281a4d0c2a8
+Description: UDP Broadcast Packet Relay
+ This program listens for packets on a specified UDP broadcast port. When
+ a packet is received, it sends that packet to all specified interfaces
+ but the one it came from as though it originated from the original
+ sender.
+ .
+ The primary purpose of this is to allow games on machines on separated
+ local networks (Ethernet, WLAN) that use udp broadcasts to find each
+ other to do so.
+ .
+ It also works on ppp links, so you can log in from windows boxes (e.g.
+ using pptp) and play LAN-based games together. Currently, you have to
+ care about upcoming or downgoing interfaces yourself.
+
 Package: vyatta-bash
 Version: 4.1-3+vyos2+current2
 Architecture: arm64
@@ -855,10 +1514,10 @@ Depends: base-files (>= 2.1.12), debianutils (>= 2.15), bash (>= 3.1)
 Priority: optional
 Section: shells
 Filename: pool/main/v/vyatta-bash/vyatta-bash_4.1-3+vyos2+current2_arm64.deb
-Size: 604392
-SHA256: eb3bbe06350e6669a9c85b7dd317c723a985207f25c3588e0e4cac79681f4c5e
-SHA1: 9177e0d06561bd1035ab62234128cf15f969cf4c
-MD5sum: d1089e397d6715d5933fdd4e5bdeae9f
+Size: 604420
+SHA256: 3af2711b990e9da8c9f265fd37bed2b139665768492ae133d837af09d19b2b5b
+SHA1: ee5e17ceee8536ba7430cee8ab1ca969cec2c978
+MD5sum: 3c331dbca029f81fcfbb5d827e5983c6
 Description: The VyOS Shell based on GNU bash
  The VyOS Shell based on GNU Bourne Again SHell.
  .
@@ -869,20 +1528,76 @@ Description: The VyOS Shell based on GNU bash
  Bash is ultimately intended to be a conformant implementation of the
  IEEE POSIX Shell and Tools specification (IEEE Working Group 1003.2).
 
+Package: vyatta-biosdevname
+Version: 1:0.3.11+vyos2+current2
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 88
+Depends: libc6 (>= 2.34), libpci3 (>= 1:3.5.1), zlib1g
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyatta-biosdevname/vyatta-biosdevname_0.3.11+vyos2+current2_arm64.deb
+Size: 18512
+SHA256: 4473615aa629d86948fa5f9da56782107dc822357ef84c8cd4136865539c113b
+SHA1: 976a6c1c4fee6bfa6550b60486e84312031c3a48
+MD5sum: e30d7f64ab937c51e5fc7b709ccf2b2f
+Description: VyOS version of the biosdevname utility.
+ Provides biosdevname which takes a kernel device name as an
+ argument, and returns the BIOS-given name it "should" be.  This is
+ necessary on systems where the BIOS name for a given device (e.g. the
+ label on the chassis is "Gb1") doesn't map directly and obviously to
+ the kernel name (e.g. eth0).
+
+Package: vyatta-cfg
+Version: 0.102.0+vyos2+current5
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 457
+Depends: sed (>= 4.1.5), procps (>= 1:3.2.7-3), coreutils (>= 5.97-5.3), vyatta-bash | bash (>= 4.1), bsdutils (>= 1:2.13), libvyatta-cfg1 (>= 0.102.0+vyos2+current5), unionfs-fuse, uuid-runtime, libboost-filesystem1.74.0, libapt-pkg4.12 | libapt-pkg5.0 | libapt-pkg6.0, libc6 (>= 2.34), libgcc-s1 (>= 3.0), libglib2.0-0 (>= 2.12.0), libstdc++6 (>= 11)
+Suggests: util-linux (>= 2.13-5), net-tools, ncurses-bin (>= 5.5-5)
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyatta-cfg/vyatta-cfg_0.102.0+vyos2+current5_arm64.deb
+Size: 40352
+SHA256: f96b122453708423efb707bdce0191f8a4baeeb90f192d6d969e5f111e647731
+SHA1: 37404f574611625f74929e4c63f9352a2c786dcf
+MD5sum: 0a623366787ad8d191438621bad4a52b
+Description: VyOS configuration system
+ This package provides the VyOS configuration system, including the base
+ configuration templates and the config-mode CLI completion mechanism.
+
+Package: vyatta-wanloadbalance
+Version: 0.13.70+vyos2+current1
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 261
+Depends: sed (>= 4.1.5), perl (>= 5.8.8), procps (>= 1:3.2.7-3), vyatta-cfg (>= 0.15.33), vyatta-bash | bash (>= 3.1), coreutils (>= 5.97-5.3), libc6 (>= 2.7-1)
+Suggests: util-linux (>= 2.13-5), net-tools, ethtool, ncurses-bin (>= 5.5-5)
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyatta-wanloadbalance/vyatta-wanloadbalance_0.13.70+vyos2+current1_arm64.deb
+Size: 71372
+SHA256: bacfd171be62596b3dd2e2f4a8a43de2698c0fa8db767725a21600f91f63bcbd
+SHA1: e65d894b5b9f9bbdc665f6dd1ef5e9b41b684466
+MD5sum: b3dbcd5457eb37e742456052d7890807
+Description: VyOS load balancing configuration system
+ This package has the VyOS wan load balance project. It includes support for
+ the VyOS CLI for configuration.
+
 Package: vyos-1x
 Source: vyos-1x (1.5dev0)
 Version: 0.0-no.git.tag
 Architecture: arm64
 Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
-Installed-Size: 43501
-Depends: python3:any (>= 3.10), dialog, libvyosconfig0, libpam-cap, bash-completion, ipvsadm, udev, less, at, rsync, vyatta-bash, vyatta-biosdevname, vyatta-cfg, vyos-http-api-tools, vyos-utils, python3, python3-cryptography, python3-hurry.filesize, python3-inotify, python3-jinja2, python3-jmespath, python3-netaddr, python3-netifaces, python3-paramiko, python3-passlib, python3-pyroute2, python3-psutil, python3-pyhumps, python3-pystache, python3-pyudev, python3-six, python3-tabulate, python3-voluptuous, python3-xmltodict, python3-zmq, coreutils, sudo, systemd, bsdmainutils, openssl, curl, dbus, file, iproute2 (>= 6.0.0), linux-cpupower, ipaddrcheck, ethtool, lm-sensors, procps, netplug, sed, ssl-cert, tuned, beep, wide-dhcpv6-client, grc, fdisk, gdisk, mdadm, efibootmgr, libefivar1, dosfstools, grub-efi-arm64-bin, minisign, squashfs-tools, fuse-overlayfs, auditd, iputils-arping, iputils-ping, isc-dhcp-client, accel-ppp, avahi-daemon, conntrack, conntrackd, hostapd, hsflowd, iw, wireless-regdb, wpasupplicant (>= 0.6.7), modemmanager, usb-modeswitch, libqmi-utils, openvpn, openvpn-auth-ldap, openvpn-auth-radius, openvpn-otp, openvpn-dco, libpam-google-authenticator, wireguard-tools, qrencode, pppoe, sstp-client, frr (>= 9.1), frr-pythontools, frr-rpki-rtrlib, frr-snmp, opennhrp, igmpproxy, certbot, conserver-client, conserver-server, console-data, dropbear, aws-gwlbtun, ddclient (>= 3.11.1), suricata, suricata-update, ndppd, radvd, haproxy, vyatta-wanloadbalance, isc-dhcp-relay, kea, lldpd, nginx-light, openssh-server, sshguard, salt-minion, snmp, snmpd, squid, squidclient, squidguard, telegraf (>= 1.20), zabbix-agent2, tftpd-hpa, pdns-recursor, owamp-client, owamp-server, twamp-client, twamp-server, udp-broadcast-relay, keepalived (>= 2.0.5), util-linux, cron, lcdproc, lcdproc-extra-drivers, git, libndp-tools, libnetfilter-conntrack3, libnfnetlink0, nfct, nftables (>= 0.9.3), strongswan (>= 5.9), strongswan-swanctl (>= 5.9), charon-systemd, libcharon-extra-plugins (>= 5.9), libcharon-extauth-plugins (>= 5.9), libstrongswan-extra-plugins (>= 5.9), libstrongswan-standard-plugins (>= 5.9), python3-vici (>= 5.7.2), jool, nat-rtsp, chrony, ocserv, pmacct (>= 1.6.0), rsyslog, kbd, podman (>= 4.9.5), netavark, aardvark-dns, iptables, hvinfo, traceroute, tcpdump, dmidecode, smartmontools, lsscsi, pciutils, usbutils, nvme-cli, iperf, iperf3, etherwake, ndisc6, bmon, parted, cryptsetup, tpm2-tools, easy-rsa, tcptraceroute, mtr-tiny, telnet, stunnel4, uidmap
+Installed-Size: 43819
+Depends: python3:any (>= 3.10), dialog, libvyosconfig0, libpam-cap, bash-completion, ipvsadm, udev, less, at, rsync, vyatta-bash, vyatta-biosdevname, vyatta-cfg, vyos-http-api-tools, vyos-utils, python3, python3-cryptography, python3-hurry.filesize, python3-inotify, python3-jinja2, python3-jmespath, python3-netaddr, python3-netifaces, python3-paramiko, python3-passlib, python3-pyroute2, python3-psutil, python3-pyhumps, python3-pystache, python3-pyudev, python3-six, python3-tabulate, python3-voluptuous, python3-xmltodict, python3-zmq, coreutils, sudo, systemd, bsdmainutils, openssl, curl, dbus, file, iproute2 (>= 6.0.0), linux-cpupower, ipaddrcheck, ethtool (>= 6.10), lm-sensors, procps, netplug, sed, ssl-cert, tuned, beep, wide-dhcpv6-client, grc, fdisk, gdisk, mdadm, efibootmgr, libefivar1, dosfstools, grub-efi-arm64-bin, minisign, squashfs-tools, fuse-overlayfs, auditd, iputils-arping, iputils-ping, isc-dhcp-client, accel-ppp, avahi-daemon, conntrack, conntrackd, hostapd, hsflowd, iw, wireless-regdb, wpasupplicant (>= 0.6.7), modemmanager, usb-modeswitch, libqmi-utils, openvpn, openvpn-auth-ldap, openvpn-auth-radius, openvpn-otp, openvpn-dco, libpam-google-authenticator, wireguard-tools, qrencode, pppoe, sstp-client, frr (>= 9.1), frr-pythontools, frr-rpki-rtrlib, frr-snmp, opennhrp, igmpproxy, certbot, conserver-client, conserver-server, console-data, dropbear, aws-gwlbtun, ddclient (>= 3.11.1), suricata, suricata-update, ndppd, radvd, haproxy, vyatta-wanloadbalance, isc-dhcp-relay, kea, lldpd, nginx-light, openssh-server, sshguard, salt-minion, snmp, snmpd, squid, squidclient, squidguard, node-exporter, telegraf (>= 1.20), zabbix-agent2, tftpd-hpa, pdns-recursor, owamp-client, owamp-server, twamp-client, twamp-server, udp-broadcast-relay, keepalived (>= 2.0.5), util-linux, cron, lcdproc, lcdproc-extra-drivers, git, libndp-tools, libnetfilter-conntrack3, libnfnetlink0, nfct, nftables (>= 0.9.3), strongswan (>= 5.9), strongswan-swanctl (>= 5.9), charon-systemd, libcharon-extra-plugins (>= 5.9), libcharon-extauth-plugins (>= 5.9), libstrongswan-extra-plugins (>= 5.9), libstrongswan-standard-plugins (>= 5.9), python3-vici (>= 5.7.2), jool, nat-rtsp, chrony, ocserv, pmacct (>= 1.6.0), rsyslog, kbd, podman (>= 4.9.5), netavark, aardvark-dns, iptables, hvinfo, traceroute, tcpdump, dmidecode, smartmontools, lsscsi, pciutils, usbutils, nvme-cli, iperf, iperf3, etherwake, ndisc6, bmon, parted, cryptsetup, tpm2-tools, easy-rsa, tcptraceroute, mtr-tiny, telnet, stunnel4, uidmap
 Priority: extra
 Section: contrib/net
 Filename: pool/main/v/vyos-1x/vyos-1x_0.0-no.git.tag_arm64.deb
-Size: 2148952
-SHA256: a86fa40eef4ce9bc00bcfff68745c246ee4dccbd7a84f3a1a235f03005120892
-SHA1: 7908a30b1a338399adc572d68c4b009c2b448caf
-MD5sum: 4b58dbcd13c00d7a264518bcfbad8ae8
+Size: 2178032
+SHA256: 15f3cd8939315187a791c9ae8995e1f868307b03d442cd0bb5ffd21663820512
+SHA1: 9cba3b54e70475068b581443a118108cb4f0fec3
+MD5sum: 44dbe8dd467f5d4227641c34c3164279
 Description: VyOS configuration scripts and data
  VyOS configuration scripts, interface definitions, and everything
 
@@ -891,16 +1606,51 @@ Source: vyos-1x (1.5dev0)
 Version: 0.0-no.git.tag
 Architecture: all
 Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
-Installed-Size: 3577
+Installed-Size: 3625
 Depends: skopeo, snmp, vyos-1x
 Priority: extra
 Section: contrib/net
 Filename: pool/main/v/vyos-1x/vyos-1x-smoketest_0.0-no.git.tag_all.deb
-Size: 475868
-SHA256: 255718ec83136bd2424cd60d0d4476e51d20d9e229663376af2748b1fe091d0a
-SHA1: ebecbe2cdfc4e9352e920d71c522ab416320feae
-MD5sum: 9e3e0cd0c65a2847fce9ce497a5d03d5
+Size: 481448
+SHA256: 5ef0cb622095789a82e85dd9186c8178030bcc87e14f8e9631bfc3d6a130d9db
+SHA1: a6b8ae18245ae397af747e0d4bf10d5df16fa706
+MD5sum: 98b81cf1e40f5a10bd8f4f1ef0eb7ede
 Description: VyOS build sanity checking toolkit
+
+Package: vyos-drivers-realtek-r8152
+Version: 2.18.1-1
+Architecture: arm64
+Maintainer: VyOS Support <support@vyos.io>
+Installed-Size: 381
+Depends: linux-image-6.6.54-vyos
+Multi-Arch: foreign
+Homepage: <insert the upstream URL, if relevant>
+Priority: optional
+Section: unknown
+Filename: pool/main/v/vyos-drivers-realtek-r8152/vyos-drivers-realtek-r8152_2.18.1-1_arm64.deb
+Size: 77264
+SHA256: 1cfffc70956f3691831f738a05a10750456dcdad180c14f0a2ff5e8d195872f6
+SHA1: 575a44527f77a784441758268375ef8aac619a39
+MD5sum: fbd36fc4cc03a76e48dee9db27bd611a
+Description: auto-generated package by debmake
+ This Debian binary package was auto-generated by the
+ debmake(1) command provided by the debmake package.
+
+Package: vyos-http-api-tools
+Version: 2.3
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 43136
+Pre-Depends: dpkg (>= 1.16.1), python3
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-http-api-tools/vyos-http-api-tools_2.3_arm64.deb
+Size: 9075692
+SHA256: 7416eefa70247215524c1ff633ef197c0ddd6f876d6dd4956538516dce3f0806
+SHA1: 710d1f36b5d48f4015f23d05002fbc44e46b755c
+MD5sum: 2a0c1622d383b672ea7990384ea5ba2a
+Description: api tools for VyOS
+  api tools for VyOS
 
 Package: vyos-linux-firmware
 Version: 20240610
@@ -908,15 +1658,15 @@ License: unknown
 Vendor: none
 Architecture: all
 Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
-Installed-Size: 101615
+Installed-Size: 94888
 Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/v/vyos-linux-firmware/vyos-linux-firmware_20240610_all.deb
-Size: 51711360
-SHA256: 75a2df3eddb4c454ce3e06f619981c7509a8e0c2e54c8ecd19d27409e351f4ff
-SHA1: d3f8011b56b306255eaf01aa92d3f165751823c2
-MD5sum: 92dab4c833be11d2dfc25718302aabca
+Size: 51574300
+SHA256: df6ebefc64446b3541675c01acd4415fda3a5a7e6a7f80f14891056e8e48e267
+SHA1: 20f13bfa85aa1dd35f03ea7689ae811bb2c7d051
+MD5sum: 315d3f197af93678808419d8ff04cf2d
 Description: Binary firmware for various drivers in the Linux kernel
 
 Package: vyos-user-utils
@@ -934,4 +1684,37 @@ SHA1: 26dbdf30742a966d94bac2c0b9084763926203fb
 MD5sum: 3f4c304cf536b24501b54c24cb125f21
 Description: VyOS user utilities metapackage
  Installs utilities that are provided for the users but no used by VyOS scripts.
+
+Package: vyos-utils
+Version: 0.0.3
+Architecture: arm64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 6700
+Depends: libc6 (>= 2.35), libpcre3
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-utils/vyos-utils_0.0.3_arm64.deb
+Size: 939948
+SHA256: 58c5188050b124821c8b410205f7e5ffdcf06abd06d6886130e16c84980dcc06
+SHA1: c7f63674ec637ed286c21c0b54996040c17f63fa
+MD5sum: d1826c2096d6fe9299f37a0314d7d0f9
+Description: VyOS utils for value validation and other things
+  VyOS utils for value validation and other things
+
+Package: vyos-utils-build-deps
+Version: 0.0.3
+Architecture: all
+Maintainer: Equivs Dummy Package Generator <root@21852968626a>
+Installed-Size: 9
+Depends: build-essential:arm64, debhelper (>= 9), quilt, libpcre3-dev
+Multi-Arch: foreign
+Priority: optional
+Section: devel
+Filename: pool/main/v/vyos-utils-build-deps/vyos-utils-build-deps_0.0.3_all.deb
+Size: 2124
+SHA256: 7a8c9d8c2b318037b886d20d3b345bb5e476cb76f8c4947686caccb9e81c9448
+SHA1: 62cdd967a295d66c86bc8c0852fe727df3f00327
+MD5sum: fa45febc812a87550a0e393796a04bc5
+Description: build-dependencies for vyos-utils
+ Dependency package to build the 'vyos-utils' package
 

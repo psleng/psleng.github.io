@@ -4,35 +4,35 @@ Hash: SHA512
 Origin: https://psleng.github.io
 Label: https://psleng.github.io
 Codename: bookworm
-Date: Wed, 09 Oct 2024 19:40:21 UTC
+Date: Mon, 21 Oct 2024 14:19:06 UTC
 Architectures: arm64
 Components: main
 Description: Perle GiOS Router packages repository
 MD5Sum:
- d120cfa5bc9d48af87a49f24b19b4b7d 39620 main/binary-arm64/Packages
- dfd802c71e9429cec7d6439a87350090 13593 main/binary-arm64/Packages.gz
+ effcc3e02fc303f9790221c80ef43007 71885 main/binary-arm64/Packages
+ e645101db3fd677b44974622970b44df 22660 main/binary-arm64/Packages.gz
  81a4b9bc0352dee8c42c3555bf4e2e1f 152 main/binary-arm64/Release
 SHA1:
- 88eb72ebc1dce8ff6f1269dc6da773379145c826 39620 main/binary-arm64/Packages
- af8b44bb37557a4fccb28b2dcf5eb7c37bdd91e0 13593 main/binary-arm64/Packages.gz
+ b704e73442ed2c465715c8a33d61b971e6a10d6c 71885 main/binary-arm64/Packages
+ 44bdcdb469fa7514ea7770376e26c2ccde10949a 22660 main/binary-arm64/Packages.gz
  ae7dc7d9f542d7ec76e9966e358f7a5e0ffc43b2 152 main/binary-arm64/Release
 SHA256:
- 1b4fab2fc9cb7aeda3ce8d08b7fb5572b1f2c3fe0dbb79400d92d53b7abfb227 39620 main/binary-arm64/Packages
- 2c3f5e1168e6940a9bac7b51032f4cc1e91a8a6112cb812582d24c355c060f47 13593 main/binary-arm64/Packages.gz
+ fdb2b47b5c568dc0dedc0c636698dea99da4d110a089b3a58020bce27e1c42bc 71885 main/binary-arm64/Packages
+ cf587ab76420e6f281a1d5f0a194f60d7358fea009aac116c24b26df871aca8e 22660 main/binary-arm64/Packages.gz
  c52bf2ed09a634953efdd6beefa8ab721f92f7e224d700003a1ce7afc14ee0da 152 main/binary-arm64/Release
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEx79DKYZjYwFei7mmO3kHC44j6SgFAmcG3CYACgkQO3kHC44j
-6SiD9A/8C+FEUX8mKw9529A9dqVr6mVHxPWhQ10+5Py/X8Xr83s1Y2NkzpOy8LO7
-Lf1gvuDSjjqFB/A4x8+6OcMfpL7vJG6QKEbCRjAiiMj86xPuLWhCMUQxZJfHhWwG
-yOYYwOMlbEuJjkLNblHzNAv5hPdvngxo84rsRr1ubrqI/qmsKVjENvUa2yqrw39p
-qRtWx0W/SuJ0ZWy43qFH1bjIXfdd9B3sG7E/B0RwA+rW+8qp+Xo1FkHBzzx1IXuD
-k5bxtEoEOmuMuPKQ+kzWFit/BxaH5eaLzG0oUdmBxgPgweNDPo48TbG5dkiNLcTH
-EpB6gabuAMko6nL9SeWSdA6Vonh5y+nQYQIQ0EmBjXvR2NlkMD91Z1SvLklIRJzI
-MpKsqa30hFZfJ7x+LvbZsnhmIBo+OWLx6F5n+ZK6Atvpp7Ll7ehTe8Tv+G60hxpg
-485+vZ/7cB7PdP+gvp5NWAiSjfsOJ0LIDlBr2I0bphV0kZscQPvV3aTbWUf+QKe3
-9trrmxthIPGtcBRZoxDLinShp0ER6usSK77JMaU4BETbYR6Gl2rejRXp65gb9Gur
-LE35Ou9DpISvpjDZjjNCOOl9R/xi/YmY+R1bejBJKLnLLkpGoefkF3hCEyJ39QAS
-dcINt1p2Ez0yjvy13sG5BgGNToRhz3m78ATMK0blJvi9IqjZbZc=
-=Wiae
+iQIzBAEBCgAdFiEEx79DKYZjYwFei7mmO3kHC44j6SgFAmcWYtoACgkQO3kHC44j
+6Sg5dhAAmEw4Xqex/jBpYg4n8/WgP27SGJd1WXMuz89ZiNx9Q9/9XoMJdfD6vP8w
+aycB7uYtenRGRdo6h7oBloHtwFuni+UO9gQib0I8qqWVvAcxeNwPAbhU2sa1+6sN
+a1HpUuM10pmkSvnPhRqar6nWF9hlQiapUcr3UWpDK+PaeL6AJyvH4eRlJv3AH1/o
++3sla98iBGPdy/yyDFWAcZxQSJEjggmTTPA91TeQXg3uAvwfx3yi/8tLaJ2gQ3CV
+u4oHdZrmCTeQuV6tzaiib6Ghiz8aJyCgZ/Gsb598hoepLkcy/jwcgAVvpYrs8ck0
++ugc5COi4PHmu5wQPF5Gd4hsu1ZyM0kXXoaUC8qsLVcbWxyvEwoASJBba8OylSS4
+s7baEUqms9JzIVGBe/LXGsqBy6jNy6LqRuNSgG41u4WaTAm/Ou09n/TkfB0skxo0
+redjchI5JcjmJKcWxVce0J+CLopZDXFRHyGbbIcElPzIhVmZLOHncnOTR+Opohkl
+W9r/uhbz+G96tRnG0WLenD1G46hp/l9mHaCmdhxMx2QkNrPQVse8LkvSXkXgxRKW
+t2/3t3JPS7aBHqm/xPNQ27C3aRySh0C0JJPHbToIONQ4CY3fqXovjf3oog7yDRk1
+86Dp0f1lW5T1a01QuqmAKuXDAnxWESBTmkOqRvb8p1z9Fs2DTHo=
+=Ymxb
 -----END PGP SIGNATURE-----
