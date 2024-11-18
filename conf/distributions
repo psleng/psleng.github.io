@@ -1,0 +1,7 @@
+Origin: https://psleng.github.io
+Label: https://psleng.github.io
+Codename: current 
+Architectures: arm64
+Components: main
+Description: Perle GiOS Router packages repository
+SignWith: C7BF4329866363015E8BB9A63B79070B8E23E928
