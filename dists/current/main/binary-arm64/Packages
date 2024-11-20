@@ -590,6 +590,21 @@ Description: access point and authentication server for Wi-Fi and Ethernet
   * Driver interface for FreeBSD net80211 layer [kfreebsd]
   * Any wired Ethernet driver for wired IEEE 802.1X authentication.
 
+Package: hsflowd
+Version: 2.0.55-1
+Architecture: all
+Essential: no
+Maintainer: Neil McKee [neil.mckee@inmon.com]
+Priority: optional
+Section: admin
+Filename: pool/main/h/hsflowd/hsflowd_2.0.55-1_all.deb
+Size: 389380
+SHA256: 6b379d76249412c4bddafd8fbcd5f220e62e0a37b27595dbe2a7168498c7c2e9
+SHA1: 12a16ae8ac7f48ca33cb9b5c59f44e49eadf3522
+MD5sum: bf80d3932b0ea27d48fc96a184788edd
+Description: sFlow(R) monitoring agent
+Homepage: sflow.net
+
 Package: hvinfo
 Version: 1.2.0
 Architecture: arm64
@@ -2108,6 +2123,43 @@ Description: nftables/libnftables python3 module
  A Linux kernel >= 3.13 is required. However, >= 4.14 is recommended.
  .
  This package contains the libnftables python3 bindings.
+
+Package: python3-pyhumps
+Source: pyhumps
+Version: 3.8.0-1
+Architecture: all
+Maintainer: None <None>
+Installed-Size: 30
+Depends: python3:any
+Homepage: https://github.com/nficano/humps
+Priority: optional
+Section: python
+Filename: pool/main/p/pyhumps/python3-pyhumps_3.8.0-1_all.deb
+Size: 5448
+SHA256: f188797bb125aca3f93f3d7ff7d5631bdb8590e5758c6d02333c32fd554b0710
+SHA1: f7e9fde098923ac607ffdb0b4c74c91274c2857a
+MD5sum: 5dedb4d3b2d68071a512ed2585867d9b
+Description: 🐫 Convert strings (and dictionary keys) between snake case,
+ .
+ <p align="center">
+   <img src="https://raw.githubusercontent.com/nficano/humps/master/artwork/humps.png" alt="Humps logo" width="245" height="118">
+ </p>
+ .
+ <div align="center">
+   <a href="http://humps.readthedocs.io/en/latest/?badge=latest">
+     <img src="https://readthedocs.org/projects/humps/badge/?version=latest" />
+   </a>
+   <a href="https://coveralls.io/github/nficano/humps?branch=master">
+     <img src="https://coveralls.io/repos/github/nficano/humps/badge.svg?branch=master#cachebus" />
+   </a>
+   <a href="https://pypi.org/project/pyhumps/">
+     <img src="https://img.shields.io/pypi/v/pyhumps.svg#cachebust" />
+   </a>
+   <a href="https://pypi.org/project/pyhumps/">
+     <img src="https://img.shields.io/pypi/dm/pyhumps.svg" />
+   </a>
+   <a href="https://pypi.python.org/pypi/pyhumps/">
+     <img src="https://img.shields.io/pypi/pyversions/pyhumps.svg" />
 
 Package: python3-vici
 Source: strongswan
