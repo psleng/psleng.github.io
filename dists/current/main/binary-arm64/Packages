@@ -4,10 +4,10 @@ Depends: libc6 (>= 2.34), libssl3 (>= 3.0.5), libpcre3 (>= 8.39), liblua5.3-0
 Priority: optional
 Section: devel
 Filename: pool/main/a/accel-ppp/accel-ppp_1.13.0_arm64.deb
-Size: 581244
-SHA256: b67c752a4c8ad6043fef6d9c78363257360ef8b27765f85aa1795bcbd3ef7816
-SHA1: f10018d778f1912c4a0077fea17eb1af1173434c
-MD5sum: a38be15b6664dafe1e7f41000d3c93e4
+Size: 581242
+SHA256: 7572371d84a0d09fe0aa9e45d688d5ca002a28093e421323b1bcaff2e1be106a
+SHA1: 057191ce9faf154c68f2bc0e96a861a93bca2665
+MD5sum: 31be4aac16288da942f7a59d5799b176
 Description: PPtP/L2TP/PPPoE/SSTP server for Linux
  Overview
  --------
@@ -221,10 +221,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/charon-cmd_5.9.11-2+vyos0_arm64.deb
-Size: 89312
-SHA256: 40307f314761510c92ea709618f783e2ba7e71897fa0c349dd22aa1a7710d43e
-SHA1: 080df366016f63e1f719aea682e14674b78abdba
-MD5sum: a1c68f67449523dab20e1751a36d108f
+Size: 89304
+SHA256: edd65b3302034f180431b7afbc523d4be11f25ece98adf42c1f14d8e8db0d306
+SHA1: 6a63512cfb4f124a680796f4c9c1c04437241e12
+MD5sum: 2b8013fb4069b9bbb9eae06a269766e6
 Description: standalone IPsec client
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -244,9 +244,9 @@ Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/charon-systemd_5.9.11-2+vyos0_arm64.deb
 Size: 85916
-SHA256: 8f6f558f258f52e7ac572a805a94b5b28102c1ef0290a1941582676fe071c38a
-SHA1: 582ee98a32a57615b5e8be7068a8a64ed5fb8288
-MD5sum: 78d7445046d8492a19049377157f89b8
+SHA256: 3268de55032684d7ab4a4206e1699168b50b1dbb6115f77515fbfca8d9370627
+SHA1: c65c3e3016418bbd05efed224e540a5ec702fae3
+MD5sum: 5715561247bc1b825d560e82aa396c50
 Description: strongSwan IPsec client, systemd support
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -405,10 +405,10 @@ Homepage: https://w1.fi/wpa_supplicant/
 Priority: optional
 Section: net
 Filename: pool/main/w/wpa/eapoltest_2.10-2290-ge7172e26d_arm64.deb
-Size: 1109920
-SHA256: 010871d857fd5b422f6a81f0e062404afa15f32cf0b5486418c33ca09d8e00c7
-SHA1: 1be336546067c9d98ba43912e85f4d15eb82c1d6
-MD5sum: ddd6b2c30002510e7773fc356ca6b64c
+Size: 1110064
+SHA256: f388d7bd9c1d3b8ee4f8910a42ec5e49b821b683753f59523a9eea420f754d76
+SHA1: 81a53863d2e1d63f4dc7ede4cac419ca4968c3a5
+MD5sum: 2cc06db718bb4c76af1397046e40a273
 Description: EAPoL testing utility
  eapol_test allows testing EAP authentication methods without using
  a full 802.1X connection. It is frequently used to test the EAP
@@ -520,10 +520,10 @@ Homepage: https://www.frrouting.org/
 Priority: optional
 Section: net
 Filename: pool/main/f/frr/frr_9.1.2-0_arm64.deb
-Size: 4175616
-SHA256: 799f8579133db503b1d8fbccf65700641ecc8248d03d6104dcf0eeaf731f5e9f
-SHA1: afda93dfb7c19e503d129505e6b9b8e2555497f0
-MD5sum: fda23a985dedded06ca8013f333c418f
+Size: 4174984
+SHA256: 4a681630061ac2cdf7e868ba6912402f5895aae0364d1cb1a8c9d217d40191d1
+SHA1: 5e08be0d75f5e1f93778118c1502d649198cb24a
+MD5sum: 558e935837085819b6ce1f33ecd6319e
 Description: FRRouting suite of internet protocols (BGP, OSPF, IS-IS, ...)
  FRRouting implements the routing protocols commonly used in the
  internet and private networks to exchange information between routers.
@@ -550,10 +550,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/f/frr-exporter/frr-exporter_1.3.1_arm64.deb
-Size: 8252606
-SHA256: ab181f9fbcc077f093fbb1e79beacbc9c258582432a7874417b3ac40deaa87ce
-SHA1: 49ad406eaa04b14c1c3db8dfc95c767d5b18ef1b
-MD5sum: 0a2ac0fcdefa7e4d2604b1a17be74ac8
+Size: 8252522
+SHA256: 97573cd048658af05c16a240757b99bf65111bcfe6df7d14f4a682278a47dd5b
+SHA1: cca3ac4522eb50c7beee4cb169ffa8fb5c3164a8
+MD5sum: b07d5f7f0f30bd2b054a3b8ffd5c7fe3
 Description: Prometheus exporter for FRR
 
 Package: frr-pythontools
@@ -607,16 +607,16 @@ Version: 9.1.2-0
 Architecture: arm64
 Maintainer: David Lamparter <equinox-debian@diac24.net>
 Installed-Size: 1240
-Depends: frr (= 9.1.2-0), libc6 (>= 2.28), libsnmp40 (>= 5.9.4+dfsg)
+Depends: frr (= 9.1.2-0), libc6 (>= 2.28), libsnmp40 (>= 5.9.3+dfsg)
 Recommends: snmpd
 Homepage: https://www.frrouting.org/
 Priority: optional
 Section: net
 Filename: pool/main/f/frr/frr-snmp_9.1.2-0_arm64.deb
 Size: 63900
-SHA256: 01a6f8f5ded6907dd47ffc02fca93b9ae894cc2b96df72fa31e7b649e6fe56d1
-SHA1: 6ca44e947c869eea1d71f36d14a923a99a7b086d
-MD5sum: a7fdad9781380c8a233525ea216894e8
+SHA256: d2214a83651a78c058836aec05c9535487ec274f6239034f042fe4b613e20551
+SHA1: 7be5f76e2a1211e2fcff84fc404df1150250af96
+MD5sum: 7e38e71de9117fd614bc0a7209789e17
 Description: FRRouting suite - SNMP support
  Adds SNMP support to FRR's daemons by attaching to net-snmp's snmpd
  through the AgentX protocol.  Provides read-only access to current
@@ -635,10 +635,10 @@ Homepage: https://w1.fi/wpa_supplicant/
 Priority: optional
 Section: net
 Filename: pool/main/w/wpa/hostapd_2.10-2290-ge7172e26d_arm64.deb
-Size: 849556
-SHA256: e0711e83d987b90cd48b56ca77559421afecce072f51f8202a98053bac24c8e7
-SHA1: 7f99e671b6c212f54ad8edd7237fb97edf95803e
-MD5sum: c168ede26b7edb6cdc4789f3e56ab8fa
+Size: 849552
+SHA256: 574e10741296cb7222fc96176325220d48548491a19312e07782616dbd956553
+SHA1: 79446c34722eac48154f900b79f7e3f3e9e50576
+MD5sum: 17c44da9abfc6b6a863874a3c5eafff4
 Description: access point and authentication server for Wi-Fi and Ethernet
  IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/WPA3/EAP Authenticator
  .
@@ -669,10 +669,10 @@ Maintainer: Neil McKee [neil.mckee@inmon.com]
 Priority: optional
 Section: admin
 Filename: pool/main/h/hsflowd/hsflowd_2.0.55-1_all.deb
-Size: 389380
-SHA256: 6b379d76249412c4bddafd8fbcd5f220e62e0a37b27595dbe2a7168498c7c2e9
-SHA1: 12a16ae8ac7f48ca33cb9b5c59f44e49eadf3522
-MD5sum: bf80d3932b0ea27d48fc96a184788edd
+Size: 388500
+SHA256: 01194eb1eaacf52eaec6bdba36e09f73eda69122f1d7c646861a694e6942e191
+SHA1: 8904c683fe161686ef46d9de8fba8e0120e7adaa
+MD5sum: 6fe1ecb3d7201b0fa1e2a27106c1e6ee
 Description: sFlow(R) monitoring agent
 Homepage: sflow.net
 
@@ -988,10 +988,10 @@ Homepage: <insert the upstream URL, if relevant>
 Priority: optional
 Section: unknown
 Filename: pool/main/j/jool/jool_4.1.9+bf4c7e3669-1_arm64.deb
-Size: 483148
-SHA256: 98e2dea6f34a26de6a5d6fec6083e0f68e71c18695ae0eb19c8265f3760475bb
-SHA1: cb27d0d916fceb9bef7d23f0271c2bec2678806e
-MD5sum: e37677baaa10c48c0d2efb621a4f3935
+Size: 481980
+SHA256: 701cf4f29e50c72e9b4fb2e87e2f68b69e28cee3d2dc9bb14f498959aaaba4a0
+SHA1: a8049d0efbda933649342ff5ca3e4add14131d72
+MD5sum: fce9c8037de0c653a7d1fc4b9b5897a6
 Description: auto-generated package by debmake
  This Debian binary package was auto-generated by the
  debmake(1) command provided by the debmake package.
@@ -1049,10 +1049,10 @@ Homepage: http://kea.isc.org/
 Priority: optional
 Section: net
 Filename: pool/main/i/isc-kea/kea-common_2.4.1-3_arm64.deb
-Size: 3536844
-SHA256: 2e12a05fe65d37327a8a59bb68f7413076a3827c1ab7e2072dfce2567b351552
-SHA1: 76a51f3d475ce1cd574d5018abb0a09be0311a9c
-MD5sum: ab5666ea44affe786f64c472b78e8f94
+Size: 3537264
+SHA256: 98ba13708f624bc1f463319fac8933bdf25ebc827dce2e1d17a2246f2a0449f4
+SHA1: 2424e3bf45e3a3380692d254faea1d39f65daa42
+MD5sum: a93db5793c4a5ac5c49a43fe67e8ecd9
 Description: Common libraries for the Kea DHCP server
  Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
  .
@@ -1071,10 +1071,10 @@ Homepage: http://kea.isc.org/
 Priority: optional
 Section: net
 Filename: pool/main/i/isc-kea/kea-ctrl-agent_2.4.1-3_arm64.deb
-Size: 344420
-SHA256: 4a5de9f2e90572d0466dd0389ee8553de53a911d46594d41b599ee9f33d3d873
-SHA1: f407be3284dad299eedaf1bec96e2f2d916e6f46
-MD5sum: 56f64fc4cfd6016f8afcfd165c94ae37
+Size: 344092
+SHA256: cf392ecfd535fd275b2187043fd862625328ce86376a791ba2136c9031882657
+SHA1: 8a0397c97ab96ea89ab3626f1f30d5072c6fb80f
+MD5sum: bb2fe69ef9cf158b1fd40a14afc08e17
 Description: REST API service for Kea DHCP server
  Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
  .
@@ -1116,10 +1116,10 @@ Homepage: http://kea.isc.org/
 Priority: optional
 Section: net
 Filename: pool/main/i/isc-kea/kea-dhcp4-server_2.4.1-3_arm64.deb
-Size: 532500
-SHA256: 320e38cd716eb0dbc0a0d7f137c86e4d84f9d7c74cfcc157a9bd23db657ad116
-SHA1: 4f7f7c3a34c87a9dcb44dea91eb3066044b81cb8
-MD5sum: 3cde03505595ef37512745de2aa466a5
+Size: 533056
+SHA256: 96acec80df0dcf6cede93f9212fbadf238d80a6711beecce5365ce7923956bc3
+SHA1: 257a4e3dcabd8231b30e34ec0e1cc70f39961247
+MD5sum: baa3d95357bd514a98ea7d39ae92e0df
 Description: IPv4 DHCP server
  Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium
  providing a very high-performance with PostgreSQL, MySQL and memfile backends.
@@ -1139,10 +1139,10 @@ Homepage: http://kea.isc.org/
 Priority: optional
 Section: net
 Filename: pool/main/i/isc-kea/kea-dhcp6-server_2.4.1-3_arm64.deb
-Size: 531148
-SHA256: e1f5c643df63a9fcd9288629906dc57df12d63a0f22d383aee4d955246c9c2ee
-SHA1: 16f25794f22b253b50f084d901f97e32bd2fbce0
-MD5sum: 6cb0c0716744a8e205912eec4adbf470
+Size: 530840
+SHA256: dce61f60a574b13c94a9b5b239acf8293b129ea29890d2eb2c7def4b4e53b5ac
+SHA1: 59769d855ac312a36e7a587c8638f97d26baf368
+MD5sum: 3ff940bf9489715c80e8f83c21551371
 Description: IPv6 DHCP server
  Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium
  providing a very high-performance with PostgreSQL, MySQL and memfile backends.
@@ -1155,16 +1155,16 @@ Architecture: arm64
 Maintainer: Vincent Bernat <bernat@debian.org>
 Installed-Size: 1453
 Pre-Depends: init-system-helpers (>= 1.54~)
-Depends: iproute2, libc6 (>= 2.34), libglib2.0-0 (>= 2.26.0), libip4tc2 (>= 1.8.3), libip6tc2 (>= 1.8.3), libmnl0 (>= 1.0.3-4~), libnftnl11 (>= 1.1.2), libnl-3-200 (>= 3.2.27), libnl-genl-3-200 (>= 3.2.7), libpcre2-8-0 (>= 10.22), libsnmp40 (>= 5.9.4+dfsg), libssl3 (>= 3.0.0), libsystemd0 (>= 214)
+Depends: iproute2, libc6 (>= 2.34), libglib2.0-0 (>= 2.26.0), libip4tc2 (>= 1.8.3), libip6tc2 (>= 1.8.3), libmnl0 (>= 1.0.3-4~), libnftnl11 (>= 1.1.2), libnl-3-200 (>= 3.2.27), libnl-genl-3-200 (>= 3.2.7), libpcre2-8-0 (>= 10.22), libsnmp40 (>= 5.9.3+dfsg), libssl3 (>= 3.0.0), libsystemd0 (>= 214)
 Recommends: ipvsadm
 Homepage: https://keepalived.org
 Priority: optional
 Section: admin
 Filename: pool/main/k/keepalived/keepalived_2.2.8-1_arm64.deb
-Size: 556708
-SHA256: 550cbcb0d2e3b4bcaf47e53f76503d5399263740cd1eea32a3d3b16c19574ebb
-SHA1: 7ede80c1d85ea229ebd41e187703b36ececfb2fc
-MD5sum: 8dd7319140b7af9bb668fe81a0e6bb4c
+Size: 556640
+SHA256: d808fb1be110c74ad89a4572b0f30d6d661de5cea7fb9a0774fbcb64d8004f71
+SHA1: a32c1f9d8850c695384df675ecdd0870723ed0ba
+MD5sum: 102855c17380c6f4f91c6ae7056cb418
 Description: Failover and monitoring daemon for LVS clusters
  keepalived is used for monitoring real servers within a Linux
  Virtual Server (LVS) cluster.  keepalived can be configured to
@@ -1189,10 +1189,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/libcharon-extauth-plugins_5.9.11-2+vyos0_arm64.deb
-Size: 89752
-SHA256: 4297be0139715ed52430a55183a76b60d7ba00de2f110fb0fc08c5aeb799cc6a
-SHA1: bde7db48d0d536a78c04ffa6097b0c4b9840a185
-MD5sum: 7e8de2115cae79d73a66dc23ee89ca9d
+Size: 89776
+SHA256: c72d845f481005f72f77486c15b3a6e6a454095c6fb0204075e7f51da715cf4f
+SHA1: bc30d98be8c8d0a75ac6cd1ccc6b378b4b4dc178
+MD5sum: ab057678da3bdb3a990c1727d0227f8d
 Description: strongSwan charon library (extended authentication plugins)
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -1222,10 +1222,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/libcharon-extra-plugins_5.9.11-2+vyos0_arm64.deb
-Size: 266716
-SHA256: e405992d1d180abccd1127f851727c2da74bb2483b0b88e1294372a54ab5e394
-SHA1: 35026403d6ccdc8ae18d389bab8a74a4534aa718
-MD5sum: 0f11b80bc939bfa283aabed86be178e7
+Size: 266832
+SHA256: acaabb6a8ad028f3d68a543a7cb4b61d835ccd4dc14221a67dd2ab4b34475dd3
+SHA1: a0f748372efd4b2fc5d16a5da9248801be52a608
+MD5sum: ab33610f03a05efe4e6cd18f65a9ebfd
 Description: strongSwan charon library (extra plugins)
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -1337,10 +1337,10 @@ Homepage: https://www.netfilter.org/
 Priority: optional
 Section: libs
 Filename: pool/main/n/nftables/libnftables1_1.0.9-1_arm64.deb
-Size: 291240
-SHA256: 2917da6fa9d6c116a08a46fa2912b1749079ac84c3fb6f48c1049e5ccc19b63f
-SHA1: bf3e5504b9d4ece2f939d0b5bd4f9d1d3081e984
-MD5sum: 932c92c88214ae80f72db494de48c35c
+Size: 291792
+SHA256: f18c41039bc312c4695d5448452b83b3012f91ce09cfc65562cd3dd4caf370c6
+SHA1: 0eec21e0d279c09d7140b008af0456e9fed049de
+MD5sum: aca735ab4d290e7a99880254c14da350
 Description: Netfilter nftables high level userspace API library
  This library provides high level semantics to interact with the nftables
  framework by Netfilter project.
@@ -1508,6 +1508,31 @@ Description: SNMP configuration script, MIBs and documentation
  description, you need to activate the non-free repository and install the
  "snmp-mibs-downloader" package.
 
+Package: libsnmp-dev
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: arm64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 1280
+Depends: libc6-dev, libsnmp40 (= 5.9.4+dfsg-1), libnetsnmptrapd40 (= 5.9.4+dfsg-1), libwrap0-dev, libssl-dev, procps, libsensors-dev, libpci-dev
+Recommends: libsnmp-perl
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: libdevel
+Filename: pool/main/n/net-snmp/libsnmp-dev_5.9.4+dfsg-1_arm64.deb
+Size: 201248
+SHA256: 2813199a418cf2c9f77ad9bdcde6aa4f9da03ff41b6fc9f42aea78b170160d61
+SHA1: 55a42a5ef1b3edd4c814452cf5f09f6aeabd9c4a
+MD5sum: f641d14854824093c83910e4ac00098f
+Description: SNMP (Simple Network Management Protocol) development files
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP development files include the library headers, static
+ libraries, net-snmp-config scripts and documentation needed for development
+ of custom SNMP applications.
+
 Package: libsnmp-perl
 Source: net-snmp
 Version: 5.9.4+dfsg-1
@@ -1571,10 +1596,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/libstrongswan_5.9.11-2+vyos0_arm64.deb
-Size: 420424
-SHA256: 59199c18b1872c4494842f565879e768db358b7b084afc6284e5f72198f9af72
-SHA1: 882faf7e95ea019ce355661fed458f380ad6fa29
-MD5sum: 1e76ad84a7f0674b66ac6d949703cfdf
+Size: 420372
+SHA256: e6ce5389c4437c4a552ca02daf80aa6c6c7a5cbd923f9ce7b6c0dbb403d37ddd
+SHA1: 81a60c4d9c27ad2aca60f7dda0852c1bdfae8a49
+MD5sum: a0fa02eaa5a7806407d1eb46449dad2a
 Description: strongSwan utility and crypto library
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -1631,10 +1656,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/libstrongswan-extra-plugins_5.9.11-2+vyos0_arm64.deb
-Size: 257980
-SHA256: e569edb96c3b2fdfcfbec02948d8c01f57f91fe93e563a16796e6c3435e15fe5
-SHA1: 324048f7c3c83e216e4e0290b450b322a52d3c8d
-MD5sum: fca35bb0ce19080efe91236426c7ada6
+Size: 257636
+SHA256: b3c24ba00469532d31f64487849398964c1f6d947f164b2c78a1a4dc703deb28
+SHA1: 7e3239d506b23ae099dc086e578e202fdcc32817
+MD5sum: ea34dcfcee2278bf1544259e720a2a81
 Description: strongSwan utility and crypto library (extra plugins)
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -1674,10 +1699,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/libstrongswan-standard-plugins_5.9.11-2+vyos0_arm64.deb
-Size: 124868
-SHA256: 8371fcfe5ba02b250312ac3c94ddd49a49582dffac02a321eda9cb13ad61623b
-SHA1: 6365dda818e31b37310399dc742417f005f03660
-MD5sum: bdc25aa4359bfbb2c08deb7358edfb1e
+Size: 124880
+SHA256: f956fc71c1fafebce16e9b2d4fd5026100aa2279e8e829b75a9abe810e2ad1e3
+SHA1: b837e5755b4414386866c026750748f9fefa92bd
+MD5sum: 8bf82b5af0755218b4b26d1fa818a7b2
 Description: strongSwan utility and crypto library (standard plugins)
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -1880,15 +1905,15 @@ Source: linux-upstream
 Version: 6.6.56-1
 Architecture: arm64
 Maintainer: vyos_bld <vyos_bld@vyos-build>
-Installed-Size: 52636
+Installed-Size: 52307
 Homepage: https://www.kernel.org/
 Priority: optional
 Section: kernel
 Filename: pool/main/l/linux-upstream/linux-headers-6.6.56-vyos_6.6.56-1_arm64.deb
-Size: 8660456
-SHA256: 0b5da62bb5018cbb1b0ebc69fa9890885a9afb0775e63c1aac88f5d914d349e6
-SHA1: e31946193f2192391969c0c96cf7e4a7326b974a
-MD5sum: 5f355f02c69a4f72b2b5447659fef600
+Size: 8621696
+SHA256: 510be358ac22a1db01c9150f6e57d44c083d9b958cdc681c1bbf765f43a102ae
+SHA1: 75d8f846c89a4913e04752d56a7f3a55c92d08bb
+MD5sum: 11ed3a41ca03ff59881127407dcf9eb8
 Description: Linux kernel headers for 6.6.56-vyos on arm64
  This package provides kernel header files for 6.6.56-vyos on arm64
  .
@@ -1899,15 +1924,15 @@ Source: linux-upstream
 Version: 6.6.56-1
 Architecture: arm64
 Maintainer: vyos_bld <vyos_bld@vyos-build>
-Installed-Size: 76218
+Installed-Size: 77167
 Homepage: https://www.kernel.org/
 Priority: optional
 Section: kernel
 Filename: pool/main/l/linux-upstream/linux-image-6.6.56-vyos_6.6.56-1_arm64.deb
-Size: 22166408
-SHA256: edcd2c5d34097b2a6efa1bec79141e21ba286caa15f45a8b3ee24afca237a4e9
-SHA1: f821bb9120406c39e8cda12f855ec92913564a4f
-MD5sum: 99a3897b0b894cb3819700a0690f906c
+Size: 22222432
+SHA256: 23c94dd5210e5b0da66804ab6b4ba3fc97b9c8add4badc5a570db2700413df07
+SHA1: 37ddad000f10adac04c4d10a389d94aaa10323b5
+MD5sum: bfb0fa068cc460aa445595c9e8d72c17
 Description: Linux kernel, version 6.6.56-vyos
  This package contains the Linux kernel, modules and corresponding other
  files, version: 6.6.56-vyos.
@@ -1924,10 +1949,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/n/nat-rtsp/nat-rtsp_5.3-2-g475af0a_arm64.deb
-Size: 50070
-SHA256: 907472d55bf8acd85960a3c7c5f78cee5b726cc3e359343e51c09722a0f473a6
-SHA1: 5b60b99f97c67d27c0393ea9b1405502ddcbf7b7
-MD5sum: 9ba94b494768103126e3d311b6b388bd
+Size: 50068
+SHA256: 3d8a194ac87ddeb6296813cf581fc181457d282a9d22ec1003047296a2beb70f
+SHA1: cd154aec579212aa01b455e7df634bf1502d7c56
+MD5sum: 5d51f360f20c0a5f82087c31c2f26565
 Description: Connection tracking and NAT support for RTSP
 
 Package: ndppd
@@ -1966,10 +1991,10 @@ Homepage: https://www.netfilter.org/
 Priority: important
 Section: net
 Filename: pool/main/n/nftables/nftables_1.0.9-1_arm64.deb
-Size: 72780
-SHA256: 5e7b17095b5ebab6fd9bc4a6147fd8f45ae9281c7823efd2d089aed602fa17a7
-SHA1: fbd9372de291fe886c83efcb4852dbdb530eb571
-MD5sum: 36a11762b0d5044996a25adece26384c
+Size: 72788
+SHA256: b3418fd70f89b816161f810279ec93a894a9e583c5a1bfccd31b53493fca0f47
+SHA1: 5f33a4c6edf1accb99312eac346db47fd307fe51
+MD5sum: e65391c845bfc1548035237446127332
 Description: Program to control packet filtering rules by Netfilter project
  This software provides an in-kernel packet classification framework that is
  based on a network-specific Virtual Machine (VM) and the nft userspace
@@ -1996,10 +2021,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/n/node-exporter/node-exporter_1.8.2_arm64.deb
-Size: 9953508
-SHA256: 62d6e344f6c4e254de6e47bb327878546d1b2161c8884bb3adc1b3d09ccb92a0
-SHA1: 1005c6565b652294ccb1ddbdd4611787055af6f2
-MD5sum: 9830bec759b11720c45ef266b989d61a
+Size: 9953502
+SHA256: d8a6a37a9936e2512a1b15b34502ca2493c8fe7d9e38627b9e1abcc39c3d3b0b
+SHA1: 9eb2c169f9dd70168690dbef0a661d272db0d500
+MD5sum: 26d5f25e65e41990f54a719ab8da4a7c
 Description: Prometheus exporter for machine metrics
 
 Package: opennhrp
@@ -2013,10 +2038,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/o/opennhrp/opennhrp_0.14-20-g613277f_arm64.deb
-Size: 50276
-SHA256: dfa1f989ef013277cbf76ce9119fd97141e5b8d23725182445bd3536410d630f
-SHA1: 0193d306700ef39425770a81ea994c9b9481247b
-MD5sum: 7b891fda7ac8ae14166a73ac1de43722
+Size: 50278
+SHA256: 42ad15cb159b9b5ddb58a14189f0485b86e63075f43154e53aa0319b736ed224
+SHA1: 85153c1cccae0e46581b71e389d52759605a9eef
+MD5sum: 2c185062c0589df27fe760b417b07b73
 Description: NBMA Next Hop Resolution Protocol daemon
 
 Package: openvpn-dco
@@ -2032,9 +2057,9 @@ Priority: optional
 Section: default
 Filename: pool/main/o/openvpn-dco/openvpn-dco_0.2.20231117_arm64.deb
 Size: 196632
-SHA256: 63d12e4c39eae97277153ac3cdcbfb366c71893e4d23339b9b3de6eda6691f9e
-SHA1: 7e9613a244e13a9578783c640127a5dbffa68510
-MD5sum: 6e5ba5fc12a2e248e93e58e8a0d91828
+SHA256: 4e979a84b686b60eecf98c5f1c3c601a290a8af84160aa244e2fd65c9be7cdd1
+SHA1: 094b648ead865c608f5ecc4a3729362740a65ed2
+MD5sum: 32f0a697053559d976819667a9769343
 Description: OpenVPN Data Channel Offload
 
 Package: openvpn-otp
@@ -2049,10 +2074,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/o/openvpn-otp/openvpn-otp_1.0-6-g9781ff1_arm64.deb
-Size: 26402
-SHA256: f545ee16939f8572ab372e819802ca7f479cd0bd9265bc32b7792f6e9b982594
-SHA1: 98ae9091cf63c5df18f745b1795885a30f0f397d
-MD5sum: 95dfa122ed68ca24882e40178edb5c4c
+Size: 26400
+SHA256: 4c17b9e75470308449f080b6bc9cff09395e1bfd4cf2798c944b6e1969b25f28
+SHA1: b5e29852dd314809dcb1e4d7a8b9b8c917a23c1b
+MD5sum: 34c0f858d26fea1da3b762fdf1f6af6a
 Description: OpenVPN OTP Authentication support.
 
 Package: owamp-client
@@ -2140,10 +2165,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/p/podman/podman_4.9.5_arm64.deb
-Size: 56133992
-SHA256: 3a31e53a79dad05a628e45c460e86299dbb2fd9b4c7ba35c4e4320fd38362704
-SHA1: f44943f54e6148c2a092bb18416f6997a1dbce9e
-MD5sum: 591baf769abaa366f76c018d5c221df2
+Size: 56133898
+SHA256: 2712bf4d5e6afe7bb200e6e88b16615080dc4911b5e9a5e9be7ac84c8a922e11
+SHA1: eca05d435bdc49fe014890c6d48905ec1cc5bdf7
+MD5sum: 4e901032f403a52e5963a61c1a0660cd
 Description: Engine to run OCI-based containers in Pods
 
 Package: python3-kea-connector
@@ -2206,10 +2231,10 @@ Homepage: https://github.com/nficano/humps
 Priority: optional
 Section: python
 Filename: pool/main/p/pyhumps/python3-pyhumps_3.8.0-1_all.deb
-Size: 5448
-SHA256: f188797bb125aca3f93f3d7ff7d5631bdb8590e5758c6d02333c32fd554b0710
-SHA1: f7e9fde098923ac607ffdb0b4c74c91274c2857a
-MD5sum: 5dedb4d3b2d68071a512ed2585867d9b
+Size: 5436
+SHA256: 40b843b73027aa1da7c9a8a1784f391d3b6a7e59c1f7256f92fc38a3392dc836
+SHA1: e150b4f2ed3d405b758b27dabb0297e0602c2f95
+MD5sum: 6b31954711789809ac4ad8d3b1d81648
 Description: 🐫 Convert strings (and dictionary keys) between snake case,
  .
  <p align="center">
@@ -2243,9 +2268,9 @@ Priority: optional
 Section: python
 Filename: pool/main/s/strongswan/python3-vici_5.9.11-2+vyos0_all.deb
 Size: 9504
-SHA256: cf640c942be24327937c4e430dc247e38fcadef0c684ea72bb819773923c2ec8
-SHA1: 15d004caed6ab556ea0042ad3cf5a0d97583a609
-MD5sum: 71650b319ef38324dc3e1a52e8c1f349
+SHA256: 8ef8ceae57714236aabb6f74f176d33f1861195ce41c1553dfc41157eb4446a3
+SHA1: c2e5187b221753a8c30ad6a098e22862ea536557
+MD5sum: 27096daa5994ff2ca7c93947680a71e9
 Description: Native Python interface for strongSwan's VICI protocol
 
 Package: radvd
@@ -2259,10 +2284,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/r/radvd/radvd_2.20-rc1-23-gf2de476_arm64.deb
-Size: 48664
-SHA256: d9f9d133fb88b44d115d327ca141f1aeb51a1d9d9e98003538f3242756d4ad8d
-SHA1: 2c66869a3988532d8f62a6cb0d644966c5eedf55
-MD5sum: 9b6e771f9abd3d3897e4744871451c8d
+Size: 48660
+SHA256: 765ae5c2ad2852a24fb18f774c247eadd4cc4a8a47fde65ff0bbc44da8cca205
+SHA1: 65e8f06ef9c1bbf815e79a3e4650ba79cdc17a52
+MD5sum: 7a425a4e8a9a140c1e0e5be67acff130
 Description: RADVD router advertisement daemon
 
 Package: rtr-tools
@@ -2299,10 +2324,10 @@ Homepage: https://saltproject.io/
 Priority: optional
 Section: admin
 Filename: pool/main/s/salt/salt-api_3005.5+ds-1_all.deb
-Size: 13332
-SHA256: 90063a4a46a5d53dadd08394aa29d7f5dea484512451fb69e74d28492dc64cbb
-SHA1: 8ed4a16993799d80af65cc5cb47324748a8a1961
-MD5sum: 5eacec30f22ddd33212391d826b481aa
+Size: 13316
+SHA256: ba72b8dd1f6d5a635761003f5a12924be0fe9ea7bcbd78c4b71a7b8baa32f758
+SHA1: c6519f34c08fcd9421b4fd1379e394fa13bca093
+MD5sum: e7586a5ebb7527964395d604ed61a590
 Description: Generic, modular network access system
  a modular interface on top of Salt that can provide a variety of entry points
  into a running Salt system. It can start and manage multiple interfaces
@@ -2325,10 +2350,10 @@ Homepage: https://saltproject.io/
 Priority: optional
 Section: admin
 Filename: pool/main/s/salt/salt-cloud_3005.5+ds-1_all.deb
-Size: 14572
-SHA256: 9feba3b55bd1f780319009af2c9c265911411b563109350e9d567ce0d3e46e95
-SHA1: 8bae57015e3fcb7591c539ee159561492686e314
-MD5sum: 817523fb028b844239090bb1c56dcf8e
+Size: 14568
+SHA256: 9fbfb0c29aeecc8f03306ff3ca3941cea0e2e60b405e94ffccf1b596dee3f4c6
+SHA1: 0d748436ebf775a2e51097051b129017bf1108d7
+MD5sum: a9929710e5597cc57bc7b55297b135c6
 Description: public cloud VM management system
  provision virtual machines on various public clouds via a cleanly
  controlled profile and mapping system.
@@ -2347,10 +2372,10 @@ Homepage: https://saltproject.io/
 Priority: optional
 Section: admin
 Filename: pool/main/s/salt/salt-common_3005.5+ds-1_all.deb
-Size: 7251576
-SHA256: 764862cf5f2049b9738374c01432ae456c2852c9e14ed3d955eb918a915f3824
-SHA1: 30ac0b4f7370a341337ff447cb8e01bbe2f1a630
-MD5sum: 9a9ce2bbb8a177d0f464147072049030
+Size: 7251508
+SHA256: 3e3ea49986c8e8fbd1887c0e44346efee072a5510476f87c9e602f28804928da
+SHA1: 68b6183816f840be04df02d28978ac6bb8199542
+MD5sum: 368065be79f9a0320d654753e5681d6e
 Description: shared libraries that salt requires for all packages
  salt is a powerful remote execution manager that can be used to
  administer servers in a fast and efficient way.
@@ -2383,10 +2408,10 @@ Homepage: https://saltproject.io/
 Priority: optional
 Section: admin
 Filename: pool/main/s/salt/salt-master_3005.5+ds-1_all.deb
-Size: 40408
-SHA256: 3a248f5362b847685a51be1100b0d265614361fb4bf73539c82a2d714116b4ab
-SHA1: 6102db3cc9b23ec63a53ac950585ef24449532d4
-MD5sum: f63755a0074627eec26468d4c5d374b9
+Size: 40396
+SHA256: 9f9903860e86ad0e80f63cc3008ca439b5ff3e395254a340329eadb06696e4a5
+SHA1: b21bd1d9b115df2e8a72a38c504f909962c6946a
+MD5sum: 290dc59e6fec094c0b5d0acf7f327411
 Description: remote manager to administer servers via salt
  salt is a powerful remote execution manager that can be used to
  administer servers in a fast and efficient way.
@@ -2419,10 +2444,10 @@ Homepage: https://saltproject.io/
 Priority: optional
 Section: admin
 Filename: pool/main/s/salt/salt-minion_3005.5+ds-1_all.deb
-Size: 28440
-SHA256: 00db05d2e6e3c381f9966109da3c9e8f05d7a1751f20fd211719fedee9b96570
-SHA1: 3c9fb21666165f8400c8483dbc2393c0eff7756c
-MD5sum: 9101633bf8aa7a1b045743a510f49231
+Size: 28428
+SHA256: a2d51b9a2880a3bb15478488b436a673fa085b1f6204c89f8205c2f55df0dd89
+SHA1: 8eac323aa001012ace9e9b94e51b93a4225805b1
+MD5sum: 431cd6189c54394189cfdeb15894be45
 Description: client package for salt, the distributed remote execution system
  salt is a powerful remote execution manager that can be used to
  administer servers in a fast and efficient way.
@@ -2453,10 +2478,10 @@ Homepage: https://saltproject.io/
 Priority: optional
 Section: admin
 Filename: pool/main/s/salt/salt-ssh_3005.5+ds-1_all.deb
-Size: 14336
-SHA256: 6b8674ac44dbb6b6e2142d2bbf86d986ff921e4731d2b4b5b592f9f002cb6f08
-SHA1: ec7bdf79479c1ca163b93940b65c21c54d604261
-MD5sum: a89f63776885a8222f09aebf2ac2c811
+Size: 14324
+SHA256: ab80be9adaec912024b99ccca6a39b738dae373bf7b3bfa9148838a4c10c5867
+SHA1: e423e7dc29caac7618b05cecf701c6dd6c285bab
+MD5sum: df8242a11a4b7c90ea7218f9dc4e5b1b
 Description: remote manager to administer servers via Salt SSH
  salt is a powerful remote execution manager that can be used to
  administer servers in a fast and efficient way.
@@ -2491,9 +2516,9 @@ Priority: optional
 Section: admin
 Filename: pool/main/s/salt/salt-syndic_3005.5+ds-1_all.deb
 Size: 13544
-SHA256: 008c1df3d3e5098c79afd51efe961cf6e60b3cbbdc371f96cba97bc66fb7fe2a
-SHA1: ced1dbfe4ed365c7a9752e7cab63b6ee4385b662
-MD5sum: 28ddd7a034e5181297e5e40a67948879
+SHA256: b56e15a20f8af301f6a4e66fb6e5f329ae88a321440257c2b5fa07760ce389a9
+SHA1: 463d49b4cd588e2131a8ad60888611a0ee07bbc1
+MD5sum: 211c5f9a82d7675c89815ce0a79783a1
 Description: master-of-masters for salt, the distributed remote execution system
  salt is a powerful remote execution manager that can be used to
  administer servers in a fast and efficient way.
@@ -2599,10 +2624,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/strongswan_5.9.11-2+vyos0_all.deb
-Size: 85616
-SHA256: 436bc352f74a804fdc71d47920e251e72cd54c4433b9d9fcf2901eb8601d498e
-SHA1: 332d1f08344e6bc2e530d459c2714d342d4594e8
-MD5sum: 4e14f7adc7e964f80279d28e77cd29b5
+Size: 85604
+SHA256: 52abb8c39b9debce42f71ca966d684ea9367e6f27afe24a5f7402542971b8958
+SHA1: bc8abfcbe22af8df7544953c626fec5f557471f9
+MD5sum: 98a6ab49c412b7403eca439dcfad1f9f
 Description: IPsec VPN solution metapackage
  The strongSwan VPN suite uses the native IPsec stack in the standard Linux
  kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -2623,10 +2648,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/strongswan-charon_5.9.11-2+vyos0_arm64.deb
-Size: 90360
-SHA256: ac1fb1aba2238ae3870c22f0bdf92932c0e4090ad500aa9016d8356f82555e0c
-SHA1: 86bb79d878301b60766275a86856a52ca1f3c5a2
-MD5sum: 1186c723724394654695fbfc3ba28c47
+Size: 90348
+SHA256: 78358c00b9e29e8da1c688b111c437632766666eca253f8310de89abbc9d3b70
+SHA1: d04fec3590c7d60edba9cb27dd25f3c54ab2b211
+MD5sum: a6dfe4a1343096c90cbc591f42cb16e5
 Description: strongSwan Internet Key Exchange daemon
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -2650,10 +2675,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/strongswan-libcharon_5.9.11-2+vyos0_arm64.deb
-Size: 290456
-SHA256: d79c033d2073cc9376020d6a68f7018fc4540a6098d7a9e39269b1174e66f74e
-SHA1: 77a384da04fe244d4d84e582300417160a7f0555
-MD5sum: 65f72b50f89605d4da73e9df262c2f37
+Size: 290388
+SHA256: c38065ab6ee23d4b9f175f2e8b1174417b31484c2aa8c4b243eac2839043d9d7
+SHA1: 1dc209b0621ad6eaf5525fd440f4da009091a7f3
+MD5sum: 75280cd28fbaa3ac7897014d52580dc1
 Description: strongSwan charon library
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -2681,10 +2706,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/strongswan-nm_5.9.11-2+vyos0_arm64.deb
-Size: 78840
-SHA256: 188e1f5dc073d765ccb47d49fd7c8ee4eedfa53ebb1abe0f073ecc695b60b343
-SHA1: 8debbba66410da00420e2dee34d119e8cb12b79d
-MD5sum: acb675d47792f910eda164f3f9cc0994
+Size: 78852
+SHA256: b748e2eb0c8316a4680c7ab9316ea2abdcb420760b0ab3bdad3d1350aab1c7bf
+SHA1: e0153bf252b2704f4cd6066b7bd3637afa01a7b1
+MD5sum: bca8b9d59dc5ec3ed1f91a5647e742ee
 Description: strongSwan plugin to interact with NetworkManager
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -2705,10 +2730,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/strongswan-pki_5.9.11-2+vyos0_arm64.deb
-Size: 144888
-SHA256: be572a750efbc08d7def754b216585b7812bccae64482108fa990ed43517f55f
-SHA1: 4c5388bd6c084958da89b4ce4a85ac6888a2af33
-MD5sum: 1c16fa4b95c375fdd49e4734aff08a7c
+Size: 144904
+SHA256: 480ca0d428a29a5e3538a90532dd41c8d91b30e929a96a334817b832a467f9e2
+SHA1: 8b2c96504acd6a3a9ef3f30e7f63e5ab0af03524
+MD5sum: 43a641cdc82fb22f9a5e242e2d7853ca
 Description: strongSwan IPsec client, pki command
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -2730,10 +2755,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/strongswan-starter_5.9.11-2+vyos0_arm64.deb
-Size: 210524
-SHA256: 5fb095318033963ab5d0b15cc3fcdbeae26258a4a73411679f399a7b2737ae7e
-SHA1: 8cbf34dd8487701c5a55d788ddcc3b83a72165ec
-MD5sum: ca9458df56032513458a200f4cd9d966
+Size: 210616
+SHA256: 32cc2ea3cb3679ca1ca10371951cfc55570cc3ddcd73fcc4ac400a0765f97039
+SHA1: a111574bc962d5a4d73c87f566bf97ca45fcd515
+MD5sum: 278108b1045090b622ac87cbdf4df896
 Description: strongSwan daemon starter and configuration file parser
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -2755,10 +2780,10 @@ Homepage: http://www.strongswan.org
 Priority: optional
 Section: net
 Filename: pool/main/s/strongswan/strongswan-swanctl_5.9.11-2+vyos0_arm64.deb
-Size: 180624
-SHA256: 9b0c83032644bd65ceab8da4a1ffb05ef874e5e9e45c5dcd10dde07a24478667
-SHA1: d3d0c476d68d5bdd1b23d52bd8cd4ce0f1ac3a9b
-MD5sum: 9b64863a549e656c186e05ee5cba55ed
+Size: 180600
+SHA256: 4d9511577f255de90ec515b2e6c835b0e823ddd48ac514b5e5c4d13d6b49f184
+SHA1: 8898256e805918df0c51be9bf197651ff6e32ae5
+MD5sum: ffa7dde341ba4a83a5279d0314aa0c3c
 Description: strongSwan IPsec client, swanctl command
  The strongSwan VPN suite uses the native IPsec stack in the standard
  Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
@@ -2777,10 +2802,10 @@ Homepage: https://github.com/influxdata/telegraf
 Priority: optional
 Section: default
 Filename: pool/main/t/telegraf/telegraf_1.28.3-1_arm64.deb
-Size: 50813758
-SHA256: 173da1fac2708d6855b1c8e330ed2b65f5f4faf4b604ee6cabbdc0281370f71e
-SHA1: f3ceff17c2fe52355b1f38600de54ecadb022600
-MD5sum: 4dd3cabe44b2c9cad8cfca8669fadb35
+Size: 50813620
+SHA256: cb6ac1dd15bc41d05333823bbfc76f20524d3caf6b6c799419da9c8e6d8f32ef
+SHA1: 4c945b8cd089755aed9a1ae85354e3e05ba8b535
+MD5sum: bd5714d900622ec8cc6839933b923db5
 Description: Plugin-driven server agent for reporting metrics into InfluxDB.
 
 Package: tkmib
@@ -2998,15 +3023,15 @@ Package: vyos-http-api-tools
 Version: 2.3
 Architecture: arm64
 Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
-Installed-Size: 44162
+Installed-Size: 44378
 Pre-Depends: dpkg (>= 1.16.1), python3
 Priority: extra
 Section: contrib/net
 Filename: pool/main/v/vyos-http-api-tools/vyos-http-api-tools_2.3_arm64.deb
-Size: 9307440
-SHA256: 5fed045c38c2842e9feb3e16b5b52e6c0005a432e8c04cddc0f65b461e3357e1
-SHA1: f044945f867907c5a560285880dec0c6fea9a768
-MD5sum: 704947f9f6cf640226bc17bc2913c7bb
+Size: 9358144
+SHA256: a13d5fcaed403a3017873a32e82ac94f6cc292535a8aec3ac15db666e47996cf
+SHA1: a828986e42f9d1863f9fbd2bf3e356666a523161
+MD5sum: e1fb87782baabc910feea360f405900e
 Description: api tools for VyOS
   api tools for VyOS
 
@@ -3021,10 +3046,10 @@ Homepage: http://example.com/no-uri-given
 Priority: optional
 Section: default
 Filename: pool/main/v/vyos-linux-firmware/vyos-linux-firmware_20240610_all.deb
-Size: 34662938
-SHA256: 01e20314ef58c905848984cfa1fca8ff1678732ea70a708a225137d2dac3f221
-SHA1: be802482a4fbdde4c7b835fedd19a828f729ee4c
-MD5sum: 7ea8a80e052e84161d89d1cb0f908e83
+Size: 34662638
+SHA256: 5c06cf3217b535ba59973e23ceeb3fa6b28be98f53d5f450f514a8449586348a
+SHA1: bca169a3109cac37d7f48f38292bb0ccd67bca88
+MD5sum: 07d7d06589f3e5dcefc7485adf069450
 Description: Binary firmware for various drivers in the Linux kernel
 
 Package: vyos-user-utils
@@ -3070,9 +3095,9 @@ Priority: optional
 Section: devel
 Filename: pool/main/v/vyos-utils-build-deps/vyos-utils-build-deps_0.0.3_all.deb
 Size: 2124
-SHA256: 753ee0f69c0564147024bfc747dde0a537105c425a80e666460232231f9e766c
-SHA1: d996eef478542ae0769b40fd98a3e929b77f8828
-MD5sum: 8d75a08298ff908f6d6dc6bfa32d85e9
+SHA256: df20932b73434949ab88d488db7afc9d177d3a66a4cda58424de492daff130e8
+SHA1: 8ff693cc88b5495df197597f409de8c2085b85c1
+MD5sum: 948ba6ae16f4f990fe34e28f86a54fc5
 Description: build-dependencies for vyos-utils
  Dependency package to build the 'vyos-utils' package
 
@@ -3090,10 +3115,10 @@ Homepage: https://w1.fi/wpa_supplicant/
 Priority: optional
 Section: net
 Filename: pool/main/w/wpa/wpasupplicant_2.10-2290-ge7172e26d_arm64.deb
-Size: 1382100
-SHA256: c9c967088c5ba519a743088b679f7f4bf3cbee6b130b4c630d98076b0101342c
-SHA1: 8adfef13e8ea9781fd374043afd321583ccb6d2f
-MD5sum: d5b5f5a0444d32ff003246fee7ec5b35
+Size: 1382236
+SHA256: b698b9064c2a1cfbc570a2aa7fda7b083c78c38c2ab26596e20dcee640da3968
+SHA1: f8ce23129bbacf049e79c1ccdbc3c9235f666fc7
+MD5sum: da1c50696f8a8292ffe2cfe1c1a392e8
 Description: client support for WPA and WPA2 (IEEE 802.11i)
  wpa-supplicant is a userspace daemon handling connection and authentication
  in wireless and wired networks, primarily secured with the WPA/WPA2/WPA3
