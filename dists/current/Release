@@ -1,0 +1,28 @@
+Origin: https://psleng.github.io
+Label: https://psleng.github.io
+Codename: current
+Date: Mon, 10 Mar 2025 08:46:14 UTC
+Architectures: amd64 arm64
+Components: main
+Description: Perle GiOS Router packages repository
+MD5Sum:
+ e06f3411a39105053aaa6f4c83a291db 131963 main/binary-amd64/Packages
+ 1d8c0394097f163b77a3b18f048c265a 40669 main/binary-amd64/Packages.gz
+ 89e7777ce9fdee37a60bf0f214bf0cd7 152 main/binary-amd64/Release
+ 0262f6323d55dae9ca6b1e514ae66fab 134912 main/binary-arm64/Packages
+ ac5540cc2fd6d4164395aeb6a28d81cb 41364 main/binary-arm64/Packages.gz
+ 81a4b9bc0352dee8c42c3555bf4e2e1f 152 main/binary-arm64/Release
+SHA1:
+ 35ab96e17ab2e652f05baa99cf8aafa03c3e42e2 131963 main/binary-amd64/Packages
+ 0777325fcbbb1409b3b8a37969efd534fdb69394 40669 main/binary-amd64/Packages.gz
+ 6403542ab0bcef7457cf9b7e6516e0d585efa206 152 main/binary-amd64/Release
+ eca5a9866b562c0bbc9bc59ad17b7b99ca2c8d3a 134912 main/binary-arm64/Packages
+ 803f45463293154992f8266af425161e6fe011a5 41364 main/binary-arm64/Packages.gz
+ ae7dc7d9f542d7ec76e9966e358f7a5e0ffc43b2 152 main/binary-arm64/Release
+SHA256:
+ 9ef44a28ce22f14a2146117dfd1f058fd1193e88652304f921e5a3ce85309dc1 131963 main/binary-amd64/Packages
+ ddfdec7a6ff9755f74f087f4dd460ac25f3640edc733cea1fecf5153929639db 40669 main/binary-amd64/Packages.gz
+ 87aa7a95ba1c17247bbe9d62ee6a5761ad1f3e3ff07e54bce6f99abf76ea3b55 152 main/binary-amd64/Release
+ 5bd74d4d6f0ca5c17591c63ece0463567912155949b8e06ac14f913fa920db88 134912 main/binary-arm64/Packages
+ d6b0edd99b16bfd18ce199a3d8f86b37466ad43f47bd94510aab7ae9de6c813a 41364 main/binary-arm64/Packages.gz
+ c52bf2ed09a634953efdd6beefa8ab721f92f7e224d700003a1ce7afc14ee0da 152 main/binary-arm64/Release
