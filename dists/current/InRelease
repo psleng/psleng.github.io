@@ -1,0 +1,47 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: https://psleng.github.io
+Label: https://psleng.github.io
+Codename: current
+Date: Sat, 10 May 2025 08:58:17 UTC
+Architectures: amd64 arm64
+Components: main
+Description: Perle GiOS Router packages repository
+MD5Sum:
+ 5967a60eb316396bb55480176051fd3f 132826 main/binary-amd64/Packages
+ e7c5e31a0c2603028e9f4c0e6342b9ce 41037 main/binary-amd64/Packages.gz
+ 89e7777ce9fdee37a60bf0f214bf0cd7 152 main/binary-amd64/Release
+ f8ea203c5ccbaf7c3ae773eb68b1b51a 141751 main/binary-arm64/Packages
+ 7dcc180ab092b2c8801e6831d2a1c6e8 43405 main/binary-arm64/Packages.gz
+ 81a4b9bc0352dee8c42c3555bf4e2e1f 152 main/binary-arm64/Release
+SHA1:
+ 72450b34158825cc522e45950a151b011b4aaf8f 132826 main/binary-amd64/Packages
+ c1f532a77d818484ebff735e023ad9e9c2c4132b 41037 main/binary-amd64/Packages.gz
+ 6403542ab0bcef7457cf9b7e6516e0d585efa206 152 main/binary-amd64/Release
+ d297e09ca433598e9d84e745bcf77019034d6ac5 141751 main/binary-arm64/Packages
+ f1dc316eb3e834463d4f2ad7960f9967ab6d52a2 43405 main/binary-arm64/Packages.gz
+ ae7dc7d9f542d7ec76e9966e358f7a5e0ffc43b2 152 main/binary-arm64/Release
+SHA256:
+ 15af9057858c1693429605a958f0227bb4cb2b2f71be947e70cfa657014e5536 132826 main/binary-amd64/Packages
+ 312cedcb36e03eabf06192ba2135a04d14e261c59b52a2437e4fa6a4931379e2 41037 main/binary-amd64/Packages.gz
+ 87aa7a95ba1c17247bbe9d62ee6a5761ad1f3e3ff07e54bce6f99abf76ea3b55 152 main/binary-amd64/Release
+ 93b94f908f7bc297f13cb145ec11a5e08426d56f01503ce0642a9858338f2561 141751 main/binary-arm64/Packages
+ f22dec0d5b25362e15562fdd298f39c13ac5b1425ebc7b2c510ae03f392c30b1 43405 main/binary-arm64/Packages.gz
+ c52bf2ed09a634953efdd6beefa8ab721f92f7e224d700003a1ce7afc14ee0da 152 main/binary-arm64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEx79DKYZjYwFei7mmO3kHC44j6SgFAmgfFSkACgkQO3kHC44j
+6SiEIBAAjI+XkUjG9etWN6YNYVfpvfFQFLJPoN2eu8T6VQrOrdfwA+ikh/S7GsQX
+ypjSJWVifqruabH4vpfcafXPnrUTU+msXge/xJPfLuQA7d54QqHHh2b1xnvfXfka
+ZVlojFPSozue9cQ23nAbIbZnAHaN1dULFVRoV4AO5VziLzLhvbRXBeYxJMYEVMTa
+yr7CESYM/0u+R/hJUf6Y2joSZzhgwf/XMzxMJYKbDgCp2yN0vHnb+IplwkvpuyDK
+JaqqVJk+guAVIlpbGRvJawZ+K5L3Mb2UXKQdpEXYPXA0PbZs4UfNXB0sr1W6qWkb
+AOBr+9L4tdlMvnuluTxg0TGAVnplUQPAEXtPFL9xMBFTSMpVbIKj7KsA60If7ryo
+D1S0WnX3zWjYbkp208YA6HrAELiARQf+2NxfAzfVz80++qHM5/HMd5AX5uGFQyx/
+iiVy1sPZCGJhyTD11EBzUlIX4fT0g6Xs/QSQa3qUf64BPf80O92aFr/rZ2YNYga9
+Rx/Wo+91ec1bgFW08H34z9MPa/aD/SbjmVf7sTcIDMm0FRYPS+kfQCFzVpWUxUb/
+l6QIQNGl4R/xPqA9I1t1CEjthIE+hnZrtco9ZCeWODTSEhSgMcd2tbS/pxpunafA
+skshOBPbHojyJ2c2yeOYCEsw8xl7ouTWGFraVeY7997Dv31BKBg=
+=qafm
+-----END PGP SIGNATURE-----
