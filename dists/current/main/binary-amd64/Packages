@@ -1,0 +1,3305 @@
+Package: accel-ppp
+Architecture: amd64
+Depends: libc6 (>= 2.34), libssl3 (>= 3.0.5), libpcre3 (>= 8.39), liblua5.3-0
+Priority: optional
+Section: devel
+Filename: pool/main/a/accel-ppp/accel-ppp_1.13.0_amd64.deb
+Size: 488490
+SHA256: 29590fe5b4edbbd64fc070adda32faa6ede6b4bb837bf8155d94fe5287d4270e
+SHA1: 6a7af9491e0e1d995790cca6d90b650aca9a16f2
+MD5sum: 2e67adde4b4f805fcb055a733f8f5131
+Description: PPtP/L2TP/PPPoE/SSTP server for Linux
+ Overview
+ --------
+ The ACCEL-PPP v1.0 is completly new implementation of PPTP/PPPoE/L2TP/SSTP which was written from scratch.
+ Userspace daemon has its own PPP implementation, so it does not uses pppd and one process (multi-threaded) manages all connections.
+ ACCEL-PPP uses kernel-mode implementations of pptp/l2tp/pppoe and user-mode of sstp.
+ .
+ .
+ Features
+ --------
+ 1.  Modular architecture
+ 2.  High-performance multi-threaded I/O core
+ 3.  Supported PPTP
+ 4.  Supported PPPoE (including TR-101 extension)
+ 5.  Supported L2TPv2 (without IPsec)
+ 5.  Radius authentication/accounting
+ 6.  Radius DM/CoA extention
+ 7.  Supported authentication types: PAP, CHAP (md5), Microsoft CHAP Extentions (including version 2), not supported - EAP
+ 8.  Supported MPPE
+ 9.  Compression is not supported
+ 10. Extensible logging engine with per session logging support, implemented log to file, log to remote host and log to PostgreSQL targets
+ 11. Extensible user/password database, implemented Radius, pppd compatible chap-secrets sources
+ 12. Extensible IP pool, implemented Radius, chap-secrets and static pools
+ 13. Supported pppd compatible ip-up/ip-down scripts
+ 14. Builtin tbf/htb shaper manager
+ 15. Command line interface via telnet
+ 16. SNMP support (master or subagent via AgentX)
+ 17. Supported SSTP
+ .
+ .
+ Requirment
+ ----------
+ 1. modern linux distribution
+ 2. kernel-2.6.25 or later
+ 4. cmake-2.6 or later
+ 5. libnl-2.0 or probably later (required for builtin shaper)
+ 6. libcrypto-0.9.8 or probably later (openssl-0.9.8)
+ 7. libpcre
+ 8. net-snmp-5.x 
+ 9. libssl-0.9.8 or probably later (openssl-0.9.8)
+ .
+ .
+ Compilation and instalation
+ -----------
+ Make sure you have configured kernel headers in /usr/src/linux,
+ or specify other location via KDIR.
+ 1. cd /path/to/accel-ppp-1.3.5
+ 2. mkdir build
+ 3. cd build
+ 4. cmake [-DBUILD_DRIVER=FALSE] [-DKDIR=/usr/src/linux] [-DCMAKE_INSTALL_PREFIX=/usr/local] [-DCMAKE_BUILD_TYPE=Release] [-DLOG_PGSQL=FALSE] [-DSHAPER=FALSE] [-DRADIUS=TRUE] [-DNETSNMP=FALSE] ..
+    Please note that the double dot record in the end of the command is essential. You&apos;ll probably get error or misconfigured sources if you miss it.
+    BUILD_DRIVER, KDIR, CMAKE_INSTALL_PREFIX, CMAKE_BUILD_TYPE, LOG_PGSQL, SHAPER, RADIUS  are optional,
+    But while pptp is not present in mainline kernel you probably need BUILD_DRIVER.
+    For example:
+    cmake -DBUILD_DRIVER=TRUE ..
+    will configure sources to build pptp driver, search kernel headers at /usr/src/linux, install to /usr/local,
+    build with no debug, pgsql and shaper support, build with radius support.
+ 5. If you want to use chap-secrets for authentication purpose then you need to disable radius support, configure as following:
+    cmake -DBUILD_DRIVER=TRUE -DRADIUS=FALSE ..
+    of course you can include additional options if needed.
+ 6. make
+ 7. make install
+ .
+ .
+ Configuration
+ -------------
+ read man accel-ppp.conf
+ .
+ .
+ Built-in shaper
+ --------------
+ accel-ppp supports tbf and htb based shaper manager.
+ To enable it uncomment shaper in [modules] section.
+ It accepts radius attributes in various formats: rate, down-rate/up-rate and cisco-like. Values have to be in kilobits except cisco-like.
+ For example:
+ Filter-Id=1000 (means 1000Kbit both up-stream and down-stream rate)
+ Filter-Id=2000/3000 (means 2000Kbit down-stream rate and 3000Kbit up-stream rate)
+ To change radius attribute which containes rate information use &apos;attr&apos; option, for example:
+ [shaper]
+ attr=My-Custom-Rate-Attribute
+ of course this attribute have to be in radius dictionary.
+ To specify different attributes for down-stream and up-stream rates use &apos;attr-down&apos; and &apos;attr-up&apos; options, for example:
+ [shaper]
+ attr-down=PPPD-Downstream-Speed
+ attr-up=PPPD-Upstream-Speed
+ .
+ If you want to use cisco-like format configure accel-ppp as following:
+ [shaper]
+ vendor=Cisco
+ attr=Cisco-AVPair
+ and send two attributes:
+ Cisco-AVPair=lcp:interface-config#1=rate-limit input 2000000 8000 8000 conform-action transmit exceed-action drop (which means 2000Kbit up-stream rate and 8Kb burst)
+ Cisco-AVPair=lcp:interface-config#1=rate-limit output 2000000 8000 8000 conform-action transmit exceed-action drop (which means 2000Kbit down-stream rate and 8Kb burst)
+ .
+ .
+ Advanced shaper using
+ ---------------------
+ 1. Burst configuration.
+ If you not using cisco-like format then burst calculates from rate and specified burst factors.
+ To specify burst factors use &apos;down-burst-factor&apos; and &apos;up-burst-factor&apos; options, for example:
+ [shaper]
+ down-burst-factor=1.0
+ up-burst-factor=10.0
+ which means that burst for tbf/htb qdisc will be calculated as down-stream rate multiply to 1.0 and burst for policer/htb will be calculated as up-stream rate multiply to 10.0.
+ .
+ 2. Time ranges.
+ You can specify time ranges to authomatic rate reconfiguration.
+ To specify time ranges use following sample configuration:
+ [shaper]
+ time-range=1,1:00-3:00
+ time-range=2,3:00-5:00
+ time-range=3,5:00-7:00
+ first number is time range identifier.
+ To specify time range specific rates use following format of radius attributes: range-id,rate, range-id,down-rate/up-rate or cisco-like, for example:
+ Filter-Id=1000
+ Filter-Id=1,2000
+ Filter-Id=2,3000
+ Filter-Id=3,4000
+ which means: set 1000Kbit by default, set 2000Kbit in time range 1, set 3000Kbit in time range 2, set 4000Kbit in time range 3.
+ You have to pass multiple Filter-Id attributes to utilize this functionality.
+ Or cisco-like:
+ Cisco-AVPair=lcp:interface-config#1=rate-limit output access-group 1 1000000 8000 8000 conform-action transmit exceed-action drop
+ Cisco-AVPair=lcp:interface-config#1=rate-limit input access-group 1 1000000 8000 8000 conform-action transmit exceed-action drop
+ and so on...
+ .
+ 3. chap-secrets.
+ If you use chap-secrets instead of radius then there is way to utilize built-in shaper too.
+ The optional fifth column in chap-secrets file is used to pass rate information to shaper.
+ Its format is same as for radius attributes, except you cann&apos;t utilize time ranges functionality.
+ .
+ .
+ SNMP
+ ----
+ SNMP is implemented using net-snmp libraries. By default accel-ppp starts in subagent mode,
+ so make sure that net-snmp configured with subagent control turned on (read net-snmp&apos;s README.agentx for more details).
+ Also you can start accel-ppp as master agent using following configuration:
+ [snmp]
+ master=1
+ .
+ Usage:
+ Place accel-pppd/extra/net-snmp/ACCEL-PPP-MIB.txt to your mibs directory.
+ Also you can find used numerical oids in this file.
+ 1. Requesting statistics:
+ snmpwalk -m +ACCEL-PPP-MIB -v 2c -c local 127.0.0.1 ACCEL-PPP-MIB::accelPPPStat
+ 2. Requesting sessions:
+ snmptable -m +ACCEL-PPP-MIB -v 2c -c local 127.0.0.1 ACCEL-PPP-MIB::sessionsTable
+ 3. Terminate session by session identifier (Acct-Session-ID):
+ snmpset -m +ACCEL-PPP-MIB -v 2c -c local 127.0.0.1 ACCEL-PPP-MIB::termBySID.0 = 0000000000000001
+ 4. Terminate session by interface name:
+ snmpset -m +ACCEL-PPP-MIB -v 2c -c local 127.0.0.1 ACCEL-PPP-MIB::termByIfName.0 = ppp2
+ 5. Terminaten session by IP address (Framed-IP-Address):
+ snmpset -m +ACCEL-PPP-MIB -v 2c -c local 127.0.0.1 ACCEL-PPP-MIB::termByIP.0 = 192.168.10.10
+ 6. Terminate session by username:
+ snmpset -m +ACCEL-PPP-MIB -v 2c -c local 127.0.0.1 ACCEL-PPP-MIB::termByUsername.0 = user1
+ 7. Execute cli command:
+ snmpset -m +ACCEL-PPP-MIB -v 2c -c local 127.0.0.1 ACCEL-PPP-MIB::cli.0 = &quot;shaper change all 1024 temp&quot;
+ .
+ .
+ chap-secrets encryption
+ -----------------------
+ To enable chap-secrets encryption ablity accel-ppp must be compiled with -DCRYPTO=OPENSSL (which is default).
+ Username field may be kept as cleartext or hashed through some hash chain. To specify hash chain use username-hash option.
+ For example, username-hash=md5,sha1 means hash username through md5 and then binary result hash through sha1.
+ Username have to be specified as hexadecimal dump of digest result.
+ Password field have to be encrypted using smbencrypt (NT Hash part).
+ Encryption is incompatible with auth_chap_md5 module.
+ .
+ .
+ Warning !!!
+ -----------
+ 1. The pptp driver conflicts with ip_gre driver (in kernel), so make sure that ip_gre is not built-in or loaded at run time
+    (don&apos;t matter if you have 2.6.37 or later kernel).
+ 2. Don&apos;t mix connections of accel-ppp and poptop&apos;s pptpd, before starting accel-ppp make sure that no connections
+    of pptpd exists.
+ .
+ .
+ Contacts
+ --------
+ http://accel-ppp.org/
+ mail: contact@accel-ppp.org
+ ICQ: 337258064
+ Jabber: dima@accel-ppp.org
+Maintainer: Dmitry Kozlov <xeb@mail.ru>
+Version: 1.13.0
+Installed-Size: 1724
+
+Package: apnscripts
+Version: 1.2-1
+Architecture: all
+Maintainer: Jessica Kong <jkong@perle.com>
+Installed-Size: 1243
+Depends: mobile-broadband-provider-info (>= 20230416), python3-lxml (>= 4.9.2), protobuf-compiler (>= 3.21.12)
+Priority: optional
+Section: misc
+Filename: pool/main/a/apnscripts/apnscripts_1.2-1_all.deb
+Size: 110412
+SHA256: ab9e225d27a7a87ba0abe711973ec77df94823083e9ade8011704bdadbe6324a
+SHA1: 957f1274c65c6a9f8a05a2c7051867dfc680de69
+MD5sum: 31f6566565a284b6a323499079bea53e
+Description: apnscripts contains apn database files and script files to look for apns given certain inputs
+
+Package: aws-gwlbtun
+Version: 1.0-1
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 366
+Homepage: https://github.com/aws-samples/aws-gateway-load-balancer-tunnel-handler
+Priority: optional
+Section: net
+Filename: pool/main/a/aws-gwlbtun/aws-gwlbtun_1.0-1_amd64.deb
+Size: 82312
+SHA256: f4b4fd24b0f0922b4916950ed1f8fb55a81770fa825c517bc1a026e761ec5559
+SHA1: 21983525049ce1edbfb86cc90324b4ac4f33816f
+MD5sum: 64d0e819c28ce9e1833dc0995ffd2001
+Description: AWS Gateway Load Balancer Tunnel Handler
+ This is a simple package that handles tunneling for the AWS Gateway Load Balancer.
+
+Package: bash-completion
+Version: 1:2.8-6
+Architecture: all
+Maintainer: Gabriel F. T. Gomes <gabriel@inconstante.eti.br>
+Installed-Size: 1355
+Multi-Arch: foreign
+Homepage: https://github.com/scop/bash-completion
+Priority: standard
+Section: shells
+Filename: pool/main/b/bash-completion/bash-completion_2.8-6_all.deb
+Size: 198640
+SHA256: 43521174f2a6458316c8a6e3cfae251506751383bb7729fcae78e7ecc3511b75
+SHA1: b8735ddc1b53ba9c73258481d65a8afdb73faab2
+MD5sum: 1c61d631dda0c947443d7d31f118030c
+Description: programmable completion for the bash shell
+ bash completion extends bash's standard completion behavior to achieve
+ complex command lines with just a few keystrokes.  This project was
+ conceived to produce programmable completion routines for the most
+ common Linux/UNIX commands, reducing the amount of typing sysadmins
+ and programmers need to do on a daily basis.
+
+Package: charon-cmd
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 186
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), strongswan-libcharon (>= 5.9.11)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/charon-cmd_5.9.11-2+vyos0_amd64.deb
+Size: 89384
+SHA256: 0993eb4628f70edc30710e78b70312035c0c6d55b1de4336c4779b3b7a679ccb
+SHA1: b80f9c41d0bcf2017034441ddfd80ddc91d9a59d
+MD5sum: 8abfb196a06743b9dad28ebecbada5f7
+Description: standalone IPsec client
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the charon-cmd command, which can be used as a client to
+ connect to a remote IKE daemon.
+
+Package: charon-systemd
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 194
+Depends: libstrongswan (= 5.9.11-2+vyos0), strongswan-swanctl, libc6 (>= 2.34), libsystemd0, strongswan-libcharon (>= 5.9.11)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/charon-systemd_5.9.11-2+vyos0_amd64.deb
+Size: 86020
+SHA256: c47a601e16728fddf843a2e3190501a89b37b4145221355785a4599d1a4a5457
+SHA1: 3d56e8f628a6340c2b66254b24ad288320bd3a1a
+MD5sum: eaa15aae454fdac87bda31175bad9e4c
+Description: strongSwan IPsec client, systemd support
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the charon-systemd files.
+
+Package: ddclient
+Version: 3.11.2-1
+Architecture: all
+Maintainer: Richard Hansen <rhansen@rhansen.org>
+Installed-Size: 473
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: debconf (>= 0.5) | debconf-2.0, perl:any, curl
+Recommends: iproute2, libdigest-sha-perl, libjson-pp-perl
+Provides: dyndns-client
+Homepage: https://ddclient.net
+Priority: optional
+Section: net
+Filename: pool/main/d/ddclient/ddclient_3.11.2-1_all.deb
+Size: 102072
+SHA256: 7aa26819a70247cfdcb33c2c402bb202b14d910b26bcf806299d28ef423aeba0
+SHA1: d395788c5dc2db2c575b8d2bc157c0b2f118bee5
+MD5sum: 229bcad1928daaae1184bcf09c464084
+Description: address updating utility for dynamic DNS services
+ This package provides a client to update dynamic IP addresses with
+ several dynamic DNS service providers, such as DynDNS.com.
+ .
+ This makes it possible to use a fixed hostname (such as
+ myhost.dyndns.org) to access a machine with a dynamic IP address.
+ .
+ This client supports both dynamic and (near) static services, as  well as
+ MX record and alternative name management. It caches the address, and
+ only attempts the update when it has changed.
+
+Package: dropbear
+Version: 2022.83-1+deb12u1
+Architecture: all
+Maintainer: Guilhem Moulin <guilhem@debian.org>
+Installed-Size: 75
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: dropbear-bin (>= 2022.83-1+deb12u1), lsb-base (>= 3.0-6)
+Suggests: dropbear-initramfs, runit
+Breaks: dropbear-run (<< 2019.78-1~)
+Replaces: dropbear-run (<< 2019.78-1~)
+Multi-Arch: foreign
+Homepage: https://matt.ucc.asn.au/dropbear/dropbear.html
+Priority: optional
+Section: net
+Filename: pool/main/d/dropbear/dropbear_2022.83-1+deb12u1_all.deb
+Size: 40956
+SHA256: 8c44dba5d00d9dca44a22161c5c25b6351df9aea85746b86b76344121564c3fb
+SHA1: ce839002ca6e4b211651483ef3fd9f0333bb5960
+MD5sum: 5145a19d7d700b4d810c9dee513f242f
+Description: lightweight SSH2 server and client - startup scripts
+ dropbear is a SSH 2 server and client designed to be small enough to
+ be used in small memory environments, while still being functional and
+ secure enough for general use.
+ .
+ It implements most required features of the SSH 2 protocol, and other
+ features such as authentication agent forwarding.
+ .
+ This package provides startup scripts for the service manager.
+
+Package: dropbear-bin
+Source: dropbear
+Version: 2022.83-1+deb12u1
+Architecture: amd64
+Maintainer: Guilhem Moulin <guilhem@debian.org>
+Installed-Size: 571
+Depends: libc6 (>= 2.34), libpam0g (>= 0.99.7.1), libtomcrypt1 (>= 1.18.2), libtommath1 (>= 1.2.0), zlib1g (>= 1:1.1.4)
+Suggests: openssh-client
+Breaks: dropbear (<< 2015.68-1)
+Replaces: dropbear (<< 2015.68-1)
+Provides: ssh-server
+Multi-Arch: foreign
+Homepage: https://matt.ucc.asn.au/dropbear/dropbear.html
+Priority: optional
+Section: net
+Filename: pool/main/d/dropbear/dropbear-bin_2022.83-1+deb12u1_amd64.deb
+Size: 156136
+SHA256: 2b44988cb3f60417ec4192e69dc774c547e405bedaedb38362512d09de7de22e
+SHA1: 1b51f7039a621b4c4ce2270ff054f5315e570abc
+MD5sum: a2d73a3e032cd9e961a8549fb3b11984
+Description: lightweight SSH2 server and client - command line tools
+ dropbear is a SSH 2 server and client designed to be small enough to
+ be used in small memory environments, while still being functional and
+ secure enough for general use.
+ .
+ It implements most required features of the SSH 2 protocol, and other
+ features such as authentication agent forwarding.
+ .
+ This package provides dropbear(8), dbclient(1), dropbearkey(1) and
+ dropbearconvert(1).
+
+Package: dropbear-initramfs
+Source: dropbear
+Version: 2022.83-1+deb12u1
+Architecture: all
+Maintainer: Guilhem Moulin <guilhem@debian.org>
+Installed-Size: 76
+Depends: busybox | busybox-static, dropbear-bin (>= 2022.83-1+deb12u1), initramfs-tools (>= 0.94), udev
+Recommends: cryptsetup-initramfs
+Breaks: dropbear (<< 2015.68-1)
+Replaces: dropbear (<< 2015.68-1)
+Multi-Arch: foreign
+Homepage: https://matt.ucc.asn.au/dropbear/dropbear.html
+Priority: optional
+Section: net
+Filename: pool/main/d/dropbear/dropbear-initramfs_2022.83-1+deb12u1_all.deb
+Size: 41612
+SHA256: 876d9c78f23808b803521d7e2b9adcd8a620e8f4c6fe6f7865b2d13ddccefa84
+SHA1: b130f5c19373e20b72604da16f2996f2c2b31f74
+MD5sum: d0f58c76f084f662249a958caec5ad3b
+Description: lightweight SSH2 server and client - initramfs integration
+ dropbear is a SSH 2 server and client designed to be small enough to
+ be used in small memory environments, while still being functional and
+ secure enough for general use.
+ .
+ It implements most required features of the SSH 2 protocol, and other
+ features such as authentication agent forwarding.
+ .
+ This package provides initramfs integration.
+
+Package: dropbear-run
+Source: dropbear
+Version: 2022.83-1+deb12u1
+Architecture: all
+Maintainer: Guilhem Moulin <guilhem@debian.org>
+Installed-Size: 44
+Pre-Depends: dpkg (>= 1.17.14)
+Depends: dropbear (>= 2019.78-1~)
+Recommends: dropbear-initramfs (>= 2019.78-1~)
+Breaks: dropbear (<< 2019.78-1~)
+Multi-Arch: foreign
+Homepage: https://matt.ucc.asn.au/dropbear/dropbear.html
+Priority: optional
+Section: oldlibs
+Filename: pool/main/d/dropbear/dropbear-run_2022.83-1+deb12u1_all.deb
+Size: 34808
+SHA256: 18f315c27fa64c9f1144239229b180c774f14a4da9e85d95a5e626ff03484d91
+SHA1: 01a882ff041c1a768512256a365ca33e6a03d53e
+MD5sum: d9cd60bce5a09fb1da9b7ccf69520377
+Description: transitional dummy package for dropbear
+ This is a transitional dummy package to get upgrading systems to install the
+ dropbear package. It can safely be removed once no other package depends on
+ it.
+
+Package: eapoltest
+Source: wpa
+Version: 2.10-2290-ge7172e26d
+Architecture: amd64
+Maintainer: Debian wpasupplicant Maintainers <wpa@packages.debian.org>
+Installed-Size: 3251
+Depends: libc6 (>= 2.34), libdbus-1-3 (>= 1.9.14), libpcsclite1 (>= 1.0.0), libssl3 (>= 3.0.0)
+Homepage: https://w1.fi/wpa_supplicant/
+Priority: optional
+Section: net
+Filename: pool/main/w/wpa/eapoltest_2.10-2290-ge7172e26d_amd64.deb
+Size: 1221204
+SHA256: c85bb27b9f7a542509953320619eda0e1e57f4d99158a18cf1b824764ad67221
+SHA1: 5bfd3572e10765e9a02c5ec5c6fe3cd9a79cb0e7
+MD5sum: 06a8f123d4e722c8227ec2e9296bdbc9
+Description: EAPoL testing utility
+ eapol_test allows testing EAP authentication methods without using
+ a full 802.1X connection. It is frequently used to test the EAP
+ configuration of RADIUS systems. It is an administrator tool and not
+ required for standard 802.1X authentication.
+
+Package: firmware-ti-eth-j7200
+Source: ti-linux-firmware
+Version: 09.02.00.010-1
+Architecture: all
+Maintainer: Sai Sree Kartheek Adivi <s-adivi@ti.com>
+Installed-Size: 575
+Homepage: https://git.ti.com/cgit/processor-firmware/ti-linux-firmware
+Priority: optional
+Section: kernel
+Filename: pool/main/t/ti-linux-firmware/firmware-ti-eth-j7200_09.02.00.010-1_all.deb
+Size: 263120
+SHA256: c00cc0200c99ec6717ea40ae19016e28241e92c071ee38667004ccc14abb9d8a
+SHA1: 5460f640d68911424f659aa12547a30a63a53189
+MD5sum: 1cf0ba29a9752485e193182c4d0b5531
+Description: Ethernet firmware for J7200
+ This package provides Ethernet firmware for J7200
+
+Package: firmware-ti-ipc-am64
+Source: ti-linux-firmware
+Version: 09.02.00.010-1
+Architecture: all
+Maintainer: Sai Sree Kartheek Adivi <s-adivi@ti.com>
+Installed-Size: 464
+Conflicts: firmware-ti-ipc
+Replaces: firmware-ti-ipc
+Provides: firmware-ti-ipc
+Homepage: https://git.ti.com/cgit/processor-firmware/ti-linux-firmware
+Priority: optional
+Section: kernel
+Filename: pool/main/t/ti-linux-firmware/firmware-ti-ipc-am64_09.02.00.010-1_all.deb
+Size: 65028
+SHA256: 2aefbb4610687c389901b8db3f188db85892d2d5da2500041dc17402c68badfb
+SHA1: f5289dbffd72a645ef537476866d139a44d01c32
+MD5sum: ee13a006a92fb8029929e45b43bbade8
+Description: TI IPC firmware for AM64
+ This package provides TI IPC firmwares for remoteprocs on AM64
+
+Package: firmware-ti-ipc-j7200
+Source: ti-linux-firmware
+Version: 09.02.00.010-1
+Architecture: all
+Maintainer: Sai Sree Kartheek Adivi <s-adivi@ti.com>
+Installed-Size: 231
+Conflicts: firmware-ti-ipc
+Replaces: firmware-ti-ipc
+Provides: firmware-ti-ipc
+Homepage: https://git.ti.com/cgit/processor-firmware/ti-linux-firmware
+Priority: optional
+Section: kernel
+Filename: pool/main/t/ti-linux-firmware/firmware-ti-ipc-j7200_09.02.00.010-1_all.deb
+Size: 41276
+SHA256: 0f1dc589cbcca39f70dd19dd94a4d49287d4f6da040a34d8b34243a849154f0e
+SHA1: 3051d46e05cc5357d138368ae26ccabfe7317f36
+MD5sum: 458200295fadff2b3d148845c315c85d
+Description: TI IPC firmware for J7200
+ This package provides TI IPC firmwares for remoteprocs on J7200
+
+Package: firmware-ti-prueth-am64
+Source: ti-linux-firmware
+Version: 09.02.00.010-1
+Architecture: all
+Maintainer: Sai Sree Kartheek Adivi <s-adivi@ti.com>
+Installed-Size: 229
+Homepage: https://git.ti.com/cgit/processor-firmware/ti-linux-firmware
+Priority: optional
+Section: kernel
+Filename: pool/main/t/ti-linux-firmware/firmware-ti-prueth-am64_09.02.00.010-1_all.deb
+Size: 23164
+SHA256: da8cf464a922ff9ca1d0f59fb7aeabc6407b65e715f6211826f9cba17589e189
+SHA1: ff76dc55e17ef6eeb7bdd4c6bfa713d48b6798d3
+MD5sum: ad8cd5b89bc7c607b83a9d9e333aeef3
+Description: PRU Ethernet firmware for AM64
+ This package provides PRU Ethernet firmware for AM64
+
+Package: firmware-ti-pruhsr-am64
+Source: ti-linux-firmware
+Version: 09.02.00.010-1
+Architecture: all
+Maintainer: Sai Sree Kartheek Adivi <s-adivi@ti.com>
+Installed-Size: 230
+Homepage: https://git.ti.com/cgit/processor-firmware/ti-linux-firmware
+Priority: optional
+Section: kernel
+Filename: pool/main/t/ti-linux-firmware/firmware-ti-pruhsr-am64_09.02.00.010-1_all.deb
+Size: 23832
+SHA256: 6e89d2f5ed54b8c2ba11afc9b067ae868d274cfa6527395e1533ceae72a34458
+SHA1: ca7f59caf0c344f6e5f04341513b27ecea218e92
+MD5sum: c0fa9ec06661c163499c176b8baff444
+Description: PRU HSR firmware for AM64
+ This package provides PRU HSR firmware for AM64
+
+Package: firmware-ti-prusw-am64
+Source: ti-linux-firmware
+Version: 09.02.00.010-1
+Architecture: all
+Maintainer: Sai Sree Kartheek Adivi <s-adivi@ti.com>
+Installed-Size: 239
+Homepage: https://git.ti.com/cgit/processor-firmware/ti-linux-firmware
+Priority: optional
+Section: kernel
+Filename: pool/main/t/ti-linux-firmware/firmware-ti-prusw-am64_09.02.00.010-1_all.deb
+Size: 24616
+SHA256: 0e0e2b051ac1924f92d03ab7535e4945faf187e6d93dd734982b8c5480e0a1ee
+SHA1: b46f966eab9917a63d874b7a82d2d6a5cf1ce3ac
+MD5sum: a3615aba672328fc133952146fce2f22
+Description: PRU Ethernet Switch firmware for AM64
+ This package provides PRU Ethernet Switch firmware for AM64
+
+Package: flask-react-web
+Version: 0.1
+Depends: python3-pip-whl, vyos-custom-queries
+Maintainer: Lan Nguyen
+Architecture: all
+Priority: optional
+Section: contrib/utilities
+Filename: pool/main/f/flask-react-web/flask-react-web_0.1_all.deb
+Size: 34701760
+SHA256: 1111954b0a3b7b5effc2cb06e9d35d6da8ad6270ecfa601201afadebff266d15
+SHA1: 87e8926628cd208580e049c1c248a78ad911838f
+MD5sum: e060b54957b9ae350c462b8b754dde4d
+Description: VyOS GUI based on flask and react
+
+Package: frr
+Version: 10.2.1-0
+Architecture: amd64
+Maintainer: David Lamparter <equinox-debian@diac24.net>
+Installed-Size: 37654
+Pre-Depends: adduser
+Depends: iproute2, logrotate (>= 3.2-11), lsof, libc-ares2 (>= 1.7.0), libc6 (>= 2.34), libcap2 (>= 1:2.10), libcrypt1 (>= 1:4.1.0), libjson-c5 (>= 0.15), liblua5.3-0, libpam0g (>= 0.99.7.1), libpcre2-posix3 (>= 10.34), libprotobuf-c1 (>= 1.0.1), libreadline8 (>= 7.0~rc1), libyang3
+Recommends: frr-pythontools
+Suggests: frr-doc
+Conflicts: pimd, quagga, quagga-bgpd, quagga-core, quagga-isisd, quagga-ospf6d, quagga-ospfd, quagga-pimd, quagga-ripd, quagga-ripngd, zebra, zebra-pj
+Replaces: zebra, zebra-pj
+Homepage: https://www.frrouting.org/
+Priority: optional
+Section: net
+Filename: pool/main/f/frr/frr_10.2.1-0_amd64.deb
+Size: 5745576
+SHA256: b3051135b2e9abad3502feb3cc4f1f93a516f91e4584f2f236e5455dfa3e900d
+SHA1: cb876fe1d84633335b74c3d5418ef6b44363eaf5
+MD5sum: 2f3cd520d5fb1211cfaf4c3c576d75ba
+Description: FRRouting suite of internet protocols (BGP, OSPF, IS-IS, ...)
+ FRRouting implements the routing protocols commonly used in the
+ internet and private networks to exchange information between routers.
+ Both IP and IPv6 are supported, as are BGP, OSPFv2, OSPFv3, IS-IS, BABEL,
+ EIGRP, RIP, RIPng, LDP, BFD, PIM, VRRP, PBR, and NHRP.
+ .
+ These protocols are used to turn your system into a dynamic router,
+ exchanging information about available connections with other routers
+ in a standards-compliant way.  The actual packet forwarding
+ functionality is provided by the OS kernel.
+ .
+ FRRouting is a fork of Quagga with an open community model. The main
+ git lives on https://github.com/frrouting/frr.git and the project name
+ is commonly abbreviated as "FRR."
+
+Package: frr-exporter
+Version: 1.3.1
+License: Apache-2.0
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 16366
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/f/frr-exporter/frr-exporter_1.3.1_amd64.deb
+Size: 8785512
+SHA256: 762a0d6814f32eb23177278dba5666339b62416f6980c59b04560bf76aeeb3d4
+SHA1: c7d2482fc8ec0adc507c453f089ce14476b44406
+MD5sum: b2ba76a2e6c0409ad5c963a9d6c5a862
+Description: Prometheus exporter for FRR
+
+Package: frr-pythontools
+Source: frr
+Version: 10.5.2-0
+Architecture: all
+Maintainer: David Lamparter <equinox-debian@diac24.net>
+Installed-Size: 188
+Depends: frr (<< 10.5.2.0-~), frr (>= 10.5.2-0~), python3:any
+Homepage: https://www.frrouting.org/
+Priority: optional
+Section: net
+Filename: pool/main/f/frr/frr-pythontools_10.5.2-0_all.deb
+Size: 38896
+SHA256: 8bde94c10895bb42d3cfb150ee55ca66187fdcf85a2f3d93876dbfc5d8a2baba
+SHA1: fb3cfba1c060bda07b67f4455c7a6012d3fced97
+MD5sum: c5a504d1b6fc869a60b411797a1a19ee
+Description: FRRouting suite - Python tools
+ The FRRouting suite uses a small Python tool to provide configuration
+ reload functionality, particularly useful when the interactive configuration
+ shell is not used.
+ .
+ Without this package installed, "reload" (as a systemd or init script
+ invocation) will not work for the FRR daemons.
+
+Package: frr-rpki-rtrlib
+Source: frr
+Version: 10.2.1-0
+Architecture: amd64
+Maintainer: David Lamparter <equinox-debian@diac24.net>
+Installed-Size: 130
+Depends: frr (= 10.2.1-0), libc6 (>= 2.34), libjson-c5 (>= 0.15), librtr0
+Homepage: https://www.frrouting.org/
+Priority: optional
+Section: net
+Filename: pool/main/f/frr/frr-rpki-rtrlib_10.2.1-0_amd64.deb
+Size: 31540
+SHA256: f504120399fd84787eedd24e651084445fedc7ea93ac8b46fac54d6c8aa9648f
+SHA1: 47cf441e602468afca9f39f7d8f1de492ddbe76b
+MD5sum: e3f4d35c976b76d095afa4e65c28df73
+Description: FRRouting suite - BGP RPKI support (rtrlib)
+ Adds RPKI support to FRR's bgpd, allowing validation of BGP routes
+ against cryptographic information stored in WHOIS databases.  This is
+ used to prevent hijacking of networks on the wider internet.  It is only
+ relevant to internet service providers using their own autonomous system
+ number.
+
+Package: frr-snmp
+Source: frr
+Version: 10.2.1-0
+Architecture: amd64
+Maintainer: David Lamparter <equinox-debian@diac24.net>
+Installed-Size: 971
+Depends: frr (= 10.2.1-0), libc6 (>= 2.28), libsnmp40 (>= 5.9.4+dfsg)
+Recommends: snmpd
+Homepage: https://www.frrouting.org/
+Priority: optional
+Section: net
+Filename: pool/main/f/frr/frr-snmp_10.2.1-0_amd64.deb
+Size: 69548
+SHA256: c87ed14cec31a04e8b3eb26e60ae99af421ddda884cf411da3c7a9df7615d008
+SHA1: ba92f9774a040cdfbbac98262a82610dcbfa187f
+MD5sum: 7b6643eea3d5f4c83cf5342c732b93a2
+Description: FRRouting suite - SNMP support
+ Adds SNMP support to FRR's daemons by attaching to net-snmp's snmpd
+ through the AgentX protocol.  Provides read-only access to current
+ routing state through standard SNMP MIBs.
+
+Package: frr-test-tools
+Source: frr
+Version: 10.2.1-0
+Architecture: amd64
+Maintainer: David Lamparter <equinox-debian@diac24.net>
+Installed-Size: 56
+Depends: frr (= 10.2.1-0), libc6 (>= 2.34)
+Homepage: https://www.frrouting.org/
+Priority: optional
+Section: net
+Filename: pool/main/f/frr/frr-test-tools_10.2.1-0_amd64.deb
+Size: 15004
+SHA256: 21d2c2c141c1646341a69d0880d02c743aab4df9bbc3f2650f0e1e7a89a9a9c8
+SHA1: c90f1893df4624b75a164a8d8f8d8d711a98f043
+MD5sum: 16add959689cef4617b8c7b541e094a3
+Description: FRRouting suite - Testing Tools
+ Adds FRR test tools, used in testing FRR.
+
+Package: hostapd
+Source: wpa
+Version: 2.10-2290-ge7172e26d
+Architecture: amd64
+Maintainer: Debian wpasupplicant Maintainers <wpa@packages.debian.org>
+Installed-Size: 2456
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: libc6 (>= 2.34), libnl-3-200 (>= 3.2.27), libnl-genl-3-200 (>= 3.2.7), libnl-route-3-200 (>= 3.2.7), libssl3 (>= 3.0.0)
+Multi-Arch: foreign
+Homepage: https://w1.fi/wpa_supplicant/
+Priority: optional
+Section: net
+Filename: pool/main/w/wpa/hostapd_2.10-2290-ge7172e26d_amd64.deb
+Size: 921472
+SHA256: 58e163e70709550271d9bad927445cdc04b019fd8a4b8ed358b7edd841dd0e97
+SHA1: 97f39bc9776301094201581f88de8e588fdb1ee8
+MD5sum: 47867fb33cf7094372bdcf5f87a372fa
+Description: access point and authentication server for Wi-Fi and Ethernet
+ IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/WPA3/EAP Authenticator
+ .
+ Originally, hostapd was an optional user space component for Host AP
+ driver. It adds more features to the basic IEEE 802.11 management
+ included in the kernel driver: using external RADIUS authentication
+ server for MAC address based access control, IEEE 802.1X Authenticator
+ and dynamic WEP keying, RADIUS accounting, WPA/WPA2/WPA3 (IEEE 802.11i/RSN)
+ Authenticator and dynamic TKIP/CCMP keying.
+ .
+ The current version includes support for other drivers, an integrated
+ EAP authenticator (i.e., allow full authentication without requiring
+ an external RADIUS authentication server), and RADIUS authentication
+ server for EAP authentication.
+ .
+ hostapd works with the following drivers:
+ .
+  * mac80211 based drivers with support for master mode [linux]
+  * Host AP driver for Prism2/2.5/3 [linux]
+  * Driver interface for FreeBSD net80211 layer [kfreebsd]
+  * Any wired Ethernet driver for wired IEEE 802.1X authentication.
+
+Package: hsflowd
+Version: 2.0.55-1
+Architecture: all
+Essential: no
+Maintainer: Neil McKee [neil.mckee@inmon.com]
+Priority: optional
+Section: admin
+Filename: pool/main/h/hsflowd/hsflowd_2.0.55-1_all.deb
+Size: 396144
+SHA256: 405a3a58696138e4cf5c4e78b4c552ec204588993d1d77d9da6ddf56bfd1e02a
+SHA1: c4ef6599f82b6f5379c85759c8269b88697fd168
+MD5sum: ac75d1bea24842c1f22f2050dd66c907
+Description: sFlow(R) monitoring agent
+Homepage: sflow.net
+
+Package: hvinfo
+Version: 1.2.0
+Architecture: amd64
+Maintainer: Daniil Baturin <daniil@baturin.org>
+Installed-Size: 80
+Depends: libgnat-12
+Priority: extra
+Section: contrib/utilities
+Filename: pool/main/h/hvinfo/hvinfo_1.2.0_amd64.deb
+Size: 21468
+SHA256: ed78cd82a3f3a6ef6778c79ffa093c79870c8e98ab65313b1485a04443aa8263
+SHA1: 3133c396a3f1eb8a3c24eb0cd9f961a15171d5f1
+MD5sum: f89fbddac1a9c57859e8cd682ad8ec26
+Description: x86 hypervisor detection tool
+ An x86 hypervisor detection with support for detecting
+ KVM, Xen PV or HVM, VMware, and others.
+
+Package: igmpproxy
+Version: 0.3-1
+Architecture: amd64
+Maintainer: Pali Rohár <pali.rohar@gmail.com>
+Installed-Size: 102
+Depends: lsb-base (>= 3.2-14), libc6 (>= 2.34)
+Homepage: https://github.com/pali/igmpproxy
+Priority: optional
+Section: net
+Filename: pool/main/i/igmpproxy/igmpproxy_0.3-1_amd64.deb
+Size: 38972
+SHA256: 349f65a4ef4c222b90713c9231503ce672a528f7930e22309776f64d1a5b375f
+SHA1: 9a9642d93456da893d47fd22ef30ba4b4efe760e
+MD5sum: 4cbca27f35e1edcd7eebce4726bf0fd3
+Description: IGMP multicast routing daemon
+ IGMPproxy is a simple dynamic Multicast Routing Daemon using only IGMP
+ signalling. It's intended for simple forwarding of Multicast traffic
+ between networks.
+
+Package: initramfs-tools
+Version: 0.142+deb12u1
+Architecture: all
+Maintainer: Debian kernel team <debian-kernel@lists.debian.org>
+Installed-Size: 58
+Depends: initramfs-tools-core (= 0.142+deb12u1), linux-base
+Suggests: bash-completion
+Conflicts: linux-initramfs-tool, usplash (<< 0.5.50)
+Breaks: e2fsprogs (<< 1.42.13), initscripts (<< 2.88dsf-59.3~), upstart
+Provides: linux-initramfs-tool
+Multi-Arch: foreign
+Priority: optional
+Section: utils
+Filename: pool/main/i/initramfs-tools/initramfs-tools_0.142+deb12u1_all.deb
+Size: 15768
+SHA256: 400950b796830874c8fefc2ef7c7c2902e2f209e9b3194fb9eb718c4a7cb72eb
+SHA1: 1a051d98f1a1a4a8625be1c54794c2b701c13f98
+MD5sum: 5df14680e0bc8330baeca93073838c31
+Description: generic modular initramfs generator (automation)
+ This package builds a bootable initramfs for Linux kernel packages.  The
+ initramfs is loaded along with the kernel and is responsible for
+ mounting the root filesystem and starting the main init system.
+
+Package: initramfs-tools-core
+Source: initramfs-tools
+Version: 0.142+deb12u1
+Architecture: all
+Maintainer: Debian kernel team <debian-kernel@lists.debian.org>
+Installed-Size: 161
+Depends: klibc-utils (>= 2.0.4-8~), cpio (>= 2.12), kmod, udev, coreutils (>= 8.24), logsave | e2fsprogs (<< 1.45.3-1~)
+Recommends: busybox (>= 1:1.22.0-17~) | busybox-static (>= 1:1.22.0-17~), zstd
+Suggests: bash-completion
+Breaks: busybox (<< 1:1.22.0-17~), busybox-static (<< 1:1.22.0-17~), initramfs-tools (<< 0.121~)
+Replaces: initramfs-tools (<< 0.121~)
+Multi-Arch: foreign
+Priority: optional
+Section: utils
+Filename: pool/main/i/initramfs-tools/initramfs-tools-core_0.142+deb12u1_all.deb
+Size: 47788
+SHA256: ebedada5dfb685fb4429092a5f4090742a3c3b0f2b01693bcc49c68a0d2554bb
+SHA1: c17d9859c881e19d564aecf2018a882d3b556964
+MD5sum: 8b42b1793fe3f770284327e404cbd8b7
+Description: generic modular initramfs generator (core tools)
+ This package contains the mkinitramfs program that can be used to
+ create a bootable initramfs for a Linux kernel.  The initramfs should
+ be loaded along with the kernel and is then responsible for mounting
+ the root filesystem and starting the main init system.
+
+Package: ipaddrcheck
+Version: 1.2
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 41
+Depends: libpcre3, libcidr0, libc6 (>= 2.34)
+Priority: extra
+Section: contrib/net
+Filename: pool/main/i/ipaddrcheck/ipaddrcheck_1.2_amd64.deb
+Size: 10592
+SHA256: 0a9384adae7c7862f1244bd3070a4d643b53b4e636dddcefd0b75c41d9e2e95f
+SHA1: 06fc8747b7fdf767d86c88679cadce6698e7b3cb
+MD5sum: 8a76da894870faf027badcfbee9eee6a
+Description: IPv4 and IPv6 address validation utility
+ A validation utility for IPv4 and IPv6 addresses.
+
+Package: isc-dhcp-client
+Source: isc-dhcp
+Version: 4.4.3-P1-4
+Architecture: amd64
+Maintainer: Debian ISC DHCP Maintainers <isc-dhcp@packages.debian.org>
+Installed-Size: 2858
+Depends: libc6 (>= 2.36), debianutils (>= 2.8.2), iproute2
+Recommends: isc-dhcp-common
+Suggests: resolvconf, avahi-autoipd, isc-dhcp-client-ddns
+Provides: dhcp-client
+Homepage: http://www.isc.org
+Priority: important
+Section: net
+Filename: pool/main/i/isc-dhcp/isc-dhcp-client_4.4.3-P1-4_amd64.deb
+Size: 1096684
+SHA256: fb2d36a2d33d32fefb1c36edc1210a32bcb058bc26a4646cafd16d7a8f81aefb
+SHA1: ff818829ef49242e6e44f1be94e34ae46cad34ff
+MD5sum: 59a76e5833ecf7b2f88be63c1cd9a39e
+Description: DHCP client for automatically obtaining an IP address
+ This is the Internet Software Consortium's DHCP client.
+ .
+ Dynamic Host Configuration Protocol (DHCP) is a protocol like BOOTP
+ (actually dhcpd includes much of the functionality of bootpd). It
+ gives client machines "leases" for IP addresses and can
+ automatically set their network configuration. If your machine
+ depends on DHCP (especially likely if it's a workstation on a large
+ network, or a laptop, or attached to a cable modem), keep this or
+ another DHCP client installed.
+ .
+ Extra documentation can be found in the package isc-dhcp-common.
+ .
+ ISC has decided to stop maintaining the client and relay parts of isc-dhcp,
+ and they will be removed after the 4.4.3 release, keeping only the server
+ component. Please, consider using an alternative for isc-dhcp-client
+ (dhclient).
+ .
+ More information can be found in the ISC official announcement:
+ https://www.isc.org/blogs/dhcp-client-relay-eom/
+
+Package: isc-dhcp-client-ddns
+Source: isc-dhcp
+Version: 4.4.3-P1-4
+Architecture: amd64
+Maintainer: Debian ISC DHCP Maintainers <isc-dhcp@packages.debian.org>
+Installed-Size: 2937
+Depends: libc6 (>= 2.36), isc-dhcp-client (= 4.4.3-P1-4)
+Enhances: isc-dhcp-client
+Homepage: http://www.isc.org
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-dhcp/isc-dhcp-client-ddns_4.4.3-P1-4_amd64.deb
+Size: 1117136
+SHA256: 403a67752558ab1873e4c21706986f2af188b5c060beb2713ecdd653543d8feb
+SHA1: 6382aac6d193594ad5d785f29767f64015a8ee1d
+MD5sum: 319ba5f6ecae50afa2311719c296613c
+Description: Dynamic DNS (DDNS) enabled DHCP client
+ This a Dynamic DNS enabled version of the DHCP client.
+ .
+ Dynamic Host Configuration Protocol (DHCP) is a protocol like BOOTP
+ (actually dhcpd includes much of the functionality of bootpd). It
+ gives client machines "leases" for IP addresses and can
+ automatically set their network configuration. If your machine
+ depends on DHCP (especially likely if it's a workstation on a large
+ network, or a laptop, or attached to a cable modem), keep this or
+ another DHCP client installed.
+ .
+ Extra documentation can be found in the package isc-dhcp-common.
+
+Package: isc-dhcp-common
+Source: isc-dhcp
+Version: 4.4.3-P1-4
+Architecture: amd64
+Maintainer: Debian ISC DHCP Maintainers <isc-dhcp@packages.debian.org>
+Installed-Size: 123
+Depends: debianutils (>= 2.8.2)
+Homepage: http://www.isc.org
+Priority: important
+Section: net
+Filename: pool/main/i/isc-dhcp/isc-dhcp-common_4.4.3-P1-4_amd64.deb
+Size: 117712
+SHA256: 166eaa6059fd0eeac51daeb7e5feba0eae646a26b6195d283f630578903d7b97
+SHA1: ea98b1443dd9c3d4cfa537872ea9f6bf1306d3dc
+MD5sum: 28e064beea1fad86db8b07314d3f5f4b
+Description: common manpages relevant to all of the isc-dhcp packages
+ This package includes manpages that are relevant to the various ISC DHCP
+ packages.
+ .
+ The dhcp-options manpage describes available options for dhcpd and dhclient.
+ The dhcp-eval manpage describes evaluation of conditional expressions.
+
+Package: isc-dhcp-keama
+Source: isc-dhcp
+Version: 4.4.3-P1-4
+Architecture: amd64
+Maintainer: Debian ISC DHCP Maintainers <isc-dhcp@packages.debian.org>
+Installed-Size: 269
+Depends: libc6 (>= 2.34)
+Homepage: http://www.isc.org
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-dhcp/isc-dhcp-keama_4.4.3-P1-4_amd64.deb
+Size: 90772
+SHA256: c0058f4ad467df479b7ad5bce11a8c797cb0a8b55d9097aa23805994ae29a23e
+SHA1: 70b45f20ceeb43c277fd6fe57df39ec9d475998a
+MD5sum: bb3192315f873ea68bcfdd223059cd8b
+Description: KEA Migration Assistant
+ This is an ISC DHCP server to ISC KEA Migration Assistant.
+ .
+ The KEA Migration Assistant (aka keama) is an experimental tool
+ which helps to translate ISC DHCP configurations to Kea.
+
+Package: isc-dhcp-relay
+Source: isc-dhcp
+Version: 4.4.3-P1-4
+Architecture: amd64
+Maintainer: Debian ISC DHCP Maintainers <isc-dhcp@packages.debian.org>
+Installed-Size: 2875
+Depends: debconf (>= 0.5) | debconf-2.0, libc6 (>= 2.36), debianutils (>= 2.8.2)
+Recommends: isc-dhcp-common
+Conflicts: dhcp-relay
+Homepage: http://www.isc.org
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-dhcp/isc-dhcp-relay_4.4.3-P1-4_amd64.deb
+Size: 1089364
+SHA256: a274a754718107e6f96b099cf7047ebe27fddf706acccc1fbfe0980710b749c6
+SHA1: ba59bfb247228d8934c693078220fe22a9cebc8b
+MD5sum: c2c2196099a80eb4674d4e43902e3232
+Description: ISC DHCP relay daemon
+ This is the Internet Software Consortium's DHCP relay.
+ .
+ Installing this package will make the machine a DHCP relay, which
+ requires a reachable DHCP or BOOTP server in order to function.
+ .
+ Extra documentation can be found in the package isc-dhcp-common.
+ .
+ ISC has decided to stop maintaining the client and relay parts of isc-dhcp,
+ and they will be removed after the 4.4.3 release, keeping only the server
+ component. Please, consider using an alternative for isc-dhcp-relay
+ (dhcrelay).
+ .
+ More information can be found in the ISC official announcement:
+ https://www.isc.org/blogs/dhcp-client-relay-eom/
+
+Package: isc-dhcp-server
+Source: isc-dhcp
+Version: 4.4.3-P1-4
+Architecture: amd64
+Maintainer: Debian ISC DHCP Maintainers <isc-dhcp@packages.debian.org>
+Installed-Size: 6063
+Depends: debconf (>= 0.5) | debconf-2.0, libc6 (>= 2.36), debianutils (>= 2.8.2)
+Recommends: isc-dhcp-common, policycoreutils
+Suggests: polkitd, isc-dhcp-server-ldap, ieee-data
+Breaks: isc-dhcp-common (<= 4.3.3-1), logcheck-database (<= 1.3.17~)
+Replaces: isc-dhcp-common (<= 4.3.3-1)
+Homepage: http://www.isc.org
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-dhcp/isc-dhcp-server_4.4.3-P1-4_amd64.deb
+Size: 1479820
+SHA256: ffbc059fd0924e227a61e1a5e9fc0fa357db9de7807dd1dc26faf3fe37cfd5f1
+SHA1: 9eab3d12419c4abf4fe7c22d944737ec3a71cddd
+MD5sum: 8aac3507d5e0dbc40959daecfa0e8e1e
+Description: ISC DHCP server for automatic IP address assignment
+ This is the Internet Software Consortium's DHCP server.
+ .
+ Dynamic Host Configuration Protocol (DHCP) is a protocol like BOOTP
+ (actually dhcpd includes much of the functionality of bootpd). It
+ gives client machines "leases" for IP addresses and can
+ automatically set their network configuration.
+ .
+ This server can handle multiple ethernet interfaces.
+
+Package: isc-dhcp-server-ldap
+Source: isc-dhcp
+Version: 4.4.3-P1-4
+Architecture: amd64
+Maintainer: Debian ISC DHCP Maintainers <isc-dhcp@packages.debian.org>
+Installed-Size: 3242
+Depends: libc6 (>= 2.36), libldap-2.5-0 (>= 2.5.4), debianutils (>= 2.8.2), isc-dhcp-server (= 4.4.3-P1-4)
+Enhances: isc-dhcp-server
+Conflicts: dhcp
+Homepage: http://www.isc.org
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-dhcp/isc-dhcp-server-ldap_4.4.3-P1-4_amd64.deb
+Size: 1242136
+SHA256: 536c2b0e01667c0a9045d7e032be1106939e68edfb0122d8c70baa10fef3b070
+SHA1: fb950195acd88cb44fdf5fad8d0483aeac2dfad7
+MD5sum: 5150c07ff02d0796e434f26d944189ea
+Description: DHCP server that uses LDAP as its backend
+ This is the server from the Internet Software Consortium's implementation of
+ DHCP.
+ .
+ Dynamic Host Configuration Protocol (DHCP) is a protocol like BOOTP
+ (actually dhcpd includes much of the functionality of bootpd). It
+ gives client machines "leases" for IP addresses and can
+ automatically set their network configuration.
+ .
+ This is the DHCP server with LDAP patches applied to it.
+
+Package: isc-kea-doc
+Source: isc-kea
+Version: 3.0.2-vyos
+Architecture: all
+Maintainer: Kea Developers <kea-dev@lists.isc.org>
+Installed-Size: 250
+Conflicts: kea-doc
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: doc
+Filename: pool/main/i/isc-kea/isc-kea-doc_3.0.2-vyos_all.deb
+Size: 233500
+SHA256: 00ae278debb73c7cd9ce94db17dd11e56edd6e08e53531712a15543c254f826c
+SHA1: 1d72d9476362ee4389c494ad9eb8db82900f8201
+MD5sum: 6aae474286f801042cbaaced2eb0df9c
+Description: Documentation for ISC Kea DHCP server
+ This package provides documentation for the Kea DHCP daemons and utilities.
+
+Package: jool
+Version: 4.1.9+bf4c7e3669-1
+Architecture: amd64
+Maintainer: VyOS Support <support@vyos.io>
+Installed-Size: 1158
+Depends: linux-image-6.6.69-vyos, libc6 (>= 2.34), libnl-3-200 (>= 3.2.24), libnl-genl-3-200 (>= 3.2.21)
+Multi-Arch: foreign
+Homepage: <insert the upstream URL, if relevant>
+Priority: optional
+Section: unknown
+Filename: pool/main/j/jool/jool_4.1.9+bf4c7e3669-1_amd64.deb
+Size: 180992
+SHA256: d218fe4fcf7056b3422d93e3971707d29c13e72f7af8e2eb06309043041536c9
+SHA1: d5f3aff8a87007c4e499edf9662e42570ae7df21
+MD5sum: c401e84e32fb7beb84b6c5f26d7f2ff2
+Description: auto-generated package by debmake
+ This Debian binary package was auto-generated by the
+ debmake(1) command provided by the debmake package.
+
+Package: kea
+Source: isc-kea
+Version: 2.6.1-2
+Architecture: all
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 239
+Depends: kea-admin, kea-ctrl-agent, kea-dhcp-ddns-server, kea-dhcp4-server, kea-dhcp6-server
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-kea/kea_2.6.1-2_all.deb
+Size: 224308
+SHA256: fa343459e19ba74a44b4d9b322bfc186295c92a1600fdf6d4c44384c3bb19c7a
+SHA1: ada1b28704ee8d937d1898c07e2c99af7750e501
+MD5sum: d92fcd447c139778326b4a12acc16551
+Description: DHCP server [meta]
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium
+ providing a very high-performance with PostgreSQL, MySQL and memfile backends.
+ .
+ This is a metapackage that depends on all server components of Kea.
+
+Package: kea-admin
+Source: isc-kea
+Version: 2.4.1-3
+Architecture: amd64
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 1832
+Depends: kea-common (= 2.4.1-3), libc6 (>= 2.34), libgcc-s1 (>= 3.0), libstdc++6 (>= 11)
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: admin
+Filename: pool/main/i/isc-kea/kea-admin_2.4.1-3_amd64.deb
+Size: 443680
+SHA256: 6205737327e727c3908fd942479e2b6beb145035abf0db385fac01fcca5a3bc2
+SHA1: 063539c8a13791b49b948c278bf15f21162eb1ef
+MD5sum: 99706ee8a92cf9bf9e147c64cd427811
+Description: Administration utilities for Kea DHCP server
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides backend database initialization and migration
+ scripts and a DHCP benchmark tool.
+
+Package: kea-common
+Source: isc-kea
+Version: 2.4.1-3
+Architecture: amd64
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 17601
+Depends: adduser, libc6 (>= 2.34), libgcc-s1 (>= 3.0), liblog4cplus-2.0.5 (>= 2.0.8), libmariadb3 (>= 3.0.0), libpq5 (>= 9.1~), libssl3 (>= 3.0.0), libstdc++6 (>= 12)
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-kea/kea-common_2.4.1-3_amd64.deb
+Size: 4004988
+SHA256: a141e30fad39d16589da242de60b437ea090504e4e6690be2c29af890f667a3d
+SHA1: 3d7a8d424ef80bd9379aa79e0d1d28ea05b196eb
+MD5sum: 54dd063e3e4a765e23870d899d49c234
+Description: Common libraries for the Kea DHCP server
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides common libraries used by Kea servers and utilities.
+
+Package: kea-ctrl-agent
+Source: isc-kea
+Version: 2.4.1-3
+Architecture: amd64
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 695
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: kea-common (= 2.4.1-3), python3-kea-connector, debconf (>= 0.5), python3:any, libc6 (>= 2.34), libgcc-s1 (>= 3.0), libssl3 (>= 3.0.0), libstdc++6 (>= 11)
+Suggests: kea-doc
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-kea/kea-ctrl-agent_2.4.1-3_amd64.deb
+Size: 355148
+SHA256: a5d8ed24a51a22e76803235c833167bdb71015f5f329b8684dbe7bcc82b77bf7
+SHA1: 6be6521eeaadbe94da1f1df197297d33b5a65846
+MD5sum: 5a2a5698b1f9628f7e44c1d1b03780a9
+Description: REST API service for Kea DHCP server
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides the REST API service agent for Kea DHCP.
+
+Package: kea-dhcp-ddns-server
+Source: isc-kea
+Version: 2.4.1-3
+Architecture: amd64
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 813
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: kea-common (= 2.4.1-3), libc6 (>= 2.34), libgcc-s1 (>= 3.0), libstdc++6 (>= 11)
+Suggests: kea-doc
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-kea/kea-dhcp-ddns-server_2.4.1-3_amd64.deb
+Size: 376872
+SHA256: 083bf7bebef72960eceaddcaa787966c539a5ec4a7f43a9c6b4e3d1fdf5d3a26
+SHA1: aec8b6b3b54290af2e3de262f7f7a7db32f0fa35
+MD5sum: 2d7d8b84eb2e0d73a7579d60cfc2f59b
+Description: DHCP Dynamic DNS service
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides Dynamic DNS service to update DNS mapping based on
+ DHCP lease events.
+
+Package: kea-dhcp4-server
+Source: isc-kea
+Version: 2.4.1-3
+Architecture: amd64
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 1459
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: kea-common (= 2.4.1-3), libc6 (>= 2.34), libgcc-s1 (>= 3.0), libstdc++6 (>= 12)
+Suggests: kea-doc
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-kea/kea-dhcp4-server_2.4.1-3_amd64.deb
+Size: 569884
+SHA256: 14277cb00ebe3b9d357281dc5ad8656a145193d3de199b53e20dedb8382d3ba2
+SHA1: 7f8caf3f5b1635de2387c494966ecdcf730faa9f
+MD5sum: 0d8fa033fa52691d3381a1c0c35e4aee
+Description: IPv4 DHCP server
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium
+ providing a very high-performance with PostgreSQL, MySQL and memfile backends.
+ .
+ This package provides the IPv4 DHCP server.
+
+Package: kea-dhcp6-server
+Source: isc-kea
+Version: 2.4.1-3
+Architecture: amd64
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 1461
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: kea-common (= 2.4.1-3), libc6 (>= 2.34), libgcc-s1 (>= 3.0), libstdc++6 (>= 12)
+Suggests: kea-doc
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: net
+Filename: pool/main/i/isc-kea/kea-dhcp6-server_2.4.1-3_amd64.deb
+Size: 566912
+SHA256: c2017a1553fb99ec98b1a539d30872557aed09eb017b5731c671c3a3ea704945
+SHA1: e8773552483b2fc4d050ac3333fbdeb7dc24b1d6
+MD5sum: 6238236cc77a422571a36b8af5526f42
+Description: IPv6 DHCP server
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium
+ providing a very high-performance with PostgreSQL, MySQL and memfile backends.
+ .
+ This package provides the IPv6 DHCP server.
+
+Package: libcharon-extauth-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 206
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.25)
+Breaks: libcharon-extra-plugins (<< 5.8.0-2~)
+Replaces: libcharon-extra-plugins (<< 5.8.0-2~)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libcharon-extauth-plugins_5.9.11-2+vyos0_amd64.deb
+Size: 90200
+SHA256: 993f136a600ef30b3632b02d482e766efb33de1b19c2fad69a03508e08cde2bc
+SHA1: 1bc253498613797c8ba4edbb7f1cfb0fd9aeb941
+MD5sum: 0e08b2e8f1a69b590b185c94b997a7fa
+Description: strongSwan charon library (extended authentication plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides extended authentication plugins for the charon library:
+  - eap-mschapv2 (EAP-MSCHAPv2 protocol handler using passwords/NT hashes)
+    Used for client side to connect to some VPN concentrators configured for
+    Windows 7+ and modern OSX/iOS using IKEv2 (identify with public key,
+    authenticate with MSCHAPv2).
+  - xauth-generic (Generic XAuth backend that provides passwords from
+    ipsec.secrets and other credential sets)
+    Used for the client side to connect to VPN concentrators configured for
+    Android and older OSX/iOS using IKEv1 and XAUTH (identify with public key,
+    authenticate with XAUTH password).
+ .
+ These are the "not always, but still more commonly used" plugins, for further
+ needs even more plugins can be found in the package libcharon-extra-plugins.
+
+Package: libcharon-extra-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 1060
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), libip4tc2 (>= 1.8.3), libpam0g (>= 0.99.7.1)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libcharon-extra-plugins_5.9.11-2+vyos0_amd64.deb
+Size: 275968
+SHA256: 43bf2a59088f869533e1a27225df2ed7fc8960f18be9ac8a4ae2e9d90ba5016b
+SHA1: b19d7e1c892d6e844c28667d193584deef999409
+MD5sum: b4a65a9f399c08cbf609f98003deac9b
+Description: strongSwan charon library (extra plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides extra plugins for the charon library:
+  - addrblock (Narrow traffic selectors to RFC 3779 address blocks in X.509
+    certificates)
+  - certexpire (Export expiration dates of used certificates)
+  - eap-aka (Generic EAP-AKA protocol handler using different backends)
+  - eap-gtc (EAP-GTC protocol handler authenticating with XAuth backends)
+  - eap-identity (EAP-Identity identity exchange algorithm, to use with other
+    EAP protocols)
+  - eap-md5 (EAP-MD5 protocol handler using passwords)
+  - eap-radius (EAP server proxy plugin forwarding EAP conversations to a
+    RADIUS server)
+  - eap-tls (EAP-TLS protocol handler, to authenticate with certificates in
+    EAP)
+  - eap-tnc (EAP-TNC protocol handler, Trusted Network Connect in a TLS tunnel)
+  - eap-ttls (EAP-TTLS protocol handler, wraps other EAP methods securely)
+  - error-notify (Notification about errors via UNIX socket)
+  - ha (High-Availability clustering)
+  - kernel-libipsec (Userspace IPsec Backend with TUN devices)
+  - led (Let Linux LED subsystem LEDs blink on IKE activity)
+  - lookip (Virtual IP lookup facility using a UNIX socket)
+  - tnc (Trusted Network Connect)
+  - unity (Cisco Unity extensions for IKEv1)
+  - xauth-eap (XAuth backend that uses EAP methods to verify passwords)
+  - xauth-pam (XAuth backend that uses PAM modules to verify passwords)
+
+Package: libmnl0
+Source: libmnl
+Version: 1.0.4-3
+Architecture: amd64
+Maintainer: Debian Netfilter Packaging Team <pkg-netfilter-team@lists.alioth.debian.org>
+Installed-Size: 45
+Depends: libc6 (>= 2.14)
+Multi-Arch: same
+Homepage: https://netfilter.org/projects/libmnl/
+Priority: optional
+Section: libs
+Filename: pool/main/libm/libmnl/libmnl0_1.0.4-3_amd64.deb
+Size: 11100
+SHA256: 9954ff53ffb52b40effc4b5c6078983e87064f9d9ad17623f1065e73dbdea8be
+SHA1: 8aadfa07c1457b7fe102fa10cac59a37c00538cd
+MD5sum: b94bf9eb5a2cf7fbb90b2fbb5ed9284a
+Description: minimalistic Netlink communication library
+ libmnl is a minimalistic user-space library oriented to Netlink developers.
+ There are a lot of common tasks in parsing, validating, constructing of
+ both the Netlink header and TLVs that are repetitive and easy to get wrong.
+ This library aims to provide simple helpers that allows you to re-use code
+ and to avoid re-inventing the wheel.
+ .
+ The main features of this library are:
+ .
+ Small: the shared library requires around 30KB for an x86-based computer.
+ .
+ Simple: this library avoids complexity and elaborated abstractions that
+ tend to hide Netlink details.
+ .
+ Easy to use: the library simplifies the work for Netlink-wise developers.
+ It provides functions to make socket handling, message building,
+ validating, parsing and sequence tracking, easier.
+ .
+ Easy to re-use: you can use the library to build your own abstraction
+ layer on top of this library.
+ .
+ Decoupling: the interdependency of the main bricks that compose the
+ library is reduced, i.e. the library provides many helpers, but the
+ programmer is not forced to use them.
+ .
+ This package contains the shared libraries needed to run programs that use
+ the minimalistic Netlink communication library.
+
+Package: libnetsnmptrapd40
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: amd64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 70
+Depends: libc6 (>= 2.4), libmariadb3 (>= 3.0.0), libsnmp40 (= 5.9.4+dfsg-1), libsnmp-base
+Breaks: libsnmp40 (<= 5.9+dfsg-1)
+Replaces: libsnmp40 (<= 5.9+dfsg-1)
+Multi-Arch: same
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: libs
+Filename: pool/main/n/net-snmp/libnetsnmptrapd40_5.9.4+dfsg-1_amd64.deb
+Size: 22728
+SHA256: ed06e97475f7d6497408fced26e33a5bfe6158207e14a789bfe4fc2d1ed8350f
+SHA1: 158c2079171db5e81aa4d779c4304936d8987095
+MD5sum: f310059fb80cbd315606bc3e816d6588
+Description: SNMP (Simple Network Management Protocol) trap library
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP trap library contains functions for receiving SNMP
+ trap and inform messages.
+
+Package: libnftables1
+Source: nftables
+Version: 1.0.9-1
+Architecture: amd64
+Maintainer: Debian Netfilter Packaging Team <pkg-netfilter-team@lists.alioth.debian.org>
+Installed-Size: 973
+Depends: libc6 (>= 2.34), libgmp10 (>= 2:6.2.1+dfsg1), libjansson4 (>= 2.14), libmnl0 (>= 1.0.3-4~), libnftnl11 (>= 1.2.6), libxtables12 (>= 1.6.0+snapshot20161117)
+Multi-Arch: same
+Homepage: https://www.netfilter.org/
+Priority: optional
+Section: libs
+Filename: pool/main/n/nftables/libnftables1_1.0.9-1_amd64.deb
+Size: 314340
+SHA256: 056b37f245d38e407d62601243737a972e4e088bdca085731ae0e35383d36140
+SHA1: 78ea43a5755be9edde2dfe09a089bb36a369f483
+MD5sum: 7d1f00628bc02f17f16c5ab2241e97a1
+Description: Netfilter nftables high level userspace API library
+ This library provides high level semantics to interact with the nftables
+ framework by Netfilter project.
+ .
+ nftables replaces the old popular iptables, ip6tables, arptables and ebtables.
+ .
+ Netfilter software and nftables in particular are used in applications such
+ as Internet connection sharing, firewalls, IP accounting, transparent
+ proxying, advanced routing and traffic control.
+ .
+ A Linux kernel >= 3.13 is required. However, >= 4.14 is recommended.
+ .
+ This package contains the libnftables library.
+
+Package: libnftnl11
+Source: libnftnl
+Version: 1.2.6-2
+Architecture: amd64
+Maintainer: Debian Netfilter Packaging Team <team+pkg-netfilter-team@tracker.debian.org>
+Installed-Size: 238
+Depends: libc6 (>= 2.34), libmnl0 (>= 1.0.3-4~)
+Multi-Arch: same
+Homepage: https://git.netfilter.org/libnftnl
+Priority: optional
+Section: libs
+Filename: pool/main/libn/libnftnl/libnftnl11_1.2.6-2_amd64.deb
+Size: 62764
+SHA256: 115b35dc1e764c434cc3dd998334f3deba7a2ffcfaf231068191cb3de10b4ecd
+SHA1: ca45adde5d77de2997b38925df81eda23642b466
+MD5sum: 42f65d74a81bb78d32810081bfd652ba
+Description: Netfilter nftables userspace API library
+ libnftnl is the low-level library for Netfilter 4th generation
+ framework nftables.
+ .
+ Is the user-space library for low-level interaction with
+ nftables Netlink's API over libmnl.
+
+Package: libnss-mapuser
+Version: 1.1.0-cl3u3
+Architecture: amd64
+Maintainer: dev-support <dev-support@cumulusnetworks.com>
+Installed-Size: 73
+Depends: libc6 (>= 2.33), libaudit1, adduser
+Homepage: http://www.cumulusnetworks.com
+Priority: optional
+Section: libs
+Filename: pool/main/libn/libnss-mapuser/libnss-mapuser_1.1.0-cl3u3_amd64.deb
+Size: 16868
+SHA256: 561900f8db03e50b50fdb9440b8d9654860d34a1772b83a640ebd82ea4399f3d
+SHA1: fac8ef8051a08c0ad06a432876eb71370248aea4
+MD5sum: 39f75558cc90fb9a766258cbcb235fa9
+Description: NSS modules to map any requested username to a local account
+ Performs getpwname and getpwuid lookups via NSS for systems like RADIUS
+ where it is not possible to do a username lookup without authentication
+ (with a password or similar).   Used to allow ssh and other login
+ mechanisms via RADIUS without having a local account.
+
+Package: libnss-tacplus
+Version: 1.0.4-cl5.1.0u11
+Architecture: amd64
+Maintainer: dev-support <dev-support@cumulusnetworks.com>
+Installed-Size: 56
+Depends: libaudit1 (>= 1:2.2.1), libc6 (>= 2.33), libtac2 (>= 1.4.1~), libtacplus-map1 (>= 1.0.1-cl4u1)
+Homepage: http://www.cumulusnetworks.com
+Priority: optional
+Section: libs
+Filename: pool/main/libn/libnss-tacplus/libnss-tacplus_1.0.4-cl5.1.0u11_amd64.deb
+Size: 15884
+SHA256: a26d9f6d197f548990b89af9b8ea510144b11cb0575552f92364ef03a4134ad9
+SHA1: 5262fe83a49935baa92a4e5406dfe3b79d425bf7
+MD5sum: c5e9b76b7edfc30207d16c5302dd3ed3
+Description: NSS module for TACACS+ authentication without local passwd entry
+ Performs getpwname and getpwuid lookups via NSS for users logged in via
+ tacacs authentication, and mapping done with libtacplus_map
+Vcs-Hash: cf2f734609a59da41248ed45e95807998a4a75f3
+
+Package: libpam-radius-auth
+Version: 2.0.0-1
+Architecture: amd64
+Maintainer: Carsten Schoenert <c.schoenert@t-online.de>
+Installed-Size: 81
+Depends: libc6 (>= 2.14), libpam0g (>= 0.99.7.1)
+Suggests: radius-server
+Homepage: https://www.freeradius.org/pam_radius_auth/
+Priority: optional
+Section: admin
+Filename: pool/main/libp/libpam-radius-auth/libpam-radius-auth_2.0.0-1_amd64.deb
+Size: 24948
+SHA256: 865189db1bf37b26bb3b2e15105502dadc9b4efa9f093f22ef6a309a3b14cc93
+SHA1: 1e5de05cbdc71b2f9b4ca31be2bfc8cd4ad049d0
+MD5sum: 016f979a25dedbb9ad4e0c9bf4c9d9c8
+Description: PAM RADIUS authentication module
+ This is the PAM to RADIUS authentication module. It allows any PAM-capable
+ machine to become a RADIUS client for authentication and accounting
+ requests. You will, however, need to supply your own RADIUS server to
+ perform the actual authentication
+
+Package: libpam-tacplus
+Version: 1.4.3-cl5.1.0u5
+Architecture: amd64
+Maintainer: dev-support <dev-support@cumulusnetworks.com>
+Installed-Size: 72
+Depends: libc6 (>= 2.33), libpam0g (>= 0.99.7.1), libtac2 (>= 1.4.0), libtacplus-map1 (>= 1.0.0), libpam-runtime
+Homepage: http://www.cumulusnetworks.com
+Priority: extra
+Section: admin
+Filename: pool/main/libp/libpam-tacplus/libpam-tacplus_1.4.3-cl5.1.0u5_amd64.deb
+Size: 28176
+SHA256: 63459387027d6e4e71dc985c624ffdf30a2614cc28d5474926d280c4b50719bf
+SHA1: 99bd769abb5d1ad47a2b083eae20b8485ce61ed7
+MD5sum: f49e1ffa75a6dae110d461ab048568da
+Description: PAM module for using TACACS+ as an authentication service
+ This PAM module support authentication, authorization (account management) and
+ accounting (session management) performed using TACACS+ protocol designed by
+ Cisco.
+Vcs-Hash: 1b6c1f14cc288b71c6c7005a60d2d7d7b617f6a0
+
+Package: librtr0
+Version: 0.8.0
+Architecture: amd64
+Maintainer: Fabian Holler <mail@fholler.de>
+Installed-Size: 120
+Depends: libc6 (>= 2.34), libssh-4 (>= 0.8.0)
+Multi-Arch: same
+Homepage: http://rpki.realmv6.org/
+Priority: optional
+Section: libs
+Filename: pool/main/libr/librtr0/librtr0_0.8.0_amd64.deb
+Size: 42136
+SHA256: 7696cfacc585860b0399bda8915278e01d631889e4078b61883729986bb51a4e
+SHA1: 16f706664091ffd52bb708fd93c72b991833adc2
+MD5sum: 3a4b792754479f8a049808724d2bbe86
+Description: Small extensible RPKI-RTR-Client C library.
+ RTRlib is an open-source C implementation of the  RPKI/Router Protocol
+ client. The library allows one to fetch and store validated prefix origin data
+ from a RTR-cache and performs origin verification of prefixes. It supports
+ different types of transport sessions (e.g., SSH, unprotected TCP) and is
+ easily extendable.
+
+Package: libsnmp-base
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: all
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 2183
+Suggests: snmp-mibs-downloader
+Multi-Arch: foreign
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: libs
+Filename: pool/main/n/net-snmp/libsnmp-base_5.9.4+dfsg-1_all.deb
+Size: 1769588
+SHA256: 5ee1bc4f225c26389d9b672e53c7fc3b74ebdcc3a7f0c3e52ec4e5c0221c537b
+SHA1: 1199aa478a9e547beb3f92bad5d54ce72d357b7a
+MD5sum: 2417aac971dcf65b52ec7162c1061b54
+Description: SNMP configuration script, MIBs and documentation
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ This package includes documentation and MIBs (Management Information Bases)
+ for the SNMP libraries, agents and applications. MIBs contain a formal
+ description of the data that can be managed using SNMP and applications.
+ .
+ NOTE: If you want the OIDs (Object Identifiers) to resolve to their text
+ description, you need to activate the non-free repository and install the
+ "snmp-mibs-downloader" package.
+
+Package: libsnmp-dev
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: amd64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 1280
+Depends: libc6-dev, libsnmp40 (= 5.9.4+dfsg-1), libnetsnmptrapd40 (= 5.9.4+dfsg-1), libwrap0-dev, libssl-dev, procps, libsensors-dev, libpci-dev
+Recommends: libsnmp-perl
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: libdevel
+Filename: pool/main/n/net-snmp/libsnmp-dev_5.9.4+dfsg-1_amd64.deb
+Size: 201296
+SHA256: bca0d6aa286ecfd3bf2aa6f6c8071d31594f452a455735e97e20877e91d124d6
+SHA1: c3789a416e7a67f7cb8a13f9a8c982896c60452d
+MD5sum: 818549f7e9b6be9ddd99978a4e5b14f0
+Description: SNMP (Simple Network Management Protocol) development files
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP development files include the library headers, static
+ libraries, net-snmp-config scripts and documentation needed for development
+ of custom SNMP applications.
+
+Package: libsnmp-perl
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: amd64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 2173
+Depends: perl (>= 5.36.0-7+deb12u1), perlapi-5.36.0, libc6 (>= 2.15), libnetsnmptrapd40 (>= 5.9.4+dfsg), libsnmp40 (>= 5.9.4+dfsg)
+Breaks: libsnmp-dev (= 5.9+dfsg-1)
+Replaces: libsnmp-dev (= 5.9+dfsg-1)
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: perl
+Filename: pool/main/n/net-snmp/libsnmp-perl_5.9.4+dfsg-1_amd64.deb
+Size: 1751424
+SHA256: 5d654bc0bbc69d24ba0545eb47c3c621e78215765ae1cd172a6eda8668bd8b42
+SHA1: 4e7bf15b99badd19806eabceb4ccde4382b77e09
+MD5sum: ef702b8790a34e6144bfff87b97b7625
+Description: SNMP (Simple Network Management Protocol) Perl5 support
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP Perl5 support files provide the Perl functions for
+ integration of SNMP into applications written in Perl.
+
+Package: libsnmp40
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: amd64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 5430
+Depends: libc6 (>= 2.34), libnl-3-200 (>= 3.2.7), libpci3 (>= 1:3.5.1), libpcre3, libperl5.36 (>= 5.36.0), libsensors5 (>= 1:3.5.0), libssl3 (>= 3.0.0), libwrap0 (>= 7.6-4~), libsnmp-base
+Multi-Arch: same
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: libs
+Filename: pool/main/n/net-snmp/libsnmp40_5.9.4+dfsg-1_amd64.deb
+Size: 2574340
+SHA256: f3269503d107f2b0895644518d743a54f52d00f00ad2b4d997b299fea8dffc15
+SHA1: 593a951f799982315eccb68368f05422cbb532f8
+MD5sum: 4c63309a4656a30490d55e1f9c3d5a89
+Description: SNMP (Simple Network Management Protocol) library
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP library contains common functions for the construction,
+ sending, receiving, decoding, and manipulation of the SNMP requests
+ and responses.
+
+Package: libstrongswan
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 1467
+Depends: libc6 (>= 2.34), libcap2 (>= 1:2.10), libgmp10 (>= 2:6.2.1+dfsg1), libsystemd0 (>= 227)
+Recommends: libstrongswan-standard-plugins
+Suggests: libstrongswan-extra-plugins
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libstrongswan_5.9.11-2+vyos0_amd64.deb
+Size: 436984
+SHA256: fde40d59c0161e4096b08d75bf191501cfc38ef0fbd72c18bba891466f67c8b7
+SHA1: 3a2bdb946d8e851defec5d6f02621cd29ae02cc9
+MD5sum: 8046b402bbe33002e80ccaeb74837079
+Description: strongSwan utility and crypto library
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides the underlying libraries of charon and other strongSwan
+ components. It is built in a modular way and is extendable through various
+ plugins.
+ .
+ Some default (as specified by the strongSwan projet) plugins are included.
+ For libstrongswan (cryptographic backends, URI fetchers and database layers):
+  - aes (AES-128/192/256 cipher software implementation)
+  - constraints (X.509 certificate advanced constraint checking)
+  - dnskey (Parse RFC 4034 public keys)
+  - drbg (NIST SP-800-90A Deterministic Random Bit Generator)
+  - fips-prf (PRF specified by FIPS, used by EAP-SIM/AKA algorithms)
+  - gmp (RSA/DH crypto backend based on libgmp)
+  - hmac (HMAC wrapper using various hashers)
+  - md5 (MD5 hasher software implementation)
+  - mgf1 (Mask Generation Functions based on the SHA-1, SHA-256 and SHA-512)
+  - nonce (Default nonce generation plugin)
+  - pem (PEM encoding/decoding routines)
+  - pgp (PGP encoding/decoding routines)
+  - pkcs1 (PKCS#1 encoding/decoding routines)
+  - pkcs8 (PKCS#8 decoding routines)
+  - pkcs12 (PKCS#12 decoding routines)
+  - pubkey (Wrapper to handle raw public keys as trusted certificates)
+  - random (RNG reading from /dev/[u]random)
+  - rc2 (RC2 cipher software implementation)
+  - revocation (X.509 CRL/OCSP revocation checking)
+  - sha1 (SHA1 hasher software implementation)
+  - sha2 (SHA256/SHA384/SHA512 hasher software implementation)
+  - sshkey (SSH key decoding routines)
+  - x509 (Advanced X.509 plugin for parsing/generating X.509 certificates/CRLs
+    and OCSP messages)
+  - xcbc (XCBC wrapper using various ciphers)
+  - attr (Provides IKE attributes configured in strongswan.conf)
+  - kernel-netlink [linux] (IPsec/Networking kernel interface using Linux
+    Netlink)
+  - kernel-pfkey [kfreebsd] (IPsec kernel interface using PF_KEY)
+  - kernel-pfroute [kfreebsd] (Networking kernel interface using PF_ROUTE)
+  - resolve (Writes name servers received via IKE to a resolv.conf file or
+    installs them via resolvconf(8))
+
+Package: libstrongswan-extra-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 766
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), libcurl4 (>= 7.56.1), libgcrypt20 (>= 1.10.0), libgpg-error0 (>= 1.14), libtss2-sys1 (>= 3.0.1)
+Breaks: libcharon-extra-plugins (<= 5.5.3-1)
+Replaces: libcharon-extra-plugins (<= 5.5.3-1)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libstrongswan-extra-plugins_5.9.11-2+vyos0_amd64.deb
+Size: 269864
+SHA256: dcfa8d26fe0b246f35fa15648139056790b4b92b18acdceef7da33bfc3bb1cbb
+SHA1: d0c115ed1b7b124fc3132751a521c7d5e778c4b2
+MD5sum: 8c2ef46c9761c6f459e7614e9588b7a6
+Description: strongSwan utility and crypto library (extra plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides extra plugins for the strongSwan utility and
+ cryptographic library.
+ .
+ Included plugins are:
+  - af-alg [linux] (AF_ALG Linux crypto API interface, provides
+    ciphers/hashers/hmac/xcbc)
+  - ccm (CCM cipher mode wrapper)
+  - cmac (CMAC cipher mode wrapper)
+  - ctr (CTR cipher mode wrapper)
+  - curl (libcurl based HTTP/FTP fetcher)
+  - curve25519 (support for Diffie-Hellman group 31 using Curve25519 and
+    support for the Ed25519 digital signature algorithm for IKEv2)
+  - gcrypt (Crypto backend based on libgcrypt, provides
+    RSA/DH/ciphers/hashers/rng)
+  - ldap (LDAP fetching plugin based on libldap)
+  - padlock (VIA padlock crypto backend, provides AES128/SHA1)
+  - pkcs11 (PKCS#11 smartcard backend)
+  - rdrand (High quality / high performance random source using the Intel
+    rdrand instruction found on Ivy Bridge processors)
+  - test-vectors (Set of test vectors for various algorithms)
+ .
+ Also included is the libtpmtss library adding support for TPM plugin
+ (https://wiki.strongswan.org/projects/strongswan/wiki/TpmPlugin)
+
+Package: libstrongswan-standard-plugins
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 393
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.25), libip4tc2 (>= 1.8.3), libssl3 (>= 3.0.0)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/libstrongswan-standard-plugins_5.9.11-2+vyos0_amd64.deb
+Size: 140544
+SHA256: 1bbf774999d3f3d0103ef34c6900eca72448887c4c00b973535469fd627e3eee
+SHA1: fc1b5cb6d7d6fd82ee8ee0b867af4dd763b75512
+MD5sum: 1e7ca7608851d0d0a871ab5ff93d0d6f
+Description: strongSwan utility and crypto library (standard plugins)
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package provides some common plugins for the strongSwan utility and
+ cryptograhic library.
+ .
+ Included plugins are:
+  - agent (RSA/ECDSA private key backend connecting to SSH-Agent)
+  - gcm (GCM cipher mode wrapper)
+  - openssl (Crypto backend based on OpenSSL, provides
+    RSA/ECDSA/DH/ECDH/ciphers/hashers/HMAC/X.509/CRL/RNG)
+
+Package: libtac2
+Source: libpam-tacplus
+Version: 1.4.3-cl5.1.0u5
+Architecture: amd64
+Maintainer: dev-support <dev-support@cumulusnetworks.com>
+Installed-Size: 55
+Depends: libc6 (>= 2.34), libaudit1
+Homepage: http://www.cumulusnetworks.com
+Priority: extra
+Section: admin
+Filename: pool/main/libp/libpam-tacplus/libtac2_1.4.3-cl5.1.0u5_amd64.deb
+Size: 19180
+SHA256: a6b880d66e890f4e7f783689f59feaa2c073c8bfa24d98003cbd6e6b32f9332f
+SHA1: 6e9c8e2f8c941971ef3c2b11c25a825c21d47b9d
+MD5sum: 6ee7045e4e61ced7816bbb8aa5e0c0b4
+Description: TACACS+ protocol library
+ This library implemenents the fundamentls of the TACACS+ protocol and supports
+ authentication, authorization (account management) and accounting (session
+ management).
+Vcs-Hash: 1b6c1f14cc288b71c6c7005a60d2d7d7b617f6a0
+
+Package: libtac2-bin
+Source: libpam-tacplus
+Version: 1.4.3-cl5.1.0u5
+Architecture: amd64
+Maintainer: dev-support <dev-support@cumulusnetworks.com>
+Installed-Size: 47
+Depends: libc6 (>= 2.34), libtac2 (>= 1.4.0)
+Homepage: http://www.cumulusnetworks.com
+Priority: extra
+Section: admin
+Filename: pool/main/libp/libpam-tacplus/libtac2-bin_1.4.3-cl5.1.0u5_amd64.deb
+Size: 14696
+SHA256: 61672006799f071e4464ad1c67ceb3e3ce65cd7568ea0ae1b2792a369eb905ec
+SHA1: 6d253742eb0d66db485318fed936562fa340b03e
+MD5sum: b0e16a66e91a29cc697b5aad0c76b85e
+Description: TACACS+ client program
+ Simple command-line client for TACACS+ testing and scripting
+Vcs-Hash: 1b6c1f14cc288b71c6c7005a60d2d7d7b617f6a0
+
+Package: libtacplus-map1
+Source: libtacplus-map
+Version: 1.0.1-cl5.1.0u9
+Architecture: amd64
+Maintainer: dev-support <dev-support@cumulusnetworks.com>
+Installed-Size: 41
+Depends: libaudit1 (>= 1:2.4), libc6 (>= 2.33), adduser
+Homepage: http://www.cumulusnetworks.com
+Priority: extra
+Section: admin
+Filename: pool/main/libt/libtacplus-map/libtacplus-map1_1.0.1-cl5.1.0u9_amd64.deb
+Size: 9332
+SHA256: 65336feff215c3ed10a86e88c1b864efe27f4f407d30007d4d347f3cd379653d
+SHA1: b2ecf561264622a8ec6b8b0fbdf15d0e824982a3
+MD5sum: f85cec51a966c10ec17f5eedc309ca4a
+Description: Library for mapping TACACS+ users without local /etc/passwd entries
+ APIs to support local mapping, so that TACACS users do not need tacacs user
+ accounts to /etc/passwd to supply home directory, uid, and gid.
+Vcs-Hash: b68ca01f1e769311831d91e47dbf372527d36764
+
+Package: libvyatta-cfg1
+Source: vyatta-cfg
+Version: 0.102.0+vyos2+current5
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 591
+Depends: libapt-pkg6.0 (>= 0.8.0), libboost-filesystem1.74.0 (>= 1.74.0+ds1), libc6 (>= 2.33), libgcc-s1 (>= 3.0), libglib2.0-0 (>= 2.30.0), libstdc++6 (>= 11)
+Replaces: vyatta-cfg
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyatta-cfg/libvyatta-cfg1_0.102.0+vyos2+current5_amd64.deb
+Size: 197816
+SHA256: 1dcbc327519fafb3b2d22c8f53e50600508fdd744a75c96ebfe7fd28ad6229db
+SHA1: 13711bf8b46660b26c3d2a949f849b84e3713db8
+MD5sum: 4ec0a79cef5c20adab20f930621a294d
+Description: vyatta-cfg back-end library
+ Vyatta configuration back-end library (libvyatta-cfg).
+
+Package: libvyosconfig0
+Version: 0.0.11
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 56108
+Depends: libc6 (>= 2.35), libffi8 (>= 3.4), libpcre3
+Priority: extra
+Section: contrib/net
+Filename: pool/main/libv/libvyosconfig0/libvyosconfig0_0.0.11_amd64.deb
+Size: 12515112
+SHA256: 4053cdbe2bcd93c7ca968635956fdc061b0b4d0be6822b7a616a07129dc9c05c
+SHA1: c6be5ddfb299cc907f230ef571a1a36214d6df7c
+MD5sum: f7d6f289a22c6cc9f542cc61c999c2da
+Description: VyConf config tree manipulation library
+  VyConf config tree parsing and manipulation library
+
+Package: libyang-modules
+Source: libyang3
+Version: 3.13.6-1
+Architecture: all
+Maintainer: Ondřej Surý <ondrej@debian.org>
+Installed-Size: 96
+Homepage: https://github.com/CESNET/libyang/
+Priority: optional
+Section: devel
+Filename: pool/main/liby/libyang3/libyang-modules_3.13.6-1_all.deb
+Size: 18788
+SHA256: 947e0f615bed8337727b5520ad345e16cd8aece0e1e842c2327f2ac5c0283889
+SHA1: 7e9103e5facf048ca3f2b1af69e3a06824edab6b
+MD5sum: c3a07931c6df98c1880a7c9c1c60ab0d
+Description: parser toolkit for IETF YANG data modeling - YANG modules
+ This package provides the IETF YANG modules used by libyang. These modules
+ are embedded into libyang so this package is not necessary for libyang
+ operation.
+
+Package: libyang-tools
+Source: libyang3
+Version: 3.4.2-1
+Architecture: amd64
+Maintainer: Ondřej Surý <ondrej@debian.org>
+Installed-Size: 214
+Depends: libyang3 (= 3.4.2-1), libc6 (>= 2.34)
+Breaks: libyang2-tools (<< 3.4.2-1)
+Replaces: libyang2-tools (<< 3.4.2-1)
+Multi-Arch: foreign
+Homepage: https://github.com/CESNET/libyang/
+Priority: optional
+Section: devel
+Filename: pool/main/liby/libyang3/libyang-tools_3.4.2-1_amd64.deb
+Size: 81452
+SHA256: fca22a7f144473418b1669e6bf6330aea6933ee113385bbcd04ca4610d0a3e8f
+SHA1: 54272778103ae60d910a30b6482757f7923d255e
+MD5sum: b8338cdeaee700ceef54f3d1038dbd88
+Description: parser toolkit for IETF YANG data modeling - executable tools
+ This package provides the "yanglint" and "yangre" tools which can be used
+ during the creation of IETF YANG schemas.  The tools are not generally
+ useful for normal operation where libyang primarily processes configuration
+ data, not schemas.
+
+Package: libyang2
+Version: 2.1.148-1
+Architecture: amd64
+Maintainer: Ondřej Surý <ondrej@debian.org>
+Installed-Size: 1374
+Depends: libc6 (>= 2.34), libpcre2-8-0 (>= 10.22)
+Multi-Arch: same
+Homepage: https://github.com/CESNET/libyang/
+Priority: optional
+Section: libs
+Filename: pool/main/liby/libyang2/libyang2_2.1.148-1_amd64.deb
+Size: 471736
+SHA256: 82e4685f4f1df1abd5501de4f8253c59eb0e33fb173f4d58d570fa6af457a905
+SHA1: f838305502906850aa21220b39158203c61b683c
+MD5sum: 69b634a8d7c694bcb11e5f297a16a775
+Description: parser toolkit for IETF YANG data modeling - runtime
+ Libyang implements functions to process schemas expressed in the
+ YANG data modeling language defined by the IETF in RFCs 6020/7950.
+ Schemas expressed in this language primarily describe configuration
+ used by larger network equipment like routers and switches.
+ .
+ In addition to handling the schemas itself, the library also provides
+ functions to process data described by the schemas.
+ .
+ The library is implemented in C and provides an API for other software
+ to use in processing configurations.
+
+Package: libyang2-tools
+Source: libyang2
+Version: 2.1.148-1
+Architecture: amd64
+Maintainer: Ondřej Surý <ondrej@debian.org>
+Installed-Size: 218
+Depends: libyang2 (= 2.1.148-1), libc6 (>= 2.34)
+Breaks: libyang-tools (<< 2.1.148-1)
+Replaces: libyang-tools (<< 2.1.148-1)
+Multi-Arch: foreign
+Homepage: https://github.com/CESNET/libyang/
+Priority: optional
+Section: devel
+Filename: pool/main/liby/libyang2/libyang2-tools_2.1.148-1_amd64.deb
+Size: 83040
+SHA256: 7526c76c2a04f4978837b3779c8f190afc959cb514689523e4672858148b3ed7
+SHA1: ea75e8abb7cd3bee015359ac4f3a66f56cbb339b
+MD5sum: 808dcbc439a562d9cce83fac78f2ed0d
+Description: parser toolkit for IETF YANG data modeling - executable tools
+ This package provides the "yanglint" and "yangre" tools which can be used
+ during the creation of IETF YANG schemas.  The tools are not generally
+ useful for normal operation where libyang primarily processes configuration
+ data, not schemas.
+
+Package: libyang3
+Version: 3.4.2-1
+Architecture: amd64
+Maintainer: Ondřej Surý <ondrej@debian.org>
+Installed-Size: 1305
+Depends: libc6 (>= 2.34), libpcre2-8-0 (>= 10.22)
+Multi-Arch: same
+Homepage: https://github.com/CESNET/libyang/
+Priority: optional
+Section: libs
+Filename: pool/main/liby/libyang3/libyang3_3.4.2-1_amd64.deb
+Size: 482684
+SHA256: 70df57023a97b8f50a3240812d4db2c4783804aac1f4164bee118521fec205f5
+SHA1: 8cdd63a7866e7e686a9f574ddeb17513e6eeae52
+MD5sum: 0d34a3b8c60335226a8d91c4cc956a52
+Description: parser toolkit for IETF YANG data modeling - runtime
+ Libyang implements functions to process schemas expressed in the
+ YANG data modeling language defined by the IETF in RFCs 6020/7950.
+ Schemas expressed in this language primarily describe configuration
+ used by larger network equipment like routers and switches.
+ .
+ In addition to handling the schemas itself, the library also provides
+ functions to process data described by the schemas.
+ .
+ The library is implemented in C and provides an API for other software
+ to use in processing configurations.
+
+Package: linux-headers-6.6.64-vyos
+Source: linux-upstream
+Version: 6.6.64-1
+Architecture: amd64
+Maintainer: vyos_bld <vyos_bld@vyos-build>
+Installed-Size: 52702
+Homepage: https://www.kernel.org/
+Priority: optional
+Section: kernel
+Filename: pool/main/l/linux-upstream/linux-headers-6.6.64-vyos_6.6.64-1_amd64.deb
+Size: 8979380
+SHA256: 6bfd3629b86150b4edc9baa87b0b7c3a5a39c0a38d237bac775b64df1a80be8a
+SHA1: 4d38640968da1e8f19830db56805c88177ea91cb
+MD5sum: d15ed2014d08b16a47b1a51451fec716
+Description: Linux kernel headers for 6.6.64-vyos on amd64
+ This package provides kernel header files for 6.6.64-vyos on amd64
+ .
+ This is useful for people who need to build external modules
+
+Package: linux-headers-6.6.69-vyos
+Source: linux-upstream
+Version: 6.6.69-1
+Architecture: amd64
+Maintainer: vyos_bld <vyos_bld@vyos-build>
+Installed-Size: 52723
+Homepage: https://www.kernel.org/
+Priority: optional
+Section: kernel
+Filename: pool/main/l/linux-upstream/linux-headers-6.6.69-vyos_6.6.69-1_amd64.deb
+Size: 8984860
+SHA256: 2d6fb56d8e79df6ea40630706c0621ba28adf41a4e096610c5e066bb44fe93f6
+SHA1: f61ce0ad7a70c6df4517165a9be053b464c6ce82
+MD5sum: fce71542dad32dbcf64340342fa0cd7f
+Description: Linux kernel headers for 6.6.69-vyos on amd64
+ This package provides kernel header files for 6.6.69-vyos on amd64
+ .
+ This is useful for people who need to build external modules
+
+Package: linux-image-6.6.64-vyos
+Source: linux-upstream
+Version: 6.6.64-1
+Architecture: amd64
+Maintainer: vyos_bld <vyos_bld@vyos-build>
+Installed-Size: 148833
+Homepage: https://www.kernel.org/
+Priority: optional
+Section: kernel
+Filename: pool/main/l/linux-upstream/linux-image-6.6.64-vyos_6.6.64-1_amd64.deb
+Size: 29507500
+SHA256: f4961e38d594b7bd3f3d8584585915e8528aedfa65261a79f6aaf2ecdcb973c7
+SHA1: 9f6cefe0006f51c437ee0b664f8d715bd9843540
+MD5sum: 9f826d7592a0e4ab6f299c65e39522d3
+Description: Linux kernel, version 6.6.64-vyos
+ This package contains the Linux kernel, modules and corresponding other
+ files, version: 6.6.64-vyos.
+
+Package: linux-image-6.6.69-vyos
+Source: linux-upstream
+Version: 6.6.69-1
+Architecture: amd64
+Maintainer: vyos_bld <vyos_bld@vyos-build>
+Installed-Size: 149061
+Homepage: https://www.kernel.org/
+Priority: optional
+Section: kernel
+Filename: pool/main/l/linux-upstream/linux-image-6.6.69-vyos_6.6.69-1_amd64.deb
+Size: 29547704
+SHA256: 764e72941e3f8eb540e89cebc1e44dc0ce46cf749f3770d705d1025c7e5051a2
+SHA1: 9dc6674b4da8ab1f230e542a1c16cc4e52da3f62
+MD5sum: a4de8c9a64cb17542053e8b2e161a222
+Description: Linux kernel, version 6.6.69-vyos
+ This package contains the Linux kernel, modules and corresponding other
+ files, version: 6.6.69-vyos.
+
+Package: live-boot
+Version: 1:20151213-vyos0
+Architecture: all
+Maintainer: Live Systems Maintainers <debian-live@lists.debian.org>
+Installed-Size: 117
+Depends: live-boot-initramfs-tools | live-boot-backend
+Recommends: live-boot-doc, live-tools, rsync, uuid-runtime
+Suggests: cryptsetup, curlftpfs, httpfs2, wget
+Homepage: https://debian-live.alioth.debian.org/live-boot/
+Priority: optional
+Section: misc
+Filename: pool/main/l/live-boot/live-boot_20151213-vyos0_all.deb
+Size: 27156
+SHA256: 688b4485b4b6cd3015517d26c5bd3d5a7da30ccf4ff4807953f62cb92b6acde2
+SHA1: 79f4b7a730aa122379d12a67468b7015ba60b1b0
+MD5sum: 4142b5a42fdc1af5d65b3973f6bba6c7
+Description: Live System Boot Components
+ The Live Systems project maintains the components to build Debian based Live
+ systems and the official Debian Live images themselves.
+ .
+ live-boot contains the components to configure a live system during the boot
+ process (early userspace).
+ .
+ In addition to live-boot, a backend for the initrd generation is required, such
+ as live-boot-initramfs-tools.
+
+Package: live-boot-initramfs-tools
+Source: live-boot
+Version: 1:20151213-vyos0
+Architecture: all
+Maintainer: Live Systems Maintainers <debian-live@lists.debian.org>
+Installed-Size: 20
+Depends: busybox | busybox-initramfs, initramfs-tools, udev
+Conflicts: live-boot-backend
+Replaces: live-boot-backend
+Provides: live-boot-backend
+Homepage: https://debian-live.alioth.debian.org/live-boot/
+Priority: optional
+Section: misc
+Filename: pool/main/l/live-boot/live-boot-initramfs-tools_20151213-vyos0_all.deb
+Size: 4544
+SHA256: f7d031010da41ef5e3cf31ec9fba7f6a014efd1806397337415d6d58522f8c25
+SHA1: f153964f306e6b23322d26d54c6c9e0a76439e5f
+MD5sum: db4d208078888927c14ae596928b9103
+Description: Live System Boot Components (initramfs-tools backend)
+ The Live Systems project maintains the components to build Debian based Live
+ systems and the official Debian Live images themselves.
+ .
+ live-boot contains the components to configure a live system during the boot
+ process (early userspace).
+ .
+ This package contains the initramfs-tools backend.
+
+Package: mlnx-ofed-kernel-modules
+Source: mlnx-ofed-kernel (24.07.OFED.24.07.0.6.1.1-1)
+Version: 24.07.OFED.24.07.0.6.1.1-1.kver.6.6.69-vyos
+Architecture: amd64
+Maintainer: Vladimir Sokolovsky <vlad@mellanox.com>
+Installed-Size: 23393
+Depends: mlnx-ofed-kernel-utils
+Conflicts: mlnx-rdma-rxe-modules
+Replaces: mlnx-rdma-rxe-modules
+Provides: mlnx-rdma-rxe-modules
+Homepage: http://www.mellanox.com/page/products_dyn?product_family=26&mtag=linux_sw_drivers
+Priority: optional
+Section: kernel
+Filename: pool/main/m/mlnx-ofed-kernel/mlnx-ofed-kernel-modules_24.07.OFED.24.07.0.6.1.1-1.kver.6.6.69-vyos_amd64.deb
+Size: 2293596
+SHA256: 4908b2ebb69e3c3d315e518ceeb7f2b35d1192622c846889e486025b2aa00e51
+SHA1: 413da9fb01c35502838113ac306998b236ab8924
+MD5sum: d29e0e1dad6716eaf673c91f6f3779e3
+Description: mlnx-ofed kernel modules
+ This package provides the binary and source code for the mlnx-ofed kernel modules.
+
+Package: mlnx-ofed-kernel-utils
+Source: mlnx-ofed-kernel (24.07.OFED.24.07.0.6.1.1-1)
+Version: 24.07.OFED.24.07.0.6.1.1-1.kver.6.6.69-vyos
+Architecture: amd64
+Maintainer: Vladimir Sokolovsky <vlad@mellanox.com>
+Installed-Size: 149
+Depends: coreutils, pciutils, grep, perl, procps, module-init-tools | kmod, lsof, mlnx-tools (>= 5.2.0)
+Homepage: http://www.mellanox.com/page/products_dyn?product_family=26&mtag=linux_sw_drivers
+Priority: optional
+Section: net
+Filename: pool/main/m/mlnx-ofed-kernel/mlnx-ofed-kernel-utils_24.07.OFED.24.07.0.6.1.1-1.kver.6.6.69-vyos_amd64.deb
+Size: 27988
+SHA256: 94e273036cc72ece7b8383c22b3fbf85dc67e13e341d13e7fe2df96d39165bc4
+SHA1: 86146929f5f2abd9a3cdd4909e2b86ab06372481
+MD5sum: 04c862f14a85003f9021ae953ac03995
+Description: Userspace tools to restart and tune mlnx-ofed kernel modules
+
+Package: mlnx-tools
+Version: 24.07.0-1.2407061
+Architecture: amd64
+Maintainer: Tzafrir Cohen <nvidia@cohens.org.il>
+Installed-Size: 329
+Depends: python3:any, pciutils, procps
+Breaks: mlnx-en-utils (<< 5.4), mlnx-ofed-kernel-utils (<< 5.4)
+Replaces: mlnx-en-utils (<< 5.4), mlnx-ofed-kernel-utils (<< 5.4)
+Homepage: http://www.mellanox.com/Mellanox/mlnx-tools
+Priority: optional
+Section: net
+Filename: pool/main/m/mlnx-tools/mlnx-tools_24.07.0-1.2407061_amd64.deb
+Size: 69692
+SHA256: 3797135ae62ab948211a269917af0e4067e882184900594e46c3da2b22c81771
+SHA1: 25273b5e57b903d672307ee588bb2e7e8bf01416
+MD5sum: caf37f9e9ff293ed9c1fe3032e5c311d
+Description: Userspace tools to restart and tune MLNX_OFED kernel modules
+ Userspace tools and scripts to help manage MLNX_OFED.
+ Those include scripts, udev hooks and initialization scripts.
+
+Package: nat-rtsp
+Version: 5.3-2-g475af0a
+License: GPL2
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 55
+Depends: linux-image-6.6.69-vyos
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/n/nat-rtsp/nat-rtsp_5.3-2-g475af0a_amd64.deb
+Size: 16834
+SHA256: bf9f57ff4515af62ad37a2b15761027f5391803eb02a1e7906e2a97d914c47ff
+SHA1: d949c7b196c6669d42bd7a3ee22e2c70a1a66bd1
+MD5sum: 3ee451e061dee594b6b789a131b6abc3
+Description: Connection tracking and NAT support for RTSP
+
+Package: ndppd
+Version: 0.2.5-6
+Architecture: amd64
+Maintainer: Jean-Michel Vourgère <nirgal@debian.org>
+Installed-Size: 169
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: lsb-base (>= 3.0-6), libc6 (>= 2.34), libgcc-s1 (>= 3.0), libstdc++6 (>= 5.2)
+Multi-Arch: foreign
+Homepage: https://github.com/DanielAdolfsson/ndppd/
+Priority: optional
+Section: net
+Filename: pool/main/n/ndppd/ndppd_0.2.5-6_amd64.deb
+Size: 58788
+SHA256: f4a9e9216540f9cea9c5727fe3630bfb49fbc53672e30587daa9c34dbdd4d965
+SHA1: 72d0420dffeb70519f67c3fd0f1096b650065875
+MD5sum: a4343c9c6445a054d91fc6d309531250
+Description: daemon that proxies IPv6 NDP messages
+ ndppd is a daemon that proxies certain IPv6 NDP messages between two or
+ more interfaces. It currently supports proxying Neighbor Solicitation
+ Messages and Neighbor Advertisement messages in order to allow IPv6
+ routing without relying on Linux "proxy_ndp".
+ .
+ The daemon is partially compliant with (experimental) RFC4389.
+
+Package: nftables
+Version: 1.0.9-1
+Architecture: amd64
+Maintainer: Debian Netfilter Packaging Team <pkg-netfilter-team@lists.alioth.debian.org>
+Installed-Size: 181
+Depends: libnftables1 (= 1.0.9-1), libc6 (>= 2.34), libedit2 (>= 3.1-20130611-0)
+Recommends: netbase
+Suggests: firewalld
+Homepage: https://www.netfilter.org/
+Priority: important
+Section: net
+Filename: pool/main/n/nftables/nftables_1.0.9-1_amd64.deb
+Size: 73012
+SHA256: 48286ffc6d21033b70e0f020fe319a7417d549981961bae058fddfeff7a25479
+SHA1: 0a902deda64c1c26dc42be8ab6a4b6692b395e92
+MD5sum: 89f58cdb9b44903ed83a491832033f2c
+Description: Program to control packet filtering rules by Netfilter project
+ This software provides an in-kernel packet classification framework that is
+ based on a network-specific Virtual Machine (VM) and the nft userspace
+ command line tool. The nftables framework reuses the existing Netfilter
+ subsystems such as the existing hook infrastructure, the connection tracking
+ system, NAT, userspace queueing and logging subsystem.
+ .
+ nftables replaces the old popular iptables, ip6tables, arptables and ebtables.
+ .
+ Netfilter software and nftables in particular are used in applications such
+ as Internet connection sharing, firewalls, IP accounting, transparent
+ proxying, advanced routing and traffic control.
+ .
+ A Linux kernel >= 3.13 is required. However, >= 4.14 is recommended.
+
+Package: node-exporter
+Version: 1.8.2
+License: Apache-2.0
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 20024
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/n/node-exporter/node-exporter_1.8.2_amd64.deb
+Size: 10640618
+SHA256: b593df2e77d48c847f9af6a802bf1b8ddf471cde81f6ef93dbd65b233c025848
+SHA1: 82496b0cadc873ff3a7630871fac10d78ceb0709
+MD5sum: 39ff8a58106e936e26d3d8fd80a7335d
+Description: Prometheus exporter for machine metrics
+
+Package: nxp-wifi
+Version: 1.0.0
+Architecture: amd64
+Maintainer: Perle Systems <psleng@perle.com>
+Homepage: https://github.com/nxp-imx/mwifiex
+Priority: optional
+Section: kernel
+Filename: pool/main/n/nxp-wifi/nxp-wifi_1.0.0_amd64.deb
+Size: 1204956
+SHA256: 2bedb9a0493e89d549019ee8a0d30ade63f492c1b412dfb4c02020001adb46b9
+SHA1: f34bfb45633904c0a7b70d5a5a02e0a8f332f6ae
+MD5sum: 3457909d17b2ff8871d5b4f18d8eb5af
+Description: nxp wifi drivers.
+ For JODY-W377 from NXP.
+
+Package: opennhrp
+Version: 0.14-20-g613277f
+License: MIT
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 113
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/o/opennhrp/opennhrp_0.14-20-g613277f_amd64.deb
+Size: 49430
+SHA256: ac7c7ff17255467f78d6daac6d878d92bb553ce4a11f903a876b5818a829aecb
+SHA1: a7115f1c345bcd954ad5fd4f685eb4a6b1a2fccc
+MD5sum: 1f28b311d848d4cb95f3b762644adee0
+Description: NBMA Next Hop Resolution Protocol daemon
+
+Package: openvpn-dco
+Version: 0.2.20231117
+License: GPL2
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 171
+Depends: linux-image-6.6.69-vyos
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/o/openvpn-dco/openvpn-dco_0.2.20231117_amd64.deb
+Size: 45178
+SHA256: 24906d36de37f03520d1f4f9f86c61a2abd710a31edcae3305bb39f9af5d8209
+SHA1: ff70d9f67bc606b7954b2e381d0c46ff61139956
+MD5sum: a25ce518852fd9c6800a11b1031522ef
+Description: OpenVPN Data Channel Offload
+
+Package: openvpn-otp
+Version: 1.0-6-g9781ff1
+License: unknown
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 60
+Depends: openvpn
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/o/openvpn-otp/openvpn-otp_1.0-6-g9781ff1_amd64.deb
+Size: 25806
+SHA256: 344c3b1cbdaab9f7a0a392361a58f4b2dfae225b401938736508a6176b5bffe9
+SHA1: 101b414d92b14737e5ead3164be6bc43e564cada
+MD5sum: 8ab2d5ddeca630ea6960e2ab2b01fb2e
+Description: OpenVPN OTP Authentication support.
+
+Package: owamp-client
+Source: owamp
+Version: 4.4.6-1
+Architecture: amd64
+Maintainer: perfSONAR developers <debian@perfsonar.net>
+Installed-Size: 680
+Depends: libc6 (>= 2.34), libcap2 (>= 1:2.10), libcap2-bin
+Homepage: http://software.internet2.edu/owamp/
+Priority: optional
+Section: net
+Filename: pool/main/o/owamp/owamp-client_4.4.6-1_amd64.deb
+Size: 213588
+SHA256: cbd5ea28fc7721e2ee2d714b40e9ab67c85745fd540c8b79a8b747599883cab9
+SHA1: bb5c6ce8da76e953c9d76887cf4d41765335fd05
+MD5sum: 03f29bbe38237e6e762119f71ed054f9
+Description: OWAMP command line client utilities
+ OWAMP is a client/server package that allows one to measure the
+ latency between hosts. Unlike ping, which can only measure the
+ bidirectional delay, OWAMP enables you to measure the unidirectional
+ delay between two hosts.  It is an implementation of the One-Way Active
+ Measurement Protocol as defined by RFC4656.
+ .
+ This package contains command line client utilities for performing
+ measurements with an owamp server.
+
+Package: owamp-server
+Source: owamp
+Version: 4.4.6-1
+Architecture: amd64
+Maintainer: perfSONAR developers <debian@perfsonar.net>
+Installed-Size: 417
+Depends: libc6 (>= 2.34), libcap2 (>= 1:2.10), adduser, lsb-base, ntp | time-daemon
+Homepage: http://software.internet2.edu/owamp/
+Priority: optional
+Section: net
+Filename: pool/main/o/owamp/owamp-server_4.4.6-1_amd64.deb
+Size: 183872
+SHA256: 58ed1df0adbdad63a2ee0df7da277a6dc34cb0ec3483f15bacf33680d121fed4
+SHA1: 651f48c821b26490142ceff60eaa402f85bb2148
+MD5sum: 4e21c15d545f0099bf27a1567f790d03
+Description: OWAMP daemon
+ OWAMP is a client/server package that allows one to measure the
+ latency between hosts. Unlike ping, which can only measure the
+ bidirectional delay, OWAMP enables you to measure the unidirectional
+ delay between two hosts.  It is an implementation of the One-Way Active
+ Measurement Protocol as defined by RFC4656.
+ .
+ This package contains the owamp server.
+
+Package: pmacct
+Version: 1.7.7-1
+Architecture: amd64
+Maintainer: Debian QA Group <packages@qa.debian.org>
+Installed-Size: 13852
+Depends: libc6 (>= 2.34), libjansson4 (>= 2.14), libmariadb3 (>= 3.0.0), libmaxminddb0 (>= 1.0.2), libnetfilter-log1 (>= 0.0.15), libpcap0.8 (>= 1.0.0), libpq5 (>= 9.1~), librabbitmq4 (>= 0.6.0), librdkafka1 (>= 0.9.1), libsqlite3-0 (>= 3.5.9), libstdc++6 (>= 5.2), libzmq5 (>= 4.0.1+dfsg), net-tools, psmisc, lsb-base
+Homepage: http://www.pmacct.net/
+Priority: optional
+Section: net
+Filename: pool/main/p/pmacct/pmacct_1.7.7-1_amd64.deb
+Size: 1622004
+SHA256: 3a49b4bd94a9012b5ef1c7bf43442e74066fc65790dc57d115b43d8fa13aa0a3
+SHA1: b011789cca2fcff4d644c290fc0b830cdbf96c58
+MD5sum: 96b17a5ad8656dc1efc61e36035ee8f8
+Description: promiscuous mode traffic accountant
+ pmacct is a tool designed to gather traffic information (bytes and number
+ of packets) by listening on a promiscuous interface or for Netflow data,
+ which may facilitate billing, bandwidth management, traffic analysis, or
+ creating usage graphs.
+ .
+ Data can be stored in memory and queried, displayed directly, or written
+ to a database; storage methods are quite flexible and may aggregate totals
+ or keep them separate.
+
+Package: podman
+Version: 4.9.5
+License: Apache License 2.0
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 115227
+Depends: conmon, crun, netavark, libgpgme11, fuse-overlayfs, golang-github-containers-common
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/p/podman/podman_4.9.5_amd64.deb
+Size: 59912382
+SHA256: 58bdcc93dffbe4aee62ff4a9870b7080a3fb0d1d2d316117df420a21099edff4
+SHA1: 001ff8af35a774775d227a8fd3fb0fb5de26dc4e
+MD5sum: 8be6ffda1b3d733c531c00e095e10b5c
+Description: Engine to run OCI-based containers in Pods
+
+Package: python3-kea-connector
+Source: isc-kea
+Version: 2.6.1-2
+Architecture: all
+Maintainer: Kea <isc-kea@packages.debian.org>
+Installed-Size: 251
+Depends: python3:any
+Homepage: http://kea.isc.org/
+Priority: optional
+Section: python
+Filename: pool/main/i/isc-kea/python3-kea-connector_2.6.1-2_all.deb
+Size: 226448
+SHA256: 43102268a81105ef0b520b0de35bce2ece2ce916b8a5b65e23d58354c65b4ad8
+SHA1: c3673cf5ac655069efcb7ae5f94ef02ce949b676
+MD5sum: c87962fb815d0265fdb9b8b9626f1cab
+Description: Python3 management connector for Kea DHCP server
+ Kea is an IPv4 and IPv6 DHCP server developed by Internet Systems Consortium.
+ .
+ This package provides Python3 connector.
+
+Package: python3-nftables
+Source: nftables
+Version: 1.0.9-1
+Architecture: amd64
+Maintainer: Debian Netfilter Packaging Team <pkg-netfilter-team@lists.alioth.debian.org>
+Installed-Size: 66
+Depends: libnftables1 (= 1.0.9-1), python3-jsonschema, python3:any
+Homepage: https://www.netfilter.org/
+Priority: optional
+Section: python
+Filename: pool/main/n/nftables/python3-nftables_1.0.9-1_amd64.deb
+Size: 16464
+SHA256: 6f550ff95f064bf6edee74acf02345a5fcfffe8fbc946a1e5cc2ff09189adee6
+SHA1: 9b0cd6175e8b1561a4a326450bf181a853255c79
+MD5sum: 8f9ae403ccd6b646162e6ed8fe4c5bc3
+Description: nftables/libnftables python3 module
+ The libnftables library provides high level semantics to interact with the
+ nftables framework by the Netfilter project.
+ .
+ nftables replaces the old popular iptables, ip6tables, arptables and ebtables.
+ .
+ Netfilter software and nftables in particular are used in applications such
+ as Internet connection sharing, firewalls, IP accounting, transparent
+ proxying, advanced routing and traffic control.
+ .
+ A Linux kernel >= 3.13 is required. However, >= 4.14 is recommended.
+ .
+ This package contains the libnftables python3 bindings.
+
+Package: python3-pyhumps
+Source: pyhumps
+Version: 3.8.0-1
+Architecture: all
+Maintainer: psleng@perle.com <psleng@perle.com>
+Installed-Size: 30
+Depends: python3:any
+Homepage: https://github.com/nficano/humps
+Priority: optional
+Section: python
+Filename: pool/main/p/pyhumps/python3-pyhumps_3.8.0-1_all.deb
+Size: 5460
+SHA256: b00d68390a5463ab62b79ce62d07d1c7ec6ac6d48cfd6ad2162ecfefcbc664e6
+SHA1: 1287f1818ae0055b0833faac5f6a27c16feb235e
+MD5sum: 29aaf94d1db3700ad3498c163ad81d8b
+Description: 🐫 Convert strings (and dictionary keys) between snake case,
+ .
+ <p align="center">
+   <img src="https://raw.githubusercontent.com/nficano/humps/master/artwork/humps.png" alt="Humps logo" width="245" height="118">
+ </p>
+ .
+ <div align="center">
+   <a href="http://humps.readthedocs.io/en/latest/?badge=latest">
+     <img src="https://readthedocs.org/projects/humps/badge/?version=latest" />
+   </a>
+   <a href="https://coveralls.io/github/nficano/humps?branch=master">
+     <img src="https://coveralls.io/repos/github/nficano/humps/badge.svg?branch=master#cachebus" />
+   </a>
+   <a href="https://pypi.org/project/pyhumps/">
+     <img src="https://img.shields.io/pypi/v/pyhumps.svg#cachebust" />
+   </a>
+   <a href="https://pypi.org/project/pyhumps/">
+     <img src="https://img.shields.io/pypi/dm/pyhumps.svg" />
+   </a>
+   <a href="https://pypi.python.org/pypi/pyhumps/">
+     <img src="https://img.shields.io/pypi/pyversions/pyhumps.svg" />
+
+Package: python3-vici
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: all
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 44
+Depends: python3:any
+Priority: optional
+Section: python
+Filename: pool/main/s/strongswan/python3-vici_5.9.11-2+vyos0_all.deb
+Size: 9508
+SHA256: ead0fecf5544a42aa25e366542770aef3f383c96118e0f17b30e16e7f4bfb234
+SHA1: 2ef48e0d3ed1d0c92d163cc7552e0b95a6ae0102
+MD5sum: 66fe6bd36a56473b26195076b95d77d2
+Description: Native Python interface for strongSwan's VICI protocol
+
+Package: rtr-tools
+Source: librtr0
+Version: 0.8.0
+Architecture: amd64
+Maintainer: Fabian Holler <mail@fholler.de>
+Installed-Size: 92
+Depends: librtr0 (= 0.8.0), libc6 (>= 2.34)
+Homepage: http://rpki.realmv6.org/
+Priority: optional
+Section: utils
+Filename: pool/main/libr/librtr0/rtr-tools_0.8.0_amd64.deb
+Size: 29956
+SHA256: 721538fbb9a4537f66aa34ededc710b5f63c2914e9d8a391ab8d1af5a96be0f2
+SHA1: d17918cc00be51b1e5fbf73ba1d41559e42becfc
+MD5sum: 784973399f40eab6fe6175f7812d9892
+Description: RPKI-RTR command line tools
+ Contains rtrclient and rpki-rov.
+ rtrclient is command line that connects to an RPKI-RTR server and prints
+ protocol information and information about the fetched ROAs to the console.
+ rpki-rov is a command line tool that connects to an RPKI-RTR server and
+ allows one to validate given IP prefixes and origin ASes.
+
+Package: saml-sso
+Version: 1.0.0-1
+Architecture: amd64
+Maintainer: Perle Systems Ltd.
+Installed-Size: 67829
+Depends: systemd, nginx, redis-server, libpam-python, python3, python3-venv, adduser
+Suggests: ca-certificates
+Homepage: <insert the upstream URL, if relevant>
+Priority: optional
+Section: net
+Filename: pool/main/s/saml-sso/saml-sso_1.0.0-1_amd64.deb
+Size: 15336408
+SHA256: 61d4f0207a3c82e50b9c8fec4640015ce52988f7ef1d7e9273f87b9a4d30b19f
+SHA1: 898f9b0a2a430bc52122839adc18949e91a5be2e
+MD5sum: f46ed4614222db1bd239e7c300d93e5f
+Description: SAML Single Sign-On authentication service
+ A comprehensive SAML SSO authentication service that provides
+ web-based single sign-on capabilities with PAM integration.
+ .
+ This service includes:
+  * SAML Service Provider (SP) functionality
+  * PAM module for system authentication
+  * NSS module for user lookup
+  * Integration with Redis for session management
+ .
+ The application runs in its own Python virtual environment
+ and integrates with system authentication mechanisms.
+
+Package: snmp
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: amd64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 713
+Depends: libc6 (>= 2.34), libncurses6 (>= 6), libsnmp40 (= 5.9.4+dfsg-1), libssl3 (>= 3.0.0), libtinfo6 (>= 6), libsnmp-base
+Recommends: perl
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: net
+Filename: pool/main/n/net-snmp/snmp_5.9.4+dfsg-1_amd64.deb
+Size: 179192
+SHA256: 97809ba043926454af84c2211c902a62c76af5ba7d514bfa9c170ac65913c421
+SHA1: 832118901d2ba52c06983257075df28d6e61f4d0
+MD5sum: e710ddf5f6986c6152b02bb79260ebed
+Description: SNMP (Simple Network Management Protocol) applications
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP applications are a collection of command line clients
+ for issuing SNMP requests to agents.
+
+Package: snmpd
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: amd64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 147
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: libc6 (>= 2.34), libsnmp40 (= 5.9.4+dfsg-1), debconf (>= 0.5) | debconf-2.0, adduser, debconf, libsnmp-base
+Suggests: snmptrapd
+Breaks: libsnmp-dev (<< 5.8+dfsg-3)
+Replaces: libsnmp-dev (<< 5.8+dfsg-3)
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: net
+Filename: pool/main/n/net-snmp/snmpd_5.9.4+dfsg-1_amd64.deb
+Size: 57708
+SHA256: 9e97feca115884551185285f00c4a509a397aeabc0b0d22f3102aa111c2b3bd6
+SHA1: feca875093103886bd1fd292385b43508555afcb
+MD5sum: a6149866e69e40ffc5b9a4d1bf6c119a
+Description: SNMP (Simple Network Management Protocol) agents
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP agent is a daemon which listens for incoming SNMP
+ requests from clients and provides responses.
+
+Package: snmptrapd
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: amd64
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 91
+Depends: libc6 (>= 2.34), libnetsnmptrapd40 (>= 5.9.4+dfsg), libsnmp40 (= 5.9.4+dfsg-1), libwrap0 (>= 7.6-4~), init-system-helpers (>= 1.51), snmpd
+Recommends: perl
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: net
+Filename: pool/main/n/net-snmp/snmptrapd_5.9.4+dfsg-1_amd64.deb
+Size: 24640
+SHA256: b177ae4e5898c5afc840968586fcf71ed06acaeda48ab82669c6d034a16e86f1
+SHA1: 6cdd3e66ae288ed1e3a6459ebf4d4c03714f44f4
+MD5sum: bdd1475c87af5f71eccf97c9d2158742
+Description: Net-SNMP notification receiver
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ snmptrapd is an SNMP application (daemon) that receives and logs SNMP TRAP
+ and INFORM messages.
+
+Package: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: all
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 156
+Depends: strongswan-charon, strongswan-starter
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan_5.9.11-2+vyos0_all.deb
+Size: 85596
+SHA256: a5af408b33aa985810a44da88ff03d7ec7712275acd7480c492096e26265dafa
+SHA1: b288189d93661c3820343641919d412e45e5aa40
+MD5sum: d5d8ec81ae708f5062241f4e260fcdca
+Description: IPsec VPN solution metapackage
+ The strongSwan VPN suite uses the native IPsec stack in the standard Linux
+ kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This metapackage installs the packages required to maintain IKEv1 and IKEv2
+ connections via ipsec.conf or ipsec.secrets.
+
+Package: strongswan-charon
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 222
+Pre-Depends: debconf | debconf-2.0
+Depends: iproute2 | iproute, libstrongswan (= 5.9.11-2+vyos0), strongswan-starter, libc6 (>= 2.34), strongswan-libcharon (>= 5.9.11)
+Provides: ike-server
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-charon_5.9.11-2+vyos0_amd64.deb
+Size: 90416
+SHA256: 6e798dc2d88d33bba8c3a63e39f8de5c6bc07e21554cee829ad81e3b839a3e13
+SHA1: e2f34b06c394f60b6910d40796f7cd17c2c22fc6
+MD5sum: a579e963097b18717301aaf531d9e738
+Description: strongSwan Internet Key Exchange daemon
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ charon is an IPsec IKEv2 daemon which can act as an initiator or a responder.
+ It is written from scratch using a fully multi-threaded design and a modular
+ architecture. Various plugins can provide additional functionality.
+
+Package: strongswan-libcharon
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 897
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34)
+Recommends: libcharon-extauth-plugins
+Suggests: libcharon-extra-plugins
+Breaks: strongswan-starter (<= 5.6.1-2)
+Replaces: strongswan-starter (<= 5.6.1-2)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-libcharon_5.9.11-2+vyos0_amd64.deb
+Size: 306096
+SHA256: 3b9cf737b124f3cbd5fa527c77166e9a69b4a5567dbf03e3835e3230de752d2e
+SHA1: ae5f3d2ea3c5f5ebf7d610132980bc278254f9f3
+MD5sum: 7d0ccf20350c04db7a4c5c8b89e0197d
+Description: strongSwan charon library
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the charon library, used by IKE client like
+ strongswan-charon, strongswan-charon-cmd or strongswan-nm as well as standard
+ plugins:
+   - socket-default
+   - counters
+   - bypass-lan (disabled by default)
+ .
+ On Linux, it also contains the xfrmi binary which can be used on Linux 4.19+
+ to create XFRM interfaces (for more information, see
+ https://wiki.strongswan.org/projects/strongswan/wiki/RouteBasedVPN)
+
+Package: strongswan-nm
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 152
+Recommends: network-manager-strongswan
+Replaces: network-manager-strongswan (<= 1.4.1-1~)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-nm_5.9.11-2+vyos0_amd64.deb
+Size: 78848
+SHA256: d873ecb2511e90b2e81477fea9888d1bb525d45931cb9ada22552962ba35dce2
+SHA1: 3447761733fea71e470eac26c79846fc18360bcd
+MD5sum: f40d5e02e7026a28d4b1cbebc5c9fa00
+Description: strongSwan plugin to interact with NetworkManager
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This plugin provides an interface which allows NetworkManager to configure
+ and control the IKEv2 daemon directly through D-Bus. It is designed to work
+ in conjunction with the network-manager-strongswan package, providing
+ a simple graphical frontend to configure IPsec based VPNs.
+
+Package: strongswan-pki
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 315
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34), libcharon-extra-plugins (>= 5.9.11)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-pki_5.9.11-2+vyos0_amd64.deb
+Size: 146668
+SHA256: c17066b27d5ceb768b759275590709a51f660bedb25dbe16b4f0671d052fea08
+SHA1: 80eaa888dd4de74760d5d0f73fa8d2b9d2947577
+MD5sum: 5f2b075de2fe2ea7cdee1554f252cf1a
+Description: strongSwan IPsec client, pki command
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the pki tool which allows on to run a simple public key
+ infrastructure.
+
+Package: strongswan-starter
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 587
+Pre-Depends: init-system-helpers (>= 1.54~)
+Depends: adduser, libstrongswan (= 5.9.11-2+vyos0), sysvinit-utils (>= 3.05-3), debconf (>= 0.5) | debconf-2.0, libc6 (>= 2.34)
+Recommends: strongswan-charon
+Conflicts: openswan
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-starter_5.9.11-2+vyos0_amd64.deb
+Size: 214224
+SHA256: a5c578d14211fe45f1524ced5b9a8cc82bcb5555447979e532873ef3594eccbf
+SHA1: d05319bc6bca50a6d4796126b1804c1cc9bea4c2
+MD5sum: 2431fb550561aa080b2b61c2ef1e07cc
+Description: strongSwan daemon starter and configuration file parser
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ The starter and the associated "ipsec" script control the charon daemon from
+ the command line. It parses ipsec.conf and loads the configurations to the
+ daemon.
+
+Package: strongswan-swanctl
+Source: strongswan
+Version: 5.9.11-2+vyos0
+Architecture: amd64
+Maintainer: strongSwan Maintainers <pkg-swan-devel@lists.alioth.debian.org>
+Installed-Size: 509
+Depends: libstrongswan (= 5.9.11-2+vyos0), libc6 (>= 2.34)
+Breaks: strongswan-starter (<< 5.8.0-1)
+Replaces: strongswan-starter (<< 5.8.0-1)
+Homepage: http://www.strongswan.org
+Priority: optional
+Section: net
+Filename: pool/main/s/strongswan/strongswan-swanctl_5.9.11-2+vyos0_amd64.deb
+Size: 183564
+SHA256: d4019df2c019ed631ea0074d48885e12d0ffb7fab9a9af4d2293d9b2f7f019b8
+SHA1: 7bc9791919792c2f662cc76cb362902a3b7216d7
+MD5sum: eff364e156358fd5429fdf8aa1290de5
+Description: strongSwan IPsec client, swanctl command
+ The strongSwan VPN suite uses the native IPsec stack in the standard
+ Linux kernel. It supports both the IKEv1 and IKEv2 protocols.
+ .
+ This package contains the swanctl interface, used to configure a running
+ charon daemon
+
+Package: telegraf
+Version: 1.28.3-1
+License: MIT
+Vendor: InfluxData
+Architecture: amd64
+Maintainer: support@influxdb.com
+Installed-Size: 203488
+Homepage: https://github.com/influxdata/telegraf
+Priority: optional
+Section: default
+Filename: pool/main/t/telegraf/telegraf_1.28.3-1_amd64.deb
+Size: 55942570
+SHA256: 5cfd3a0130ca38ee675ab346b71c6d2182ef93cca0dfa847c832e33024e675c2
+SHA1: b091fffb428f3ca8291e866361d124d04e58ea8b
+MD5sum: d3f73b72278b90d195d00343d170706a
+Description: Plugin-driven server agent for reporting metrics into InfluxDB.
+
+Package: tkmib
+Source: net-snmp
+Version: 5.9.4+dfsg-1
+Architecture: all
+Maintainer: Craig Small <csmall@debian.org>
+Installed-Size: 1668
+Depends: libsnmp-perl (>= 5.9.4+dfsg-1), perl-tk
+Homepage: https://net-snmp.sourceforge.net/
+Priority: optional
+Section: net
+Filename: pool/main/n/net-snmp/tkmib_5.9.4+dfsg-1_all.deb
+Size: 1668872
+SHA256: c6424b62ed2f3af3a5b4ed17beb083a2b565f4363839ac121a8bc369e1ca7de6
+SHA1: 4d90cec2b1ba3ebfaaeb841d5a262ff22ec01e71
+MD5sum: 48887efacfbd3051050b480658ab30c4
+Description: SNMP (Simple Network Management Protocol) MIB browser
+ The Simple Network Management Protocol (SNMP) provides a framework
+ for the exchange of management information between agents (servers)
+ and clients.
+ .
+ The Net-SNMP MIB (Management Information Base) Browser provides a
+ graphical frontend for the Net-SNMP tools. It can be used to browse
+ the MIB tree and interactively send requests to SNMP agents.
+
+Package: twamp-client
+Source: owamp
+Version: 4.4.6-1
+Architecture: amd64
+Maintainer: perfSONAR developers <debian@perfsonar.net>
+Installed-Size: 369
+Depends: libc6 (>= 2.34), libcap2 (>= 1:2.10), libcap2-bin
+Homepage: http://software.internet2.edu/owamp/
+Priority: optional
+Section: net
+Filename: pool/main/o/owamp/twamp-client_4.4.6-1_amd64.deb
+Size: 169020
+SHA256: b610429387f9045ced48044463e2b9f52257c01dc1aa5f58fc2ce8c05341255f
+SHA1: 95a22628c3a27a710fa0451edcd0e617931c6e9e
+MD5sum: 691464c5f7154d6371ee6f878d519ca8
+Description: TWAMP command line client utilities
+ TWAMP is a client/server package that allows one to measure the
+ latency between hosts. Like ping, TWAMP enables you to measure the
+ two-way or round-trip delay between two hosts.  It is an implementation
+ of the Two-Way Active Measurement Protocol as defined by RFC5357.
+ .
+ This package contains command line client utilities for performing
+ measurements with an twamp server.
+
+Package: twamp-server
+Source: owamp
+Version: 4.4.6-1
+Architecture: amd64
+Maintainer: perfSONAR developers <debian@perfsonar.net>
+Installed-Size: 412
+Depends: libc6 (>= 2.34), libcap2 (>= 1:2.10), adduser, lsb-base, ntp | time-daemon
+Homepage: http://software.internet2.edu/owamp/
+Priority: optional
+Section: net
+Filename: pool/main/o/owamp/twamp-server_4.4.6-1_amd64.deb
+Size: 182456
+SHA256: 94686c60f89a45a7ee26ba206262871202736a8374ada5a8de868b2aea35c4fa
+SHA1: c7b361589e9d750908fce3562574db0554777711
+MD5sum: 5c9061b280935e67d28c545ca8fde489
+Description: TWAMP daemon
+ TWAMP is a client/server package that allows one to measure the
+ latency between hosts. Like ping, TWAMP enables you to measure the
+ two-way or round-trip delay between two hosts.  It is an implementation
+ of the Two-Way Active Measurement Protocol as defined by RFC5357.
+ .
+ This package contains the twamp server.
+
+Package: udp-broadcast-relay
+Version: 0.1+vyos4+current1
+Architecture: amd64
+Maintainer: Christian Poessinger <christian@poessinger.com>
+Installed-Size: 37
+Homepage: http://github.com/c-po/udp-broadcast-relay
+Priority: optional
+Section: net
+Filename: pool/main/u/udp-broadcast-relay/udp-broadcast-relay_0.1+vyos4+current1_amd64.deb
+Size: 6348
+SHA256: d48dd8ae14faf54dcc112c4799c6c1f32194799bc7b279035fe4176851b6abc9
+SHA1: fd0b9f6227e62bf988eeee66141bcb425b6742b8
+MD5sum: 77ec96e64ebdca9e4830c674c6c7d803
+Description: UDP Broadcast Packet Relay
+ This program listens for packets on a specified UDP broadcast port. When
+ a packet is received, it sends that packet to all specified interfaces
+ but the one it came from as though it originated from the original
+ sender.
+ .
+ The primary purpose of this is to allow games on machines on separated
+ local networks (Ethernet, WLAN) that use udp broadcasts to find each
+ other to do so.
+ .
+ It also works on ppp links, so you can log in from windows boxes (e.g.
+ using pptp) and play LAN-based games together. Currently, you have to
+ care about upcoming or downgoing interfaces yourself.
+
+Package: vyatta-bash
+Version: 4.1-3+vyos2+current2
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 1250
+Pre-Depends: libc6 (>= 2.34), libtinfo6 (>= 6)
+Depends: base-files (>= 2.1.12), debianutils (>= 2.15), bash (>= 3.1)
+Priority: optional
+Section: shells
+Filename: pool/main/v/vyatta-bash/vyatta-bash_4.1-3+vyos2+current2_amd64.deb
+Size: 641212
+SHA256: 3d7d715957ac6ae5de774eef5108e03be3340ae5420f8dde0ef92c3200a82e11
+SHA1: 75548dabde46f7293e3069309c1d9118651b9995
+MD5sum: 3435abd4827f461d8e91f9c0d469b895
+Description: The VyOS Shell based on GNU bash
+ The VyOS Shell based on GNU Bourne Again SHell.
+ .
+ Bash is an sh-compatible command language interpreter that executes
+ commands read from the standard input or from a file.  Bash also
+ incorporates useful features from the Korn and C shells (ksh and csh).
+ .
+ Bash is ultimately intended to be a conformant implementation of the
+ IEEE POSIX Shell and Tools specification (IEEE Working Group 1003.2).
+
+Package: vyatta-cfg
+Version: 0.102.0+vyos2+current5
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 246
+Depends: sed (>= 4.1.5), procps (>= 1:3.2.7-3), coreutils (>= 5.97-5.3), vyatta-bash | bash (>= 4.1), bsdutils (>= 1:2.13), libvyatta-cfg1 (>= 0.102.0+vyos2+current5), unionfs-fuse, uuid-runtime, libboost-filesystem1.74.0, libapt-pkg4.12 | libapt-pkg5.0 | libapt-pkg6.0, libc6 (>= 2.34), libgcc-s1 (>= 3.0), libglib2.0-0 (>= 2.12.0), libstdc++6 (>= 11)
+Suggests: util-linux (>= 2.13-5), net-tools, ncurses-bin (>= 5.5-5)
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyatta-cfg/vyatta-cfg_0.102.0+vyos2+current5_amd64.deb
+Size: 41780
+SHA256: adce260dc706833432978ea022053a7777b5763d8ef2a40f6d9bd6b741f69399
+SHA1: b246847eec82fc541afaebb66959bae59d49cbcb
+MD5sum: 31489f561a4c1388b81d0e709c21b968
+Description: VyOS configuration system
+ This package provides the VyOS configuration system, including the base
+ configuration templates and the config-mode CLI completion mechanism.
+
+Package: vyatta-wanloadbalance
+Version: 0.13.70+vyos2+current1
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 273
+Depends: sed (>= 4.1.5), perl (>= 5.8.8), procps (>= 1:3.2.7-3), vyatta-cfg (>= 0.15.33), vyatta-bash | bash (>= 3.1), coreutils (>= 5.97-5.3), libc6 (>= 2.7-1)
+Suggests: util-linux (>= 2.13-5), net-tools, ethtool, ncurses-bin (>= 5.5-5)
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyatta-wanloadbalance/vyatta-wanloadbalance_0.13.70+vyos2+current1_amd64.deb
+Size: 80828
+SHA256: 6f18e95c90be2af4484b28ea032444adb60799e60d4a1d05c5c1c88aa4c11664
+SHA1: b07a92ce3b8c0730210dfec73f2dbae34d07b86c
+MD5sum: c3e8b22af896e34a862f7fb79f37824f
+Description: VyOS load balancing configuration system
+ This package has the VyOS wan load balance project. It includes support for
+ the VyOS CLI for configuration.
+
+Package: vyos-1x
+Source: vyos-1x (1.5dev0)
+Version: 1.5dev0-2281-g6ea2b9d13
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 43890
+Pre-Depends: libpam-runtime, libnss-tacplus, libpam-tacplus, libpam-radius-auth
+Depends: python3:any (>= 3.10), dialog, libvyosconfig0, libpam-cap, bash-completion, ipvsadm, udev, less, at, rsync, vyatta-bash, vyatta-biosdevname, vyatta-cfg, vyos-http-api-tools, vyos-utils, python3, python3-cryptography, python3-hurry.filesize, python3-inotify, python3-jinja2, python3-jmespath, python3-netaddr, python3-netifaces, python3-paramiko, python3-passlib, python3-pyroute2, python3-psutil, python3-pyhumps, python3-pystache, python3-pyudev, python3-six, python3-tabulate, python3-voluptuous, python3-xmltodict, python3-zmq, coreutils, sudo, systemd, bsdmainutils, openssl, curl, dbus, file, iproute2 (>= 6.0.0), linux-cpupower, ipaddrcheck, ethtool (>= 6.10), lm-sensors, procps, netplug, sed, ssl-cert, tuned, beep, wide-dhcpv6-client, grc, fdisk, gdisk, mdadm, efibootmgr, libefivar1, dosfstools, grub-efi-amd64-signed, mokutil, shim-signed, sbsigntool, minisign, squashfs-tools, fuse-overlayfs, auditd, iputils-arping, iputils-ping, isc-dhcp-client, accel-ppp, avahi-daemon, conntrack, conntrackd, hostapd, hsflowd, iw, wireless-regdb, wpasupplicant (>= 0.6.7), modemmanager, usb-modeswitch, libqmi-utils, openvpn, openvpn-auth-ldap, openvpn-auth-radius, openvpn-otp, openvpn-dco, libpam-google-authenticator, wireguard-tools, qrencode, pppoe, sstp-client, frr (>= 9.1), frr-pythontools, frr-rpki-rtrlib, frr-snmp, opennhrp, igmpproxy, certbot, conserver-client, conserver-server, console-data, dropbear, aws-gwlbtun, ddclient (>= 3.11.1), fastnetmon, suricata, suricata-update, ndppd, radvd, haproxy, vyatta-wanloadbalance, isc-dhcp-relay, kea, lldpd, nginx-light, openssh-server, sshguard, salt-minion, snmp, snmpd, squid, squidclient, squidguard, node-exporter, frr-exporter, telegraf (>= 1.20), zabbix-agent2, tftpd-hpa, pdns-recursor, owamp-client, owamp-server, twamp-client, twamp-server, udp-broadcast-relay, keepalived (>= 2.0.5), util-linux, cron, lcdproc, lcdproc-extra-drivers, git, libndp-tools, libnetfilter-conntrack3, libnfnetlink0, nfct, nftables (>= 0.9.3), strongswan (>= 5.9), strongswan-swanctl (>= 5.9), charon-systemd, libcharon-extra-plugins (>= 5.9), libcharon-extauth-plugins (>= 5.9), libstrongswan-extra-plugins (>= 5.9), libstrongswan-standard-plugins (>= 5.9), python3-vici (>= 5.7.2), jool, nat-rtsp, chrony, ocserv, pmacct (>= 1.6.0), rsyslog, kbd, podman (>= 4.9.5), netavark, aardvark-dns, iptables, hvinfo, traceroute, tcpdump, dmidecode, smartmontools, lsscsi, pciutils, usbutils, nvme-cli, iperf, iperf3, etherwake, ndisc6, bmon, parted, cryptsetup, tpm2-tools, easy-rsa, tcptraceroute, mtr-tiny, telnet, stunnel4, uidmap
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-1x/vyos-1x_1.5dev0-2281-g6ea2b9d13_amd64.deb
+Size: 2184072
+SHA256: 17ca49003316cb5ffc9e3283d2c3a7a13336e9c49fcbeeb074d0546b3c32311a
+SHA1: f8e01a58a0f81c0fd8d0619af8dd90021281af22
+MD5sum: 9b53987929d6060a34c3904d15097880
+Description: VyOS configuration scripts and data
+ VyOS configuration scripts, interface definitions, and everything
+
+Package: vyos-1x-aws
+Source: vyos-1x (999.0)
+Version: 999.0-14102-gfea97b317
+Architecture: all
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 56
+Depends: vyos-1x, aws-gwlbtun
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-1x/vyos-1x-aws_999.0-14102-gfea97b317_all.deb
+Size: 5028
+SHA256: 5119db7ab38673103bcb5fff8d05e6370454c248aab35d141a6366904bf0affb
+SHA1: b9658c256da687711ee1cb5cb0758487584d94d1
+MD5sum: 76a7dee5617bf03f8e9616f9bddd04c8
+Description: VyOS configuration scripts and data for AWS Gateway Load Balancer
+ Adds configuration files required for AWS Gateway Load Balancer service
+ running on top of VyOS.
+
+Package: vyos-1x-build-deps
+Version: 1.5dev0
+Architecture: all
+Maintainer: Equivs Dummy Package Generator <root@vyos-build>
+Installed-Size: 9
+Depends: build-essential:arm64, debhelper (>= 9), dh-python, fakeroot, gcc, iproute2, libvyosconfig0 (>= 0.0.7), libzmq3-dev, python3 (>= 3.10), pylint, python3-lxml, python3-xmltodict, python3-coverage, python3-hurry.filesize, python3-netaddr, python3-netifaces, python3-nose, python3-jinja2, python3-paramiko, python3-passlib, python3-psutil, python3-requests, python3-setuptools, python3-tabulate, python3-zmq, quilt, whois
+Multi-Arch: foreign
+Priority: optional
+Section: devel
+Filename: pool/main/v/vyos-1x-build-deps/vyos-1x-build-deps_1.5dev0_all.deb
+Size: 2432
+SHA256: 836a94b96b298a0deeb72fd8866493f3b9a07e8cf860ab390706abfdd3cd1360
+SHA1: f1fd0a1297a2b340571a50ec0ed86b982df12177
+MD5sum: 3febfb7f67a04df80c7c50ca7225a4e9
+Description: build-dependencies for vyos-1x
+ Dependency package to build the 'vyos-1x' package
+
+Package: vyos-1x-smoketest
+Source: vyos-1x (999.0)
+Version: 999.0-14102-gfea97b317
+Architecture: all
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 3707
+Depends: skopeo, snmp, vyos-1x, vmtouch
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-1x/vyos-1x-smoketest_999.0-14102-gfea97b317_all.deb
+Size: 313764
+SHA256: d994c4932bd30eda7ccffeeca2605cc21604b6027c19a22ba802ef5d9fe71c9f
+SHA1: b79d2f91b22745e6b3e129d9dd047938096ca72b
+MD5sum: ab8266bf777adb05446f353c2cfafcb3
+Description: VyOS build sanity checking toolkit
+
+Package: vyos-1x-vmware
+Source: vyos-1x (999.0)
+Version: 999.0-14102-gfea97b317
+Architecture: all
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 20
+Depends: vyos-1x, open-vm-tools
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-1x/vyos-1x-vmware_999.0-14102-gfea97b317_all.deb
+Size: 3220
+SHA256: f912b935a4a28023b291418d7947d3a40b7542f71f5f58e38d80f144e33ea157
+SHA1: 621b9c97f9828cc48237e77fcbdddd62c1493469
+MD5sum: ef9c681881b3ce43a8eac6556482f721
+Description: VyOS configuration scripts and data for VMware
+ Adds configuration files required for VyOS running on VMware hosts.
+
+Package: vyos-custom-queries
+Version: 1.0.0
+Architecture: all
+Depends: python3, vyos-1x
+Maintainer: Your Name <your.email@example.com>
+Priority: optional
+Section: contrib/net
+Filename: pool/main/v/vyos-custom-queries/vyos-custom-queries_1.0.0_all.deb
+Size: 33080
+SHA256: 934def628c3550e725d752f6bce7e4c137d992f78ecb70238819472879325249
+SHA1: 8c7bef746540f5f57564232ef67c69b8960121df
+MD5sum: bc730decf663e5225d1533a1f57c3946
+Description: Custom GraphQL query scripts for VyOS
+ This package provides additional GraphQL query capabilities for VyOS,
+ including WWAN, Firewall, and VRRP query functionality for API access.
+
+Package: vyos-drivers-realtek-r8152
+Version: 2.18.1-1
+Architecture: amd64
+Maintainer: VyOS Support <support@vyos.io>
+Installed-Size: 879
+Depends: linux-image-6.6.69-vyos
+Multi-Arch: foreign
+Homepage: <insert the upstream URL, if relevant>
+Priority: optional
+Section: unknown
+Filename: pool/main/v/vyos-drivers-realtek-r8152/vyos-drivers-realtek-r8152_2.18.1-1_amd64.deb
+Size: 106384
+SHA256: a9ae77fe80f5f48bce6191ba9500a293eb760ceda90866167d63dac7096e5910
+SHA1: 476e866146a82630e8938a7e1a0d4d368eb0e7d1
+MD5sum: 7c1408209c0de69fb19ed3a826e0ada3
+Description: auto-generated package by debmake
+ This Debian binary package was auto-generated by the
+ debmake(1) command provided by the debmake package.
+
+Package: vyos-http-api-tools
+Version: 2.3
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 44739
+Pre-Depends: dpkg (>= 1.16.1), python3
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-http-api-tools/vyos-http-api-tools_2.3_amd64.deb
+Size: 9708056
+SHA256: 3c761a2397a0f33f4f4d214aaa1285fd5701bc0f2508357d43a9ba2819cb13ed
+SHA1: ae168e9917a7ef11e39b1ac4b1db112f47b6a75a
+MD5sum: d3932ba8ba83562fcc2abb8654e5afd1
+Description: api tools for VyOS
+  api tools for VyOS
+
+Package: vyos-intel-ixgbe
+Version: 5.20.3
+License: GPL2
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 942
+Depends: linux-image-6.6.69-vyos
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/v/vyos-intel-ixgbe/vyos-intel-ixgbe_5.20.3_amd64.deb
+Size: 243174
+SHA256: 841bb5ad28dfc5988e72eef3c7f21d1efdc19974e8c333ad4e09ffcf17dde698
+SHA1: 91fa4ac8d1ebc90410a04eafa16596dd5dd60aeb
+MD5sum: 53788d5685f9fe634871df6965e19f0b
+Description: Vendor based driver for Intel ixgbe
+
+Package: vyos-intel-ixgbevf
+Version: 4.18.9
+License: GPL2
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 192
+Depends: linux-image-6.6.69-vyos
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/v/vyos-intel-ixgbevf/vyos-intel-ixgbevf_4.18.9_amd64.deb
+Size: 55502
+SHA256: b01b24edc0807835fcdd3c6718a056821a3c61cd6fd7334b5cc62a99f060c5b1
+SHA1: 89db5b20f4ed89d90a64aa96ba118bcf5c1985c0
+MD5sum: dd8add356d53262e2d9d3b2d9274d094
+Description: Vendor based driver for Intel ixgbevf
+
+Package: vyos-intel-qat
+Version: 4.24.0-00005-0
+License: GPL2
+Vendor: none
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 14661
+Depends: linux-image-6.6.69-vyos
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/v/vyos-intel-qat/vyos-intel-qat_4.24.0-00005-0_amd64.deb
+Size: 4148322
+SHA256: 1e559644ad9ced9d3452a15f0f1b5a2b9a7d6557a9ca39581b177dd5ff71ad37
+SHA1: f316839ca0078a937c309a8fc547d3a151ed283b
+MD5sum: 8bb0ee66319949ef291b94c1196339e1
+Description: Vendor based driver for Intel QAT
+
+Package: vyos-linux-firmware
+Version: 20260110
+License: unknown
+Vendor: none
+Architecture: all
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 84308
+Homepage: http://example.com/no-uri-given
+Priority: optional
+Section: default
+Filename: pool/main/v/vyos-linux-firmware/vyos-linux-firmware_20260110_all.deb
+Size: 37780786
+SHA256: ba69421d1fa60a311301a9baf11b0697b381b7d4e92758c94c239d5a260fc543
+SHA1: b8b519904a27d26583a485dd207b5e94db6a3105
+MD5sum: 57a2b5f107bef8ac50a635d565763959
+Description: Binary firmware for various drivers in the Linux kernel
+
+Package: vyos-user-utils
+Version: 1.4.0+vyos1+current
+Architecture: all
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 9
+Depends: aptitude, arpwatch, atop, bgpq3, dnsdist, dnsutils, exfat-fuse, exfatprogs, fancontrol, grepcidr, haveged, htop, iftop, iotop, ipcalc, ipmitool, jq, libnss-myhostname, localepurge, lsof, minicom, nano, ndisc6, netcat-openbsd, nmap, numactl, openssh-client, screen, sipcalc, socat, ssl-cert, whois
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-user-utils/vyos-user-utils_1.4.0+vyos1+current_all.deb
+Size: 2076
+SHA256: 4d828e1944735e33fb6e71d49cd6e708f3bd0021a7fb11757fa4b094c9ff4a3f
+SHA1: b1032c325c08edf2457399f25dd6ba020019c9cb
+MD5sum: 8850d1812f631ad93b2528b82993d1ef
+Description: VyOS user utilities metapackage
+ Installs utilities that are provided for the users but not used by VyOS scripts.
+
+Package: vyos-utils
+Version: 0.0.3
+Architecture: amd64
+Maintainer: VyOS Package Maintainers <maintainers@vyos.net>
+Installed-Size: 5634
+Depends: libc6 (>= 2.35), libpcre3
+Priority: extra
+Section: contrib/net
+Filename: pool/main/v/vyos-utils/vyos-utils_0.0.3_amd64.deb
+Size: 805012
+SHA256: 689b95beed9cc40ab93e9e2550b1ca28df3f2a07f87e9c63b55bb48fa24028e4
+SHA1: da81537f52a03b01c9acc0d386bc597328950994
+MD5sum: be02a07aeb1d785358ee4b35eb0ac0e0
+Description: VyOS utils for value validation and other things
+  VyOS utils for value validation and other things
+
+Package: vyos-utils-build-deps
+Version: 0.0.5
+Architecture: all
+Maintainer: Equivs Dummy Package Generator <root@vyos-build>
+Installed-Size: 9
+Depends: build-essential:arm64, debhelper (>= 9), quilt
+Multi-Arch: foreign
+Priority: optional
+Section: devel
+Filename: pool/main/v/vyos-utils-build-deps/vyos-utils-build-deps_0.0.5_all.deb
+Size: 2100
+SHA256: fe3ad11039c88447a07323d0b1b11fa2bc8fad275159947e1aa7342308e79044
+SHA1: 9ddac78cdb8a0ec9fbd502fc7950b96864ebee60
+MD5sum: 424dc596138e98fdbca1a67325b45408
+Description: build-dependencies for vyos-utils
+ Dependency package to build the 'vyos-utils' package
+
+Package: wpasupplicant
+Source: wpa
+Version: 2.10-2290-ge7172e26d
+Architecture: amd64
+Maintainer: Debian wpasupplicant Maintainers <wpa@packages.debian.org>
+Installed-Size: 4064
+Depends: libc6 (>= 2.34), libdbus-1-3 (>= 1.9.14), libnl-3-200 (>= 3.2.27), libnl-genl-3-200 (>= 3.2.7), libnl-route-3-200 (>= 3.7.0), libpcsclite1 (>= 1.0.0), libreadline8 (>= 6.0), libssl3 (>= 3.0.0), adduser
+Suggests: wpagui, libengine-pkcs11-openssl
+Breaks: network-manager (<< 1.36.4-2~)
+Multi-Arch: foreign
+Homepage: https://w1.fi/wpa_supplicant/
+Priority: optional
+Section: net
+Filename: pool/main/w/wpa/wpasupplicant_2.10-2290-ge7172e26d_amd64.deb
+Size: 1502828
+SHA256: 2c1779b49b92d22edc72f72cf73bfa9c2f0c6ec315b48fa51d84dac7b8409946
+SHA1: dcf78ed2e2a01fd9b4d014b2eef26a9c7e27c58c
+MD5sum: 725f85c1d24cf3913faa029950030ddf
+Description: client support for WPA and WPA2 (IEEE 802.11i)
+ wpa-supplicant is a userspace daemon handling connection and authentication
+ in wireless and wired networks, primarily secured with the WPA/WPA2/WPA3
+ protocols. This software provides key negotiation with the access point
+ (WPA Authenticator), and controls association with IEEE 802.11i networks.
+
