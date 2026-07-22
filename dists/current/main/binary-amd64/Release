@@ -1,0 +1,5 @@
+Component: main
+Origin: https://psleng.github.io
+Label: https://psleng.github.io
+Architecture: amd64
+Description: Perle GiOS Router packages repository
